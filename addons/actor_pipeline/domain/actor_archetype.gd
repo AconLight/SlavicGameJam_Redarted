@@ -1,0 +1,12 @@
+class_name ActorArchetype
+extends RefCounted
+
+enum Type {
+	CHARACTER,
+	ANIMATED_DECORATION,
+	GROUND_ENEMY,
+	FLYING_ENEMY,
+	PROJECTILE,
+	DESTRUCTIBLE_PROP,
+	COLLECTIBLE,
+}

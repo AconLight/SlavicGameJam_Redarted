@@ -1,0 +1,15 @@
+# Godot-generated editor and import data
+.godot/
+
+# Exported builds
+builds/
+exports/
+
+# Local editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local diagnostics and throwaway output
+*.log

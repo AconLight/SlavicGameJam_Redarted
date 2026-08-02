@@ -1,0 +1,72 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://addons/actor_pipeline/runtime/actor_base.gd" id="1_base"]
+[ext_resource type="Script" path="res://addons/actor_pipeline/runtime/actor_visual_controller.gd" id="2_visual"]
+[ext_resource type="Script" path="res://addons/actor_pipeline/runtime/actor_animator.gd" id="3_animator"]
+[ext_resource type="Script" path="res://addons/actor_pipeline/runtime/actor_animation_event_player.gd" id="4_events"]
+[ext_resource type="Script" path="res://addons/actor_pipeline/runtime/hitbox_controller.gd" id="5_hitbox"]
+[ext_resource type="Script" path="res://addons/actor_pipeline/runtime/actor_audio_controller.gd" id="6_audio"]
+
+[sub_resource type="RectangleShape2D" id="BodyShape"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="AttackShape"]
+size = Vector2(16, 12)
+
+[node name="ActorBase" type="CharacterBody2D" groups=["actor"]]
+script = ExtResource("1_base")
+visual_controller_path = NodePath("ActorVisualController")
+animator_path = NodePath("ActorAnimator")
+event_player_path = NodePath("ActorAnimationEventPlayer")
+hitbox_controller_path = NodePath("HitboxController")
+audio_controller_path = NodePath("ActorAudioController")
+
+[node name="VisualRoot" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="VisualRoot" groups=["actor_visual"]]
+
+[node name="BodyCollision" type="CollisionShape2D" parent="."]
+shape = SubResource("BodyShape")
+
+[node name="Hurtboxes" type="Node2D" parent="."]
+
+[node name="PrimaryHurtbox" type="Area2D" parent="Hurtboxes" groups=["actor_hurtbox"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtboxes/PrimaryHurtbox"]
+shape = SubResource("BodyShape")
+
+[node name="Hitboxes" type="Node2D" parent="."]
+
+[node name="PrimaryAttack" type="Area2D" parent="Hitboxes" groups=["actor_hitbox"]]
+metadata/hitbox_id = &"primary_attack"
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/PrimaryAttack"]
+position = Vector2(12, 0)
+shape = SubResource("AttackShape")
+disabled = true
+
+[node name="ActorVisualController" type="Node" parent="."]
+script = ExtResource("2_visual")
+animated_sprite_path = NodePath("../VisualRoot/AnimatedSprite2D")
+
+[node name="ActorAnimator" type="Node" parent="."]
+script = ExtResource("3_animator")
+visual_controller_path = NodePath("../ActorVisualController")
+
+[node name="HitboxController" type="Node" parent="."]
+script = ExtResource("5_hitbox")
+
+[node name="EventAudioPlayer" type="AudioStreamPlayer2D" parent="." groups=["actor_audio"]]
+
+[node name="ActorAudioController" type="Node" parent="."]
+script = ExtResource("6_audio")
+audio_player_path = NodePath("../EventAudioPlayer")
+
+[node name="ActorAnimationEventPlayer" type="Node" parent="."]
+script = ExtResource("4_events")
+animator_path = NodePath("../ActorAnimator")
+visual_controller_path = NodePath("../ActorVisualController")
+hitbox_controller_path = NodePath("../HitboxController")
+audio_controller_path = NodePath("../ActorAudioController")
