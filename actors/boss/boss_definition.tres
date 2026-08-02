@@ -1,0 +1,92 @@
+[gd_resource type="Resource" script_class="ActorDefinition" format=3 uid="uid://cwgaf6aik8gos"]
+
+[ext_resource type="Script" uid="uid://bduraogncdtrx" path="res://addons/actor_pipeline/domain/animation_contract_entry.gd" id="1_rswjl"]
+[ext_resource type="Script" uid="uid://7e3maqeo4h3x" path="res://addons/actor_pipeline/domain/animation_contract.gd" id="2_7pmb2"]
+[ext_resource type="Script" uid="uid://4yn2p83nnhm3" path="res://addons/actor_pipeline/domain/animation_event.gd" id="3_t7ff1"]
+[ext_resource type="Script" uid="uid://by4220bciqnf7" path="res://addons/actor_pipeline/domain/animation_event_set.gd" id="4_y5b1t"]
+[ext_resource type="Script" uid="uid://dqu8t0i62f6nh" path="res://addons/actor_pipeline/domain/actor_generation_manifest.gd" id="5_svxv6"]
+[ext_resource type="Script" uid="uid://m1ftk5hbu3tk" path="res://addons/actor_pipeline/domain/actor_definition.gd" id="6_2b2ya"]
+[ext_resource type="Script" uid="uid://bckakss6ivp8u" path="res://addons/actor_pipeline/domain/actor_sound_set.gd" id="7_vixa5"]
+[ext_resource type="Script" uid="uid://cni85anflbjle" path="res://addons/actor_pipeline/domain/actor_sound_entry.gd" id="8_vf6m5"]
+[ext_resource type="SpriteFrames" uid="uid://7bsqv3sy1vsu" path="res://assets/source/art/aseprite/boss.aseprite" id="9_1lai5"]
+
+[sub_resource type="Resource" id="Resource_sgqcm"]
+script = ExtResource("1_rswjl")
+animation_name = &"Attack"
+required = true
+semantic_role = &"combat.attack.primary"
+interruption_policy = 1
+last_seen_frame_count = 16
+last_seen_speed_fps = 10.0
+
+[sub_resource type="Resource" id="Resource_hnjhi"]
+script = ExtResource("1_rswjl")
+animation_name = &"Death"
+semantic_role = &"lifecycle.death"
+last_seen_frame_count = 16
+last_seen_speed_fps = 10.0
+
+[sub_resource type="Resource" id="Resource_uw6b2"]
+script = ExtResource("1_rswjl")
+animation_name = &"Fly"
+last_seen_frame_count = 12
+last_seen_speed_fps = 10.0
+
+[sub_resource type="Resource" id="Resource_4paqs"]
+script = ExtResource("1_rswjl")
+animation_name = &"Hurt"
+semantic_role = &"damage.hurt"
+last_seen_frame_count = 12
+last_seen_speed_fps = 9.0
+
+[sub_resource type="Resource" id="Resource_vae2e"]
+script = ExtResource("1_rswjl")
+animation_name = &"Idle"
+required = true
+semantic_role = &"locomotion.idle"
+last_seen_frame_count = 14
+last_seen_speed_fps = 10.0
+
+[sub_resource type="Resource" id="Resource_02j0t"]
+script = ExtResource("2_7pmb2")
+entries = Array[ExtResource("1_rswjl")]([SubResource("Resource_sgqcm"), SubResource("Resource_hnjhi"), SubResource("Resource_uw6b2"), SubResource("Resource_4paqs"), SubResource("Resource_vae2e")])
+
+[sub_resource type="Resource" id="Resource_okvfd"]
+script = ExtResource("4_y5b1t")
+
+[sub_resource type="Resource" id="Resource_pu27i"]
+script = ExtResource("5_svxv6")
+actor_id = &"boss"
+source_resource_path = "res://assets/source/art/aseprite/boss.aseprite"
+source_fingerprint = "{\"Attack\":16,\"Death\":16,\"Fly\":12,\"Hurt\":12,\"Idle\":14}"
+generated_at_unix = 1785692548
+discovered_animations = Array[StringName]([&"Attack", &"Death", &"Fly", &"Hurt", &"Idle"])
+discovered_frame_counts = {
+"Attack": 16,
+"Death": 16,
+"Fly": 12,
+"Hurt": 12,
+"Idle": 14
+}
+discovered_looping = {
+"Attack": false,
+"Death": false,
+"Fly": false,
+"Hurt": false,
+"Idle": false
+}
+
+[sub_resource type="Resource" id="Resource_sdcdn"]
+script = ExtResource("7_vixa5")
+
+[resource]
+script = ExtResource("6_2b2ya")
+actor_id = &"boss"
+display_name = "boss"
+sprite_frames = ExtResource("9_1lai5")
+source_aseprite_path = "res://assets/source/art/aseprite/boss.aseprite"
+generation_manifest = SubResource("Resource_pu27i")
+animation_contract = SubResource("Resource_02j0t")
+animation_events = SubResource("Resource_okvfd")
+sound_set = SubResource("Resource_sdcdn")
+editable_scene_path = "res://actors/boss/boss.tscn"
