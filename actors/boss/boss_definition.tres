@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://m1ftk5hbu3tk" path="res://addons/actor_pipeline/domain/actor_definition.gd" id="7_vf6m5"]
 [ext_resource type="Script" uid="uid://bckakss6ivp8u" path="res://addons/actor_pipeline/domain/actor_sound_set.gd" id="8_1lai5"]
 [ext_resource type="Script" uid="uid://cni85anflbjle" path="res://addons/actor_pipeline/domain/actor_sound_entry.gd" id="9_02j0t"]
-[ext_resource type="SpriteFrames" uid="uid://7bsqv3sy1vsu" path="res://assets/source/art/aseprite/boss/boss.aseprite" id="10_okvfd"]
+[ext_resource type="SpriteFrames" path="res://actors/boss/boss_sprite_frames.tres" id="10_okvfd"]
 
 [sub_resource type="Resource" id="Resource_sgqcm"]
 script = ExtResource("1_7pmb2")

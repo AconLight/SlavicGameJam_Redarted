@@ -32,11 +32,24 @@ func create_actor(request: ActorCreationRequest) -> ActorGenerationResult:
 	var events := AnimationEventSet.new()
 	var sounds := ActorSoundSet.new()
 	var manifest := _build_manifest(request, lighting_validation)
+	# Bundle the imported atlas with the generated actor. This makes the actor
+	# playable on a fresh clone without Aseprite or the Aseprite Wizard importer.
+	var standalone_sprite_frames := request.sprite_frames.duplicate(true) as SpriteFrames
+	if standalone_sprite_frames == null or ResourceSaver.save(standalone_sprite_frames, paths.sprite_frames, ResourceSaver.FLAG_BUNDLE_RESOURCES) != OK:
+		result.errors.append("Could not save standalone SpriteFrames: %s" % paths.sprite_frames)
+		_cleanup_created_files(result.created_paths)
+		return result
+	result.created_paths.append(paths.sprite_frames)
+	var saved_sprite_frames := ResourceLoader.load(paths.sprite_frames, "SpriteFrames", ResourceLoader.CACHE_MODE_REPLACE) as SpriteFrames
+	if saved_sprite_frames == null:
+		result.errors.append("Could not reload standalone SpriteFrames: %s" % paths.sprite_frames)
+		_cleanup_created_files(result.created_paths)
+		return result
 	var definition := ActorDefinition.new()
 	definition.actor_id = request.actor_id
 	definition.display_name = request.display_name
 	definition.archetype = request.archetype
-	definition.sprite_frames = request.sprite_frames
+	definition.sprite_frames = saved_sprite_frames
 	definition.source_aseprite_path = request.source_aseprite_path
 	definition.animation_contract = contract
 	definition.animation_events = events

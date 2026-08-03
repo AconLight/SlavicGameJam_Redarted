@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cjj8kkjfueh5d" path="res://addons/actor_pipeline/runtime/actor_base.gd" id="1_fffyt"]
 [ext_resource type="Resource" uid="uid://dx7q4cf5gpbtf" path="res://actors/boss/boss_definition.tres" id="2_p7r1m"]
-[ext_resource type="SpriteFrames" uid="uid://7bsqv3sy1vsu" path="res://assets/source/art/aseprite/boss/boss.aseprite" id="3_hyxnp"]
+[ext_resource type="SpriteFrames" path="res://actors/boss/boss_sprite_frames.tres" id="3_hyxnp"]
 [ext_resource type="Script" uid="uid://h50u2q7ocxv4" path="res://addons/actor_pipeline/runtime/actor_visual_controller.gd" id="4_2vm37"]
 [ext_resource type="Script" uid="uid://csd34ha70b6tx" path="res://addons/actor_pipeline/runtime/actor_animator.gd" id="5_5ikln"]
 [ext_resource type="Script" uid="uid://c5rebixerd5gm" path="res://addons/actor_pipeline/runtime/hitbox_controller.gd" id="6_ak0su"]

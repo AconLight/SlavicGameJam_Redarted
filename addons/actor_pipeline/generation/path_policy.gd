@@ -10,6 +10,7 @@ static func is_valid_actor_id(actor_id: String) -> bool:
 static func build_paths(output_directory: String, actor_id: String, include_rendering_profile := false) -> Dictionary:
 	var paths := {
 		"scene": output_directory.path_join("%s.tscn" % actor_id),
+		"sprite_frames": output_directory.path_join("%s_sprite_frames.tres" % actor_id),
 		"definition": output_directory.path_join("%s_definition.tres" % actor_id),
 		"contract": output_directory.path_join("%s_animation_contract.tres" % actor_id),
 		"events": output_directory.path_join("%s_animation_events.tres" % actor_id),
