@@ -1,0 +1,66 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/lighting_preview_gravity.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://b6tjc7oge353q" path="res://actors/boss/boss.tscn" id="2_boss"]
+
+[sub_resource type="Gradient" id="Gradient_light"]
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(1, 0.82, 0.5, 1, 1, 0.38, 0.12, 0.38, 1, 0.1, 0.02, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture_light"]
+gradient = SubResource("Gradient_light")
+width = 512
+height = 512
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="RectangleShape2D" id="FloorShape"]
+size = Vector2(1152, 48)
+
+[node name="LightingPreviewGravity" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Backdrop" type="Polygon2D" parent="."]
+color = Color(0.035, 0.045, 0.075, 1)
+polygon = PackedVector2Array(-2000, -2000, 4000, -2000, 4000, 4000, -2000, 4000)
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.16, 0.18, 0.26, 1)
+
+[node name="Title" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 620.0
+offset_bottom = 72.0
+theme_override_colors/font_color = Color(0.9, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "Boss Gravity Preview — grawitacja, podłoga, skok"
+
+[node name="Hint" type="Label" parent="."]
+offset_left = 24.0
+offset_top = 54.0
+offset_right = 860.0
+offset_bottom = 84.0
+theme_override_colors/font_color = Color(0.6, 0.68, 0.82, 1)
+text = "A/D — ruch, SPACJA — skok, 1-5 — animacje, R — reset pozycji."
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(576, 624)
+
+[node name="Visual" type="Polygon2D" parent="Floor"]
+color = Color(0.14, 0.17, 0.22, 1)
+polygon = PackedVector2Array(-576, -24, 576, -24, 576, 24, -576, 24)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("FloorShape")
+
+[node name="Boss" parent="." instance=ExtResource("2_boss")]
+position = Vector2(576, 162)
+scale = Vector2(4, 4)
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+position = Vector2(45, 112)
+energy = 2.4
+texture = SubResource("GradientTexture_light")
+texture_scale = 1.2
