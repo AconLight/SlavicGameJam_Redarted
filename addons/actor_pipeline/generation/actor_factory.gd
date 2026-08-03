@@ -4,6 +4,7 @@ extends RefCounted
 
 const GENERATOR_VERSION := "0.1.0"
 const CHARACTER_TEMPLATE_PATH := "res://addons/actor_pipeline/templates/character_actor.tscn"
+const SpriteFramesBundlerScript := preload("res://addons/actor_pipeline/generation/sprite_frames_bundler.gd")
 
 func create_actor(request: ActorCreationRequest) -> ActorGenerationResult:
 	var result := ActorGenerationResult.new()
@@ -34,7 +35,7 @@ func create_actor(request: ActorCreationRequest) -> ActorGenerationResult:
 	var manifest := _build_manifest(request, lighting_validation)
 	# Bundle the imported atlas with the generated actor. This makes the actor
 	# playable on a fresh clone without Aseprite or the Aseprite Wizard importer.
-	var standalone_sprite_frames := request.sprite_frames.duplicate(true) as SpriteFrames
+	var standalone_sprite_frames := SpriteFramesBundlerScript.new().bundle(request.sprite_frames)
 	if standalone_sprite_frames == null or ResourceSaver.save(standalone_sprite_frames, paths.sprite_frames, ResourceSaver.FLAG_BUNDLE_RESOURCES) != OK:
 		result.errors.append("Could not save standalone SpriteFrames: %s" % paths.sprite_frames)
 		_cleanup_created_files(result.created_paths)

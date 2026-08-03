@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="ActorRenderingProfile" format=3 uid="uid://b2ua4eh6wne33"]
+[gd_resource type="Resource" script_class="ActorRenderingProfile" format=3 uid="uid://mrm7r6kupq4j"]
 
-[ext_resource type="Texture2D" uid="uid://msxypsnh2mdp" path="res://assets/source/art/aseprite/boss/lighting/boss_lighting_reference_n.png" id="1_ss4ik"]
-[ext_resource type="Texture2D" uid="uid://bon0oiemidkg7" path="res://assets/source/art/aseprite/boss/lighting/boss_lighting_reference_o.png" id="2_8ih4c"]
+[ext_resource type="Texture2D" uid="uid://b20lk7rm0yx43" path="res://assets/source/art/aseprite/boss/lighting/boss_lighting_reference_n.png" id="1_ss4ik"]
+[ext_resource type="Texture2D" uid="uid://g4aaicemofsa" path="res://assets/source/art/aseprite/boss/lighting/boss_lighting_reference_o.png" id="2_8ih4c"]
 [ext_resource type="Script" uid="uid://d314l43lavj3i" path="res://addons/actor_pipeline/domain/actor_rendering_profile.gd" id="3_ujpeu"]
-[ext_resource type="Texture2D" uid="uid://djfl6a2rfc7ka" path="res://assets/source/art/aseprite/boss/lighting/boss_lighting_reference_s.png" id="4_bl0re"]
+[ext_resource type="Texture2D" uid="uid://dtilhaefc318p" path="res://assets/source/art/aseprite/boss/lighting/boss_lighting_reference_s.png" id="4_bl0re"]
 
 [resource]
 script = ExtResource("3_ujpeu")

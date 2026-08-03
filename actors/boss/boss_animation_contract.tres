@@ -1,9 +1,9 @@
-[gd_resource type="Resource" script_class="AnimationContract" format=3 uid="uid://bbn5hgkg3dji"]
+[gd_resource type="Resource" script_class="AnimationContract" format=3 uid="uid://dfjv5qgdagaid"]
 
 [ext_resource type="Script" uid="uid://bduraogncdtrx" path="res://addons/actor_pipeline/domain/animation_contract_entry.gd" id="1_8b4kn"]
 [ext_resource type="Script" uid="uid://7e3maqeo4h3x" path="res://addons/actor_pipeline/domain/animation_contract.gd" id="2_a70hk"]
 
-[sub_resource type="Resource" id="Resource_sgqcm"]
+[sub_resource type="Resource" id="Resource_8b4kn"]
 script = ExtResource("1_8b4kn")
 animation_name = &"Attack"
 required = true
@@ -12,27 +12,27 @@ interruption_policy = 1
 last_seen_frame_count = 16
 last_seen_speed_fps = 10.0
 
-[sub_resource type="Resource" id="Resource_hnjhi"]
+[sub_resource type="Resource" id="Resource_a70hk"]
 script = ExtResource("1_8b4kn")
 animation_name = &"Death"
 semantic_role = &"lifecycle.death"
 last_seen_frame_count = 16
 last_seen_speed_fps = 10.0
 
-[sub_resource type="Resource" id="Resource_uw6b2"]
+[sub_resource type="Resource" id="Resource_sgqcm"]
 script = ExtResource("1_8b4kn")
 animation_name = &"Fly"
 last_seen_frame_count = 12
 last_seen_speed_fps = 10.0
 
-[sub_resource type="Resource" id="Resource_4paqs"]
+[sub_resource type="Resource" id="Resource_hnjhi"]
 script = ExtResource("1_8b4kn")
 animation_name = &"Hurt"
 semantic_role = &"damage.hurt"
 last_seen_frame_count = 12
 last_seen_speed_fps = 9.0
 
-[sub_resource type="Resource" id="Resource_vae2e"]
+[sub_resource type="Resource" id="Resource_uw6b2"]
 script = ExtResource("1_8b4kn")
 animation_name = &"Idle"
 required = true
@@ -42,4 +42,4 @@ last_seen_speed_fps = 10.0
 
 [resource]
 script = ExtResource("2_a70hk")
-entries = Array[ExtResource("1_8b4kn")]([SubResource("Resource_sgqcm"), SubResource("Resource_hnjhi"), SubResource("Resource_uw6b2"), SubResource("Resource_4paqs"), SubResource("Resource_vae2e")])
+entries = Array[ExtResource("1_8b4kn")]([SubResource("Resource_8b4kn"), SubResource("Resource_a70hk"), SubResource("Resource_sgqcm"), SubResource("Resource_hnjhi"), SubResource("Resource_uw6b2")])

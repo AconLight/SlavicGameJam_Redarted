@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://d3q5li6gk44bk"]
 
 [ext_resource type="Script" uid="uid://cwlx7ork8uypy" path="res://scenes/lighting_preview.gd" id="1_script"]
-[ext_resource type="PackedScene" uid="uid://dtxlo50h3ca44" path="res://actors/boss/boss.tscn" id="2_boss"]
+[ext_resource type="PackedScene" uid="uid://b6tjc7oge353q" path="res://actors/boss/boss.tscn" id="2_boss"]
 
 [sub_resource type="Gradient" id="Gradient_light"]
 offsets = PackedFloat32Array(0, 0.45, 1)

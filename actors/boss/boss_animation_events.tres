@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="AnimationEventSet" format=3 uid="uid://qrd3isyeslyl"]
+[gd_resource type="Resource" script_class="AnimationEventSet" format=3 uid="uid://chmbffydktxqs"]
 
 [ext_resource type="Script" uid="uid://4yn2p83nnhm3" path="res://addons/actor_pipeline/domain/animation_event.gd" id="1_gwtok"]
 [ext_resource type="Script" uid="uid://by4220bciqnf7" path="res://addons/actor_pipeline/domain/animation_event_set.gd" id="2_yf7ex"]

@@ -5,6 +5,7 @@ extends Node2D
 
 @onready var _light: PointLight2D = $PointLight2D
 @onready var _actor: Node2D = $Boss
+@onready var _sprite: AnimatedSprite2D = $Boss/VisualRoot/AnimatedSprite2D
 
 var _elapsed := 0.0
 
@@ -12,6 +13,7 @@ var _elapsed := 0.0
 func _ready() -> void:
 	get_viewport().size_changed.connect(_update_layout)
 	_update_layout()
+	_sprite.play()
 
 
 func _process(delta: float) -> void:
