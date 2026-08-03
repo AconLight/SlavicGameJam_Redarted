@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="AnimationContract" format=3 uid="uid://bj2wjsbo7p7uj"]
+[gd_resource type="Resource" script_class="AnimationContract" format=3 uid="uid://bbn5hgkg3dji"]
 
 [ext_resource type="Script" uid="uid://bduraogncdtrx" path="res://addons/actor_pipeline/domain/animation_contract_entry.gd" id="1_8b4kn"]
 [ext_resource type="Script" uid="uid://7e3maqeo4h3x" path="res://addons/actor_pipeline/domain/animation_contract.gd" id="2_a70hk"]

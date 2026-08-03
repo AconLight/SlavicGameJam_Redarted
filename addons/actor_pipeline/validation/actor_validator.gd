@@ -16,6 +16,7 @@ func validate_definition(definition: ActorDefinition) -> ActorValidationReport:
 		return report
 	_validate_contract(definition, report)
 	_validate_events(definition, report)
+	_validate_rendering(definition, report)
 	return report
 
 
@@ -49,3 +50,8 @@ func _validate_events(definition: ActorDefinition, report: ActorValidationReport
 		var animation_name := event.animation_name_override if event.animation_name_override != &"" else entry.animation_name
 		if definition.sprite_frames != null and definition.sprite_frames.has_animation(animation_name) and event.frame >= definition.sprite_frames.get_frame_count(animation_name):
 			report.add_issue(ActorValidationIssue.Severity.ERROR, &"event.frame_out_of_range", "Event %s targets frame %d outside %s." % [event.event_id, event.frame, animation_name])
+
+
+func _validate_rendering(definition: ActorDefinition, report: ActorValidationReport) -> void:
+	if definition.rendering_profile != null and definition.rendering_profile.normal_map == null:
+		report.add_issue(ActorValidationIssue.Severity.ERROR, &"rendering.missing_normal_map", "Rendering profile has no normal map.")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ActorSoundSet" format=3 uid="uid://llpja2kmpjcp"]
+[gd_resource type="Resource" script_class="ActorSoundSet" format=3 uid="uid://mtnmqkcjkhhy"]
 
 [ext_resource type="Script" uid="uid://bckakss6ivp8u" path="res://addons/actor_pipeline/domain/actor_sound_set.gd" id="1_bidhq"]
 [ext_resource type="Script" uid="uid://cni85anflbjle" path="res://addons/actor_pipeline/domain/actor_sound_entry.gd" id="2_5cvgs"]

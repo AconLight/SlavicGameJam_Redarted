@@ -50,7 +50,6 @@ func _get_import_order():
 func _get_import_options(_path, _i):
 	return [
 		{"name": "layer/exclude_layers_pattern", "default_value": config.get_default_exclusion_pattern()},
-		{"name": "layer/only_visible_layers",    "default_value": false},
 		{
 			"name": "sheet/sheet_type",
 			"default_value": "packed",
@@ -98,7 +97,9 @@ func _import(source_file, save_path, options, platform_variants, gen_files):
 	var aseprite_opts = {
 		"export_mode": _sf_creator.FILE_EXPORT_MODE,
 		"exception_pattern": options['layer/exclude_layers_pattern'],
-		"only_visible_layers": options['layer/only_visible_layers'],
+		# SpriteFrames are gameplay-ready art. Hidden Aseprite layers must never
+		# become part of their sheet (they are often opaque guide/backdrop layers).
+		"only_visible_layers": true,
 		"output_filename": '',
 		"output_folder": source_path,
 		"sheet_type": options["sheet/sheet_type"],

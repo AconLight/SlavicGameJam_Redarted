@@ -10,8 +10,13 @@ func create_actor(request: ActorCreationRequest) -> ActorGenerationResult:
 	_validate_request(request, result)
 	if not result.errors.is_empty():
 		return result
+	var lighting_validation := ActorLightingMapValidator.new().validate(request)
+	result.errors.append_array(lighting_validation.errors)
+	result.warnings.append_array(lighting_validation.warnings)
+	if not result.errors.is_empty():
+		return result
 
-	var paths := ActorPathPolicy.build_paths(request.output_directory, request.actor_id)
+	var paths := ActorPathPolicy.build_paths(request.output_directory, request.actor_id, request.lighting_mode != ActorLightingMode.Type.NONE)
 	for path in paths.values():
 		if ResourceLoader.exists(path):
 			result.errors.append("Target already exists: %s" % path)
@@ -26,7 +31,7 @@ func create_actor(request: ActorCreationRequest) -> ActorGenerationResult:
 	var contract := _build_contract(request.sprite_frames)
 	var events := AnimationEventSet.new()
 	var sounds := ActorSoundSet.new()
-	var manifest := _build_manifest(request.actor_id, request.sprite_frames)
+	var manifest := _build_manifest(request, lighting_validation)
 	var definition := ActorDefinition.new()
 	definition.actor_id = request.actor_id
 	definition.display_name = request.display_name
@@ -38,6 +43,16 @@ func create_actor(request: ActorCreationRequest) -> ActorGenerationResult:
 	definition.sound_set = sounds
 	definition.generation_manifest = manifest
 	definition.editable_scene_path = paths.scene
+	if lighting_validation.rendering_profile != null:
+		if ResourceSaver.save(lighting_validation.rendering_profile, paths.rendering_profile) != OK:
+			result.errors.append("Could not save rendering profile: %s" % paths.rendering_profile)
+			return result
+		result.created_paths.append(paths.rendering_profile)
+		definition.rendering_profile = load(paths.rendering_profile) as ActorRenderingProfile
+		if definition.rendering_profile == null:
+			result.errors.append("Could not reload rendering profile: %s" % paths.rendering_profile)
+			_cleanup_created_files(result.created_paths)
+			return result
 
 	var resources_to_save := {
 		paths.contract: contract,
@@ -62,7 +77,7 @@ func create_actor(request: ActorCreationRequest) -> ActorGenerationResult:
 		return result
 	var scene := _build_character_scene(saved_definition)
 	if scene == null:
-		result.errors.append("Could not instantiate character template.")
+		result.errors.append("Could not build the character scene from the template. Check the Output panel for the specific Actor Pipeline error.")
 		_cleanup_created_files(result.created_paths)
 		return result
 	if ResourceSaver.save(scene, paths.scene) != OK:
@@ -106,16 +121,24 @@ func _build_contract(sprite_frames: SpriteFrames) -> AnimationContract:
 	return contract
 
 
-func _build_manifest(actor_id: StringName, sprite_frames: SpriteFrames) -> ActorGenerationManifest:
+func _build_manifest(request: ActorCreationRequest, lighting_validation: ActorLightingValidationResult) -> ActorGenerationManifest:
 	var manifest := ActorGenerationManifest.new()
 	manifest.generator_version = GENERATOR_VERSION
-	manifest.actor_id = actor_id
-	manifest.source_resource_path = sprite_frames.resource_path
+	manifest.actor_id = request.actor_id
+	manifest.source_resource_path = request.sprite_frames.resource_path
 	manifest.generated_at_unix = Time.get_unix_time_from_system()
-	for animation_name in sprite_frames.get_animation_names():
+	manifest.lighting_mode = request.lighting_mode
+	if request.lighting_mode != ActorLightingMode.Type.NONE:
+		manifest.lighting_reference_path = lighting_validation.reference_path
+		manifest.lighting_reference_fingerprint = lighting_validation.reference_fingerprint
+		manifest.normal_map_path = request.normal_map_path
+		manifest.specular_map_path = request.specular_map_path
+		manifest.occlusion_map_path = request.occlusion_map_path
+		manifest.emission_map_path = request.emission_map_path
+	for animation_name in request.sprite_frames.get_animation_names():
 		manifest.discovered_animations.append(animation_name)
-		manifest.discovered_frame_counts[animation_name] = sprite_frames.get_frame_count(animation_name)
-		manifest.discovered_looping[animation_name] = sprite_frames.get_animation_loop(animation_name)
+		manifest.discovered_frame_counts[animation_name] = request.sprite_frames.get_frame_count(animation_name)
+		manifest.discovered_looping[animation_name] = request.sprite_frames.get_animation_loop(animation_name)
 	manifest.source_fingerprint = JSON.stringify(manifest.discovered_frame_counts)
 	return manifest
 
@@ -123,9 +146,11 @@ func _build_manifest(actor_id: StringName, sprite_frames: SpriteFrames) -> Actor
 func _build_character_scene(definition: ActorDefinition) -> PackedScene:
 	var template := load(CHARACTER_TEMPLATE_PATH) as PackedScene
 	if template == null:
+		push_error("[Actor Pipeline] Character template could not be loaded: %s" % CHARACTER_TEMPLATE_PATH)
 		return null
 	var actor := template.instantiate() as ActorBase
 	if actor == null:
+		push_error("[Actor Pipeline] Character template root is not an ActorBase: %s" % CHARACTER_TEMPLATE_PATH)
 		return null
 	actor.definition = definition
 	# Store the visual resource directly in the editable scene as well as in the
@@ -133,6 +158,7 @@ func _build_character_scene(definition: ActorDefinition) -> PackedScene:
 	# empty AnimatedSprite2D before the runtime component initializes.
 	var animated_sprite := actor.get_node_or_null("VisualRoot/AnimatedSprite2D") as AnimatedSprite2D
 	if animated_sprite == null:
+		push_error("[Actor Pipeline] Character template is missing VisualRoot/AnimatedSprite2D.")
 		actor.queue_free()
 		return null
 	animated_sprite.sprite_frames = definition.sprite_frames
@@ -143,6 +169,7 @@ func _build_character_scene(definition: ActorDefinition) -> PackedScene:
 	actor.set_meta(&"actor_pipeline_version", GENERATOR_VERSION)
 	var scene := PackedScene.new()
 	if scene.pack(actor) != OK:
+		push_error("[Actor Pipeline] Could not pack the generated character scene.")
 		actor.queue_free()
 		return null
 	actor.queue_free()

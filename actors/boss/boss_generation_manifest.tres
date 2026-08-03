@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="ActorGenerationManifest" format=3 uid="uid://b8a44khb2bxps"]
+[gd_resource type="Resource" script_class="ActorGenerationManifest" format=3 uid="uid://cuk6axcjito15"]
 
 [ext_resource type="Script" uid="uid://dqu8t0i62f6nh" path="res://addons/actor_pipeline/domain/actor_generation_manifest.gd" id="1_tt30o"]
 
 [resource]
 script = ExtResource("1_tt30o")
 actor_id = &"boss"
-source_resource_path = "res://assets/source/art/aseprite/boss.aseprite"
+source_resource_path = "res://assets/source/art/aseprite/boss/boss.aseprite"
 source_fingerprint = "{\"Attack\":16,\"Death\":16,\"Fly\":12,\"Hurt\":12,\"Idle\":14}"
-generated_at_unix = 1785692548
+generated_at_unix = 1785774473
 discovered_animations = Array[StringName]([&"Attack", &"Death", &"Fly", &"Hurt", &"Idle"])
 discovered_frame_counts = {
 "Attack": 16,
@@ -23,3 +23,9 @@ discovered_looping = {
 "Hurt": false,
 "Idle": false
 }
+lighting_mode = 2
+lighting_reference_path = "res://assets/source/art/aseprite/boss/lighting/boss_lighting_reference.png"
+lighting_reference_fingerprint = "179fbe77871b9a9e6a46a845fe67ce68"
+normal_map_path = "res://assets/source/art/aseprite/boss/lighting/boss_lighting_reference_n.png"
+specular_map_path = "res://assets/source/art/aseprite/boss/lighting/boss_lighting_reference_s.png"
+occlusion_map_path = "res://assets/source/art/aseprite/boss/lighting/boss_lighting_reference_o.png"

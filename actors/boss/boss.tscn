@@ -1,8 +1,8 @@
-[gd_scene format=3 uid="uid://blglauuoh5x1a"]
+[gd_scene format=3 uid="uid://dtxlo50h3ca44"]
 
 [ext_resource type="Script" uid="uid://cjj8kkjfueh5d" path="res://addons/actor_pipeline/runtime/actor_base.gd" id="1_fffyt"]
-[ext_resource type="Resource" uid="uid://cwgaf6aik8gos" path="res://actors/boss/boss_definition.tres" id="2_p7r1m"]
-[ext_resource type="SpriteFrames" uid="uid://7bsqv3sy1vsu" path="res://assets/source/art/aseprite/boss.aseprite" id="3_hyxnp"]
+[ext_resource type="Resource" uid="uid://dx7q4cf5gpbtf" path="res://actors/boss/boss_definition.tres" id="2_p7r1m"]
+[ext_resource type="SpriteFrames" uid="uid://7bsqv3sy1vsu" path="res://assets/source/art/aseprite/boss/boss.aseprite" id="3_hyxnp"]
 [ext_resource type="Script" uid="uid://h50u2q7ocxv4" path="res://addons/actor_pipeline/runtime/actor_visual_controller.gd" id="4_2vm37"]
 [ext_resource type="Script" uid="uid://csd34ha70b6tx" path="res://addons/actor_pipeline/runtime/actor_animator.gd" id="5_5ikln"]
 [ext_resource type="Script" uid="uid://c5rebixerd5gm" path="res://addons/actor_pipeline/runtime/hitbox_controller.gd" id="6_ak0su"]
@@ -15,7 +15,7 @@ size = Vector2(16, 16)
 [sub_resource type="RectangleShape2D" id="AttackShape"]
 size = Vector2(16, 12)
 
-[node name="ActorBase" type="CharacterBody2D" unique_id=1510927333 groups=["actor"]]
+[node name="ActorBase" type="CharacterBody2D" unique_id=972466852 groups=["actor"]]
 script = ExtResource("1_fffyt")
 definition = ExtResource("2_p7r1m")
 visual_controller_path = NodePath("ActorVisualController")
@@ -26,52 +26,52 @@ audio_controller_path = NodePath("ActorAudioController")
 metadata/actor_pipeline_id = &"boss"
 metadata/actor_pipeline_version = "0.1.0"
 
-[node name="VisualRoot" type="Node2D" parent="." unique_id=1760198145]
+[node name="VisualRoot" type="Node2D" parent="." unique_id=1368627367]
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="VisualRoot" unique_id=293501419 groups=["actor_visual"]]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="VisualRoot" unique_id=1420364448 groups=["actor_visual"]]
 sprite_frames = ExtResource("3_hyxnp")
 animation = &"Idle"
 
-[node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=1953492281]
+[node name="BodyCollision" type="CollisionShape2D" parent="." unique_id=881274190]
 shape = SubResource("BodyShape")
 
-[node name="Hurtboxes" type="Node2D" parent="." unique_id=1592725723]
+[node name="Hurtboxes" type="Node2D" parent="." unique_id=1618425414]
 
-[node name="PrimaryHurtbox" type="Area2D" parent="Hurtboxes" unique_id=1894470184 groups=["actor_hurtbox"]]
+[node name="PrimaryHurtbox" type="Area2D" parent="Hurtboxes" unique_id=1843176030 groups=["actor_hurtbox"]]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtboxes/PrimaryHurtbox" unique_id=145693993]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtboxes/PrimaryHurtbox" unique_id=635973982]
 shape = SubResource("BodyShape")
 
-[node name="Hitboxes" type="Node2D" parent="." unique_id=1416310573]
+[node name="Hitboxes" type="Node2D" parent="." unique_id=346479644]
 
-[node name="PrimaryAttack" type="Area2D" parent="Hitboxes" unique_id=436629082 groups=["actor_hitbox"]]
+[node name="PrimaryAttack" type="Area2D" parent="Hitboxes" unique_id=1680763325 groups=["actor_hitbox"]]
 monitoring = false
 monitorable = false
 metadata/hitbox_id = &"primary_attack"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/PrimaryAttack" unique_id=1568571139]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitboxes/PrimaryAttack" unique_id=498841505]
 position = Vector2(12, 0)
 shape = SubResource("AttackShape")
 disabled = true
 
-[node name="ActorVisualController" type="Node" parent="." unique_id=761055059]
+[node name="ActorVisualController" type="Node" parent="." unique_id=1490140492]
 script = ExtResource("4_2vm37")
 animated_sprite_path = NodePath("../VisualRoot/AnimatedSprite2D")
 
-[node name="ActorAnimator" type="Node" parent="." unique_id=39344670]
+[node name="ActorAnimator" type="Node" parent="." unique_id=2012757817]
 script = ExtResource("5_5ikln")
 visual_controller_path = NodePath("../ActorVisualController")
 
-[node name="HitboxController" type="Node" parent="." unique_id=2074266635]
+[node name="HitboxController" type="Node" parent="." unique_id=2041902917]
 script = ExtResource("6_ak0su")
 
-[node name="EventAudioPlayer" type="AudioStreamPlayer2D" parent="." unique_id=41509082 groups=["actor_audio"]]
+[node name="EventAudioPlayer" type="AudioStreamPlayer2D" parent="." unique_id=1660523456 groups=["actor_audio"]]
 
-[node name="ActorAudioController" type="Node" parent="." unique_id=1141117859]
+[node name="ActorAudioController" type="Node" parent="." unique_id=1054656185]
 script = ExtResource("7_fek4m")
 audio_player_path = NodePath("../EventAudioPlayer")
 
-[node name="ActorAnimationEventPlayer" type="Node" parent="." unique_id=12326466]
+[node name="ActorAnimationEventPlayer" type="Node" parent="." unique_id=1866197557]
 script = ExtResource("8_r5ues")
 animator_path = NodePath("../ActorAnimator")
 visual_controller_path = NodePath("../ActorVisualController")

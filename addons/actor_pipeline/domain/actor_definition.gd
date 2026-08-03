@@ -19,6 +19,9 @@ extends Resource
 @export_group("Audio")
 @export var sound_set: ActorSoundSet
 
+@export_group("Rendering")
+@export var rendering_profile: ActorRenderingProfile
+
 @export_group("Gameplay Defaults")
 @export var maximum_health := 100.0
 @export var movement_speed := 100.0
