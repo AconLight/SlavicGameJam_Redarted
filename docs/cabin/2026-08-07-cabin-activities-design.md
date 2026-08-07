@@ -1,0 +1,193 @@
+# Kabina tira: aktywności i kamera
+
+Data: 2026-08-07 · Branch: `cabin` · Autor: Cyngiel
+
+## Kontekst
+
+Gra: POV kierowcy tira, nieskończona droga, sztuczna perspektywa zbieżna. Im dłużej gracz robi rzeczy w kabinie zamiast patrzeć na drogę, tym więcej punktów — ale tir przyspiesza i grozi fotoradar.
+
+Podział pracy w zespole:
+
+| Kto | Co |
+| --- | --- |
+| Melin | sztuczna perspektywa, nieskończona droga, fotoradar |
+| Adaś | zmiana prędkości i wskazówka prędkościomierza (mały klocek wstawiany do kabiny) |
+| Cyngiel | wnętrze kabiny, aktywności, kamera — ten dokument |
+
+## Zakres
+
+W zakresie:
+
+- scena wnętrza kabiny na zastępczej grafice
+- dwa rodzaje klocków stawianych myszką w edytorze: punkt zoomu i aktywność
+- kamera dryfująca w stronę aktywności i wracająca do spoczynku
+- kontroler trzymania, mierzący czas i ogłaszający sygnały
+- tymczasowy napis diagnostyczny
+
+Poza zakresem, świadomie:
+
+- **chill i punktacja** — dotyczą trzech osób naraz, więc powstaną jako osobny, globalny mechanizm poza kabiną
+- droga, perspektywa, prędkość, fotoradar
+- docelowa grafika i dźwięk
+- mini-gry wewnątrz aktywności
+
+## Decyzje i ich powody
+
+**Aktywność to „przytrzymaj i czekaj".** Bez mini-gier. Aktywności różnią się grafiką i miejscem, nie sposobem obsługi. Gdy któraś ma kiedyś dostać własną mechanikę, będzie to nowa warstwa, nie przebudowa tej.
+
+**Punkt zoomu i aktywność to osobne klocki.** Rozdzielenie „gdzie patrzy kamera" od „w co klikam" daje trzy rzeczy: dwie aktywności mogą dzielić jeden punkt (radio i CB stoją obok siebie), aktywność może nie mieć punktu i wtedy kamera zostaje, a punkty da się dostrajać bez ruszania aktywności.
+
+**Spoczynek to zwykły punkt zoomu.** Kamera po najeździe na radio fizycznie jest przy radiu i nie pamięta, skąd wyruszyła. Osobna pinezka „dom" sprawia, że powrót to ta sama operacja co dojazd — zero specjalnych przypadków w kodzie, a domyślne kadrowanie kabiny zmienia się przesunięciem krzyżyka.
+
+**Klocki stawiamy myszką, nie opisujemy w plikach `.tres`.** Konfiguracja w zasobach byłaby spójna z `actor_pipeline`, ale wymagałaby wpisywania współrzędnych z palca. Rozstawianie przedmiotów w kabinie to praca na oko i musi być widoczna w edytorze. Spójność z `actor_pipeline` jest zresztą pozorna — tamten obsługuje aktorów generowanych z Aseprite'a, który na tej maszynie nie działa.
+
+**Aktywności rejestrują się same.** Klocek dopisuje się do grupy `cabin_activity`, a kontroler zbiera grupę przy starcie. Dzięki temu dodanie aktywności nie wymaga podłączania niczego w kodzie ani w innym węźle.
+
+**Brak pola `points_per_second` na aktywności.** Tempo punktów będzie potrzebne dopiero razem z chillem. Puste pole bez odbiorcy to pułapka — ktoś je wypełni i będzie się zastanawiał, czemu nic z tego nie wynika. Dodanie później to jedna linijka.
+
+## Architektura
+
+```
+scenes/cabin.tscn
+└── Cabin (Node2D)
+    ├── Interior (Node2D)              grafika zastępcza
+    │   ├── Windshield                 niebieski prostokąt
+    │   ├── Dashboard                  deska rozdzielcza
+    │   └── SpeedometerSlot (Marker2D) miejsce na klocek Adasia
+    ├── ZoomTargets (Node2D)
+    │   ├── NeutralFocus  (CabinZoomTarget, zoom 1.0)
+    │   ├── RadioFocus    (CabinZoomTarget)
+    │   └── UkuleleFocus  (CabinZoomTarget)
+    ├── Activities (Node2D)
+    │   ├── Radio    (CabinActivity → RadioFocus)
+    │   └── Ukulele  (CabinActivity → UkuleleFocus)
+    ├── CabinCamera (Camera2D)
+    ├── ActivityController (Node)
+    └── DebugOverlay (CanvasLayer)
+        └── StatusLabel
+```
+
+Skrypty w `scripts/cabin/`, po jednym na komponent. Oba klocki mają własne pliki scen, gotowe do przeciągania:
+
+```
+scenes/cabin/cabin_zoom_target.tscn
+scenes/cabin/cabin_activity.tscn
+```
+
+## Komponenty
+
+### CabinZoomTarget — `cabin_zoom_target.gd`
+
+Rozszerza `Marker2D`. Nieruchoma pinezka: „kamero, przyjedź tutaj i przybliż o tyle". Nie zawiera logiki.
+
+| Pole w inspektorze | Domyślnie | Znaczenie |
+| --- | --- | --- |
+| `zoom` | `1.35` | siła przybliżenia; `1.0` to widok normalny |
+| `approach_speed` | `2.5` | jak szybko kamera tu dojeżdża; mniej = leniwiej |
+
+Zależności: brak.
+
+### CabinActivity — `cabin_activity.gd`
+
+Rozszerza `Area2D`, w środku `Sprite2D` z obrazkiem przedmiotu i `CollisionShape2D` wyznaczający obszar klikalny. W `_ready` dopisuje się do grupy `cabin_activity`.
+
+| Pole w inspektorze | Znaczenie |
+| --- | --- |
+| `activity_id` | identyfikator, np. `radio`; trafia do sygnałów |
+| `zoom_target` | przeciągnięty z drzewka krzyżyk; puste = kamera nie najeżdża i zostaje w spoczynku |
+
+Wystawia sygnał `press_requested(activity)`, gdy na obszarze wciśnięto lewy przycisk myszy. Sama nie decyduje, czy aktywność ruszy — to należy do kontrolera.
+
+Zależności: opcjonalnie jeden `CabinZoomTarget`.
+
+### CabinActivityController — `cabin_activity_controller.gd`
+
+Rozszerza `Node`. Jedyne miejsce z logiką stanu. Nie ma pozycji ani grafiki.
+
+Odpowiada za: pilnowanie, że naraz trwa najwyżej jedna aktywność; mierzenie czasu trzymania; wskazywanie kamerze aktualnego celu; ogłaszanie sygnałów.
+
+| Pole w inspektorze | Znaczenie |
+| --- | --- |
+| `neutral_target` | pinezka spoczynku |
+| `debug_log` | czy wypisywać zdarzenia do konsoli |
+
+```gdscript
+signal activity_started(activity_id: StringName)
+signal activity_ended(activity_id: StringName, held_seconds: float)
+
+func current_target() -> CabinZoomTarget   # cel dla kamery, nigdy null
+func active_id() -> StringName             # pusty StringName gdy nic nie trwa
+func held_seconds() -> float
+```
+
+Puszczenie przycisku wykrywa odpytywaniem w `_process`, nie zdarzeniem na obszarze. Dzięki temu zjechanie myszką z radia w trakcie trzymania **nie** przerywa aktywności — liczy się dopiero puszczenie lewego przycisku, gdziekolwiek na ekranie. To wybaczające zachowanie jest zamierzone.
+
+Nowa aktywność nie zostanie rozpoczęta, dopóki poprzednia trwa.
+
+Zależności: grupa `cabin_activity`, jeden `CabinZoomTarget` jako spoczynek.
+
+### CabinCamera — `cabin_camera.gd`
+
+Rozszerza `Camera2D`. W każdej klatce dryfuje ku celowi wskazanemu przez kontroler:
+
+```gdscript
+var target := controller.current_target()
+var weight := 1.0 - exp(-target.approach_speed * delta)
+global_position = global_position.lerp(target.global_position, weight)
+zoom = zoom.lerp(Vector2.ONE * target.zoom, weight)
+```
+
+Wygładzanie wykładnicze: ruch startuje żwawo i miękko hamuje przy celu, bez szarpnięć, tak samo przy 30 i przy 144 klatkach. Powrót do spoczynku używa tej samej ścieżki kodu co dojazd.
+
+Zależności: `CabinActivityController`, podłączony raz w scenie.
+
+### DebugOverlay — `cabin_debug_overlay.gd`
+
+`CanvasLayer` z etykietą, więc nie jeździ z kamerą. Pokazuje aktualną aktywność i czas trzymania, np. `radio — 3.2 s`. Narzędzie na czas budowy — wyłączane przełącznikiem `visible`, do skasowania gdy przestanie być potrzebne.
+
+Zależności: `CabinActivityController`.
+
+## Przepływ
+
+1. Gracz wciska lewy przycisk nad radiem. `CabinActivity` ogłasza `press_requested`.
+2. Kontroler sprawdza, czy nic nie trwa. Zapamiętuje aktywność, zeruje licznik, ogłasza `activity_started("radio")`.
+3. W kolejnych klatkach licznik rośnie, a kamera dryfuje ku `RadioFocus`.
+4. Gracz puszcza przycisk. Kontroler ogłasza `activity_ended("radio", 3.2)` i wraca do spoczynku.
+5. Kamera tą samą drogą dryfuje do `NeutralFocus`.
+
+## Jak dodać nową aktywność
+
+Bez pisania kodu:
+
+1. Przeciągnij `cabin_zoom_target.tscn` do `ZoomTargets`, nazwij np. `CbRadioFocus` i ustaw krzyżyk tam, gdzie kamera ma zajrzeć. Podkręć `zoom`.
+2. Przeciągnij `cabin_activity.tscn` do `Activities`, nazwij `CbRadio`.
+3. Wstaw obrazek przedmiotu i dopasuj obszar klikalny.
+4. Wpisz `activity_id` = `cb_radio`.
+5. Przeciągnij `CbRadioFocus` w pole `zoom_target`.
+
+Uruchom i sprawdź. Aktywność sama się zarejestruje.
+
+## Granica z resztą zespołu
+
+Cała nasza powierzchnia styku to dwa sygnały kontrolera: `activity_started(activity_id)` i `activity_ended(activity_id, held_seconds)`. Gdy powstanie globalny mechanizm chillu, podłączy się pod nie i po naszej stronie nic się nie zmieni.
+
+Dla Adasia zostawiamy `SpeedometerSlot` — pusty krzyżyk w `Interior`, w który wstawi swój klocek.
+
+## Weryfikacja
+
+W projekcie nie ma frameworka testowego i nie będziemy go stawiać na jam. Sprawdzamy tak:
+
+- `run_project` na `res://scenes/cabin.tscn`, potem `get_debug_output` — konsola nie może zawierać błędów
+- przy `debug_log` włączonym kontroler wypisuje start i koniec z czasem; sprawdzamy, że czas zgadza się z długością trzymania i że jednoczesne kliknięcie dwóch przedmiotów uruchamia tylko jeden
+- zjechanie myszką poza przedmiot w trakcie trzymania nie przerywa aktywności
+- płynność dojazdu i powrotu kamery ocenia Piotr wzrokowo
+
+## Ryzyka
+
+**Klikanie przy przesuniętej kamerze.** Obszary klikalne żyją w przestrzeni świata, więc Godot przelicza pozycję myszy przez przekształcenie kamery — trafianie w przedmioty działa też przy przybliżeniu. Warto to sprawdzić od razu przy pierwszej aktywności, bo błąd tutaj podważa całą resztę.
+
+**Jedna kamera na scenę.** Godot pozwala mieć aktywną tylko jedną `Camera2D`. Gdy Melin będzie skręcał kabinę z drogą, muszą uzgodnić, która kamera rządzi. Nasza jest w scenie kabiny, więc przy zagnieżdżaniu trzeba na to zwrócić uwagę.
+
+## Uwaga o języku
+
+Dokument jest po polsku, a starsze `docs/actor_pipeline/*` są po angielsku. Do zmiany, jeśli zespół woli spójność.
