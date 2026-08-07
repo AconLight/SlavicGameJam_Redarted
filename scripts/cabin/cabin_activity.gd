@@ -62,6 +62,13 @@ const GROUP := &"cabin_activity"
 ## 0 = przeskok bez animacji.
 @export_range(0.0, 2.0, 0.01) var focus_travel_seconds := 0.2
 
+## O ile stopni przedmiot kołysze się podczas czynności. 0 = stoi
+## nieruchomo. Kołysanie startuje dopiero po dolocie na miejsce.
+@export_range(0.0, 45.0, 0.5) var sway_degrees_while_active := 0.0
+
+## Ile wahnięć na sekundę podczas czynności.
+@export_range(0.05, 6.0, 0.05) var sway_frequency := 1.2
+
 @export_group("Tempo kamery")
 
 ## Ile sekund trwa najazd kamery na tę aktywność. Jazda jest jednostajna,
@@ -85,6 +92,9 @@ var _mover: Node2D
 var _home_position := Vector2.ZERO
 var _home_rotation := 0.0
 var _travel_tween: Tween
+var _is_active := false
+var _active_rotation := 0.0
+var _sway_time := 0.0
 
 @onready var _visual: Polygon2D = $Visual
 @onready var _art: Sprite2D = $Art
@@ -103,6 +113,22 @@ func _ready() -> void:
 	_home_rotation = _mover.rotation
 	add_to_group(GROUP)
 	input_event.connect(_on_input_event)
+
+
+func _process(delta: float) -> void:
+	if Engine.is_editor_hint() or not _is_active or _mover == null:
+		return
+	if sway_degrees_while_active <= 0.0:
+		return
+	# W trakcie przelotu obrotem rządzi tween — dokładanie tu drugiego
+	# źródła szarpałoby przedmiotem w locie.
+	if _travel_tween != null and _travel_tween.is_valid():
+		return
+
+	_sway_time += delta
+	var wave := sin(_sway_time * TAU * sway_frequency)
+	wave += 0.3 * sin(_sway_time * TAU * sway_frequency * 1.6 + 0.8)
+	_mover.rotation = _active_rotation + deg_to_rad(wave * sway_degrees_while_active)
 
 
 func _apply_size() -> void:
@@ -147,7 +173,13 @@ func set_available(value: bool) -> void:
 ## Woła to kontroler przy rozpoczęciu i zakończeniu czynności. Przenosi
 ## przedmiot do pinezki i z powrotem, jeśli tak ustawiono.
 func set_active(value: bool) -> void:
+	_is_active = value
+	_sway_time = 0.0
+
 	if not move_to_focus_while_active or zoom_target == null or _mover == null:
+		# Kołysać można się też bez przenoszenia — wtedy wokół własnego kąta.
+		if _mover != null:
+			_active_rotation = _mover.rotation
 		return
 
 	var target := _home_position
@@ -162,6 +194,8 @@ func set_active(value: bool) -> void:
 		else:
 			target = zoom_target.global_position
 			target_rotation = zoom_target.global_rotation
+
+	_active_rotation = target_rotation
 
 	# Ubicie poprzedniego przelotu — bez tego szybkie łapanie i puszczanie
 	# zostawiłoby dwa tweeny szarpiące ten sam węzeł w różne strony.

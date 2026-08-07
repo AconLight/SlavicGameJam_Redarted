@@ -5,7 +5,7 @@ extends Node
 @onready var chill_ProgressBar: TextureProgressBar = $ProgressBar
 
 var score: int = 0
-var chill: int = 50
+var chill: int = 10
 var chill_active: bool = false
 
 var chill_timer: Timer
