@@ -20,6 +20,7 @@ W zakresie:
 
 - scena wnętrza kabiny na zastępczej grafice
 - dwa rodzaje klocków stawianych myszką w edytorze: punkt zoomu i aktywność
+- **jedna aktywność na start: radio** (szukanie stacji z muzyką). CB i ukulele dojdą później tym samym klockiem
 - kamera dryfująca w stronę aktywności i wracająca do spoczynku
 - kontroler trzymania, mierzący czas i ogłaszający sygnały
 - tymczasowy napis diagnostyczny
@@ -28,8 +29,9 @@ Poza zakresem, świadomie:
 
 - **chill i punktacja** — dotyczą trzech osób naraz, więc powstaną jako osobny, globalny mechanizm poza kabiną
 - droga, perspektywa, prędkość, fotoradar
-- docelowa grafika i dźwięk
+- docelowa grafika i dźwięk, w tym muzyka stacji radiowych
 - mini-gry wewnątrz aktywności
+- klawiatura numeryczna CB i odtwarzanie kwestii — odłożone, nierozstrzygnięte czy fizyczna czy rysowana
 
 ## Decyzje i ich powody
 
@@ -50,17 +52,15 @@ Poza zakresem, świadomie:
 ```
 scenes/cabin.tscn
 └── Cabin (Node2D)
-    ├── Interior (Node2D)              grafika zastępcza
-    │   ├── Windshield                 niebieski prostokąt
-    │   ├── Dashboard                  deska rozdzielcza
+    ├── Interior (Node2D)
+    │   ├── CabinShell (Sprite2D)      jedna grafika całego wnętrza,
+    │   │                              z przezroczystą dziurą na szybę
     │   └── SpeedometerSlot (Marker2D) miejsce na klocek Adasia
     ├── ZoomTargets (Node2D)
     │   ├── NeutralFocus  (CabinZoomTarget, zoom 1.0)
-    │   ├── RadioFocus    (CabinZoomTarget)
-    │   └── UkuleleFocus  (CabinZoomTarget)
+    │   └── RadioFocus    (CabinZoomTarget)
     ├── Activities (Node2D)
-    │   ├── Radio    (CabinActivity → RadioFocus)
-    │   └── Ukulele  (CabinActivity → UkuleleFocus)
+    │   └── Radio    (CabinActivity → RadioFocus)
     ├── CabinCamera (Camera2D)
     ├── ActivityController (Node)
     └── DebugOverlay (CanvasLayer)
@@ -172,6 +172,8 @@ Uruchom i sprawdź. Aktywność sama się zarejestruje.
 Cała nasza powierzchnia styku to dwa sygnały kontrolera: `activity_started(activity_id)` i `activity_ended(activity_id, held_seconds)`. Gdy powstanie globalny mechanizm chillu, podłączy się pod nie i po naszej stronie nic się nie zmieni.
 
 Dla Adasia zostawiamy `SpeedometerSlot` — pusty krzyżyk w `Interior`, w który wstawi swój klocek.
+
+**Szyba to dziura, nie obiekt.** Grafika kabiny ma w miejscu szyby przezroczystość, więc droga Melina rysuje się **pod** kabiną, a kabina leży na wierzchu jak maska. Nie ma węzła `Windshield` i nie ma czego włączać ani wyłączać — wystarczy, że jego warstwa ma niższy `z_index` albo stoi wyżej w drzewie. Dopóki drogi nie ma, przez dziurę widać tło projektu i tak ma być.
 
 ## Weryfikacja
 
