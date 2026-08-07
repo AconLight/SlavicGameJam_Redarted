@@ -1,0 +1,52 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/components/scroll_manager_2d.tscn" id="1_scroll_manager"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
+bg_color = Color(0.025, 0.04, 0.07, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.22, 0.42, 0.72, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="CockpitScrollManagerPreview" type="Node2D"]
+
+[node name="Backdrop" type="ColorRect" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.015, 0.025, 0.045, 1)
+mouse_filter = 2
+
+[node name="TitlePanel" type="Panel" parent="."]
+offset_left = 20.0
+offset_top = 18.0
+offset_right = 700.0
+offset_bottom = 92.0
+theme_override_styles/panel = SubResource("StyleBox_panel")
+
+[node name="Title" type="Label" parent="TitlePanel"]
+offset_left = 14.0
+offset_top = 10.0
+offset_right = 660.0
+offset_bottom = 34.0
+theme_override_colors/font_color = Color(0.86, 0.93, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Scroll Manager V2 - Projection and Spawn Lab"
+
+[node name="Hint" type="Label" parent="TitlePanel"]
+offset_left = 14.0
+offset_top = 39.0
+offset_right = 660.0
+offset_bottom = 62.0
+theme_override_colors/font_color = Color(0.55, 0.68, 0.86, 1)
+text = "This demo instances the reusable ScrollManager2D component scene."
+
+[node name="ScrollManager2D" parent="." instance=ExtResource("1_scroll_manager")]
+perspective_point = Vector2(400, 200)
+world_scroll_speed = 0.13
+far_to_near_distance_ratio = 8.0
