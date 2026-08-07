@@ -5,25 +5,27 @@
 
 [node name="score" type="Node2D" unique_id=333109457]
 
-[node name="HighScore" type="Node2D" parent="." unique_id=1281775409]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1161839556]
+
+[node name="HighScore" type="Node2D" parent="CanvasLayer" unique_id=1281775409]
 script = ExtResource("1_bak1h")
 
-[node name="HighScoreLabel" type="Label" parent="HighScore" unique_id=416588683]
+[node name="HighScoreLabel" type="Label" parent="CanvasLayer/HighScore" unique_id=416588683]
 offset_left = 8.0
 offset_top = 7.0
 offset_right = 48.0
 offset_bottom = 30.0
 
-[node name="KeepScore" type="Node2D" parent="." unique_id=543794784]
+[node name="KeepScore" type="Node2D" parent="CanvasLayer" unique_id=543794784]
 script = ExtResource("2_plgac")
 
-[node name="ScoreLabel" type="Label" parent="KeepScore" unique_id=1994952802]
+[node name="ScoreLabel" type="Label" parent="CanvasLayer/KeepScore" unique_id=1994952802]
 offset_left = 9.0
 offset_top = 31.0
 offset_right = 92.0
 offset_bottom = 54.0
 
-[node name="ChillLabel" type="Label" parent="KeepScore" unique_id=1360919054]
+[node name="ChillLabel" type="Label" parent="CanvasLayer/KeepScore" unique_id=1360919054]
 offset_left = 7.0
 offset_top = 51.0
 offset_right = 47.0
