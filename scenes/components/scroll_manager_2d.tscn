@@ -3,41 +3,65 @@
 [ext_resource type="Script" uid="uid://cjtfr2blq4t6n" path="res://scripts/driving/scroll_manager_2d.gd" id="1_manager"]
 [ext_resource type="Script" uid="uid://ccjjvw2gv3moq" path="res://scripts/driving/scroll_spawn_handler.gd" id="2_spawner"]
 [ext_resource type="PackedScene" uid="uid://b6tjc7oge353q" path="res://actors/boss/boss.tscn" id="3_boss"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_speed_meter.tscn" id="4_speed_meter"]
 
 [node name="ScrollManager2D" type="Node2D" unique_id=1353085533]
 script = ExtResource("1_manager")
 layout_size = Vector2(1920, 1080)
 fill_viewport = true
 perspective_point = Vector2(400, 200)
+max_angle_left = -89.0
+max_angle_right = 89.0
 curve_factor = 0.33
 curve_smoothness = 1.0
 world_scroll_speed = 0.17
 far_to_near_distance_ratio = 43.5
 near_scale = 4.57
+slot_lateral_spacing = 0.08
+minimum_slot = -10
+maximum_slot = 10
+slot_origin = -2
 draw_debug_guides = false
 
-[node name="StripeSpawnHandler" type="Node2D" parent="." unique_id=402844257]
+[node name="ScrollableElements" type="Node" parent="."]
+
+[node name="RoadStripes" type="Node2D" parent="ScrollableElements" unique_id=402844257]
 script = ExtResource("2_spawner")
 debug_visual = 1
+slot_choices = PackedInt32Array(-2)
 derive_interval_from_road_spacing = true
 road_spacing = 0.044
 max_active_elements = 24
 
-[node name="TreeSpawnHandler" type="Node2D" parent="." unique_id=673420513]
+[node name="LeftRoadsideTrees" type="Node2D" parent="ScrollableElements" unique_id=673420513]
 script = ExtResource("2_spawner")
 projection_mode = 1
 debug_visual = 2
-slot_choices = PackedInt32Array(-4, -3, 3, 4)
+slot_choices = PackedInt32Array(-5, -6)
 size_multiplier_min = 0.6
 size_multiplier_max = 1.3
 spawn_interval_seconds = 1.2
-max_active_elements = 14
-prewarm_count = 14
+max_active_elements = 7
+prewarm_count = 7
 prewarm_start_distance = 0.1
 prewarm_spacing = 0.065
 spawn_immediately = false
 
-[node name="CarSpawnHandler" type="Node2D" parent="." unique_id=1080293310]
+[node name="RightRoadsideTrees" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+projection_mode = 1
+debug_visual = 2
+slot_choices = PackedInt32Array(3, 4)
+size_multiplier_min = 0.6
+size_multiplier_max = 1.3
+spawn_interval_seconds = 1.2
+max_active_elements = 7
+prewarm_count = 7
+prewarm_start_distance = 0.1
+prewarm_spacing = 0.065
+spawn_immediately = false
+
+[node name="TrafficCars" type="Node2D" parent="ScrollableElements" unique_id=1080293310]
 script = ExtResource("2_spawner")
 projection_mode = 1
 debug_visual = 3
@@ -53,7 +77,7 @@ prewarm_start_distance = 0.2
 prewarm_spacing = 0.25
 spawn_immediately = false
 
-[node name="BossWalkerSpawnHandler" type="Node2D" parent="." unique_id=343399581]
+[node name="BossWalker" type="Node2D" parent="ScrollableElements" unique_id=343399581]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("3_boss")
 projection_mode = 1
@@ -64,6 +88,18 @@ size_multiplier_min = 0.75
 size_multiplier_max = 0.75
 max_active_elements = 1
 prewarm_count = 1
+
+[node name="RoadsideSpeedMeters" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("4_speed_meter")
+projection_mode = 1
+slot_choices = PackedInt32Array(5)
+size_multiplier_min = 0.8
+size_multiplier_max = 0.8
+spawn_interval_seconds = 7.0
+max_active_elements = 1
+prewarm_count = 1
+prewarm_start_distance = 0.2
 prewarm_start_distance = 0.35
 prewarm_spacing = 0.1
 spawn_immediately = false

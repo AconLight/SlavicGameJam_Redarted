@@ -22,6 +22,8 @@
 
 Handlers are children of a manager. They create every new element at road distance zero and immediately apply projection, so its anchor starts exactly at `perspective_point`.
 
+In the reusable scene, handlers are organized below `ScrollableElements`. This is the authored configuration hierarchy; each handler creates its own active runtime `ScrollElement2D` children.
+
 ## Stripe stream
 
 The stripe handler uses `derive_interval_from_road_spacing`.
@@ -45,7 +47,8 @@ Boss uses the full actor scene only as a generic-content demonstration. It remai
 
 - Enable `fill_viewport` to stretch the component to the live viewport. The reusable asset enables it by default. Disable it only for fixed-size previews, then use `layout_size` to stretch from the 1152x648 design space.
 - Put `perspective_point` on the cockpit artwork's horizon.
-- Set `slot_lateral_spacing` for lane/roadside separation.
+- The asset exposes 21 usable integer lanes: `-10` through `10`. Set `slot_lateral_spacing` for lane/roadside separation.
+- Set `slot_origin` to shift the complete lane system without changing every handler recipe. The asset currently uses `-2` and `0.08` lane spacing, keeping the full `-10..10` range visible.
 - Set `curve_smoothness` toward `1.0` to spread the Bézier handles into a smoother, more circular path; `0.0` retains the sharper midpoint turn.
 - Tune `far_to_near_distance_ratio` for physical perspective. `1` is nearly linear; `8` makes near apparent screen speed 64 times the horizon speed because screen motion follows inverse-square distance. This is a visual mapping, not a movement speed.
 - Change a handler's `road_spacing` to alter stripe frequency.

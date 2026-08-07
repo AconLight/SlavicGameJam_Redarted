@@ -20,9 +20,43 @@ const DESIGN_SIZE := Vector2(1152, 648)
 @export_range(0.1, 8.0, 0.01) var near_scale := 2.5
 @export_range(0.2, 4.0, 0.01) var scale_easing := 1.45
 @export_range(0.05, 0.5, 0.01) var slot_lateral_spacing := 0.22
+@export var minimum_slot := -10
+@export var maximum_slot := 10
+@export var slot_origin := 0
+
+@export_group("Render")
+## Absolute canvas depth used by generated elements. Keep this below cabin art.
+@export var element_z_index := -10
+
+@export_group("Game State Speed")
+## At this accelerator speed, World Scroll Speed is used unchanged.
+@export_range(1.0, 300.0, 1.0) var reference_driving_speed_kmh := 80.0
+## The high-speed target from the accelerator. At this speed, scroll speed
+## reaches Maximum Speed Multiplier.
+@export_range(1.0, 300.0, 1.0) var high_speed_target_kmh := 120.0
+@export_range(0.1, 10.0, 0.1) var maximum_speed_multiplier := 4.0
+@export var use_game_state_speed := true
 
 @export_group("Debug")
 @export var draw_debug_guides := true
+
+var _driving_speed_kmh := 0.0
+var _signalist: GameStateSignalist
+
+
+func _ready() -> void:
+	call_deferred("_connect_game_state_signalist")
+
+
+func effective_world_scroll_speed() -> float:
+	if not use_game_state_speed or _driving_speed_kmh <= 0.0:
+		return world_scroll_speed
+	var speed_ratio := _driving_speed_kmh / reference_driving_speed_kmh
+	if _driving_speed_kmh <= reference_driving_speed_kmh:
+		return world_scroll_speed * speed_ratio
+	var high_speed_range := maxf(high_speed_target_kmh - reference_driving_speed_kmh, 0.001)
+	var high_speed_progress := clampf((_driving_speed_kmh - reference_driving_speed_kmh) / high_speed_range, 0.0, 1.0)
+	return world_scroll_speed * lerpf(1.0, maximum_speed_multiplier, high_speed_progress)
 
 
 func road_to_visual_progress(road_distance: float) -> float:
@@ -34,7 +68,29 @@ func road_to_visual_progress(road_distance: float) -> float:
 
 
 func slot_to_lateral_offset(slot: int) -> float:
-	return clampf(float(slot) * slot_lateral_spacing, -1.0, 1.0)
+	return _slot_value_to_lateral_offset(float(slot))
+
+
+func project_flat_quad(slot: int, road_distance: float, road_length: float, half_width_in_slots: float) -> PackedVector2Array:
+	var far_distance := clampf(road_distance, 0.0, 1.0)
+	var near_distance := clampf(road_distance + road_length, 0.0, 1.0)
+	var lane_offset := _slot_value_to_lateral_offset(float(slot))
+	# A ground marking is not a screen-facing card. Its sideways width is
+	# foreshortened after the lane has turned away from the viewer. This is the
+	# same as applying local X scale after its path rotation.
+	var lane_angle := _lane_angle_degrees(lane_offset)
+	var sideways_scale := maxf(0.08, absf(cos(deg_to_rad(lane_angle))))
+	var projected_half_width := half_width_in_slots * sideways_scale
+	var left_offset := _slot_value_to_lateral_offset(float(slot) - projected_half_width)
+	var right_offset := _slot_value_to_lateral_offset(float(slot) + projected_half_width)
+	var far_progress := road_to_visual_progress(far_distance)
+	var near_progress := road_to_visual_progress(near_distance)
+	return PackedVector2Array([
+		project_position(left_offset, far_progress),
+		project_position(right_offset, far_progress),
+		project_position(right_offset, near_progress),
+		project_position(left_offset, near_progress),
+	])
 
 
 func layout_scale() -> Vector2:
@@ -50,12 +106,19 @@ func layout_scale() -> Vector2:
 
 
 func apply_projection(element: ScrollElement2D) -> void:
+	if element.uses_flat_ground_projection():
+		element.apply_flat_ground_projection(
+			project_flat_quad(element.slot, element.road_distance, element.flat_road_length, element.flat_half_width_in_slots),
+			element_z_index,
+		)
+		return
 	var visual_progress := road_to_visual_progress(element.road_distance)
 	var lateral_offset := slot_to_lateral_offset(element.slot)
 	element.apply_projection(
 		project_position(lateral_offset, visual_progress),
 		layout_scale() * project_scale(visual_progress),
 		project_rotation(lateral_offset, visual_progress),
+		element_z_index,
 	)
 
 
@@ -91,9 +154,34 @@ func project_rotation(lateral_offset: float, visual_progress: float) -> float:
 
 
 func _near_endpoint(lateral_offset: float) -> Vector2:
-	var angle_degrees := max_angle_left * absf(lateral_offset) if lateral_offset < 0.0 else max_angle_right * absf(lateral_offset)
+	var angle_degrees := _lane_angle_degrees(lateral_offset)
 	var ray := Vector2(sin(deg_to_rad(angle_degrees)), cos(deg_to_rad(angle_degrees)))
 	return perspective_point + ray * scroll_window.size.y * 1.08
+
+
+func _slot_value_to_lateral_offset(slot_value: float) -> float:
+	var usable_slot := clampf(slot_value, float(minimum_slot), float(maximum_slot))
+	return clampf((usable_slot + float(slot_origin)) * slot_lateral_spacing, -1.0, 1.0)
+
+
+func _lane_angle_degrees(lateral_offset: float) -> float:
+	return max_angle_left * absf(lateral_offset) if lateral_offset < 0.0 else max_angle_right * absf(lateral_offset)
+
+
+func _connect_game_state_signalist() -> void:
+	if not use_game_state_speed:
+		return
+	_signalist = get_tree().get_first_node_in_group(&"game_state_signalist") as GameStateSignalist
+	if _signalist == null:
+		push_warning("ScrollManager2D could not find GameStateSignalist; using World Scroll Speed.")
+		return
+	_driving_speed_kmh = _signalist.current_speed_kmh
+	if not _signalist.driving_speed_changed.is_connected(_on_driving_speed_changed):
+		_signalist.driving_speed_changed.connect(_on_driving_speed_changed)
+
+
+func _on_driving_speed_changed(speed_kmh: float) -> void:
+	_driving_speed_kmh = maxf(0.0, speed_kmh)
 
 
 func _draw() -> void:
@@ -106,7 +194,7 @@ func _draw() -> void:
 	draw_rect(scaled_window, Color(0.5, 0.7, 1.0, 0.75), false, 2.0)
 	draw_line(Vector2(scaled_window.position.x, scaled_point.y), Vector2(scaled_window.end.x, scaled_point.y), Color(1.0, 0.76, 0.32, 0.8), 2.0)
 	draw_circle(scaled_point, 6.0 * minf(scale_factor.x, scale_factor.y), Color(1.0, 0.76, 0.32, 1.0))
-	for slot in [-4, -2, 0, 2, 4]:
+	for slot in [-10, -5, 0, 5, 10]:
 		var points := PackedVector2Array()
 		for step in 33:
 			points.append(project_position(slot_to_lateral_offset(slot), float(step) / 32.0))

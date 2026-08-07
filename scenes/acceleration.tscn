@@ -19,3 +19,4 @@ max_speed = 160.0
 [node name="SpeedScript" type="Node2D" parent="ArrowSprite" unique_id=1660232651]
 position = Vector2(-66.247086, -288.09995)
 script = ExtResource("3_s3slg")
+groups = ["accelerometer"]
