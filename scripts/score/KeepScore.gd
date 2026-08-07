@@ -31,12 +31,10 @@ func _ready():
 	# NEW: Initialize the labels on screen load
 	update_ui()
 
-func _process(_delta):
-	# Start chilling while Space is held
-	if Input.is_key_pressed(KEY_SPACE):
-		ChillActivity()
-	else:
-		EndChill()
+# Chill naliczają teraz aktywności w kabinie: CabinActivityController woła
+# ChillActivity() na starcie trzymania i EndChill() po puszczeniu.
+# Wcześniej stała tu atrapa reagująca na spację — spacja obsługuje dziś gaz,
+# więc chill rósłby od dodawania gazu zamiast od czynności kierowcy.
 
 # Start ChillActivity
 func ChillActivity():

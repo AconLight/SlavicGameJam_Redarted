@@ -42,6 +42,26 @@ const GROUP := &"cabin_activity"
 		if is_node_ready():
 			_apply_size()
 
+## Od jakiego poziomu chillu ta aktywność jest widoczna. 0 = od początku.
+## Poniżej progu przedmiot znika i nie da się go kliknąć.
+@export_range(0, 100, 1) var min_chill := 0
+
+## Węzeł, który znika razem z aktywnością. Puste = znika sama aktywność.
+##
+## Potrzebne, gdy przedmiot jest rysowany gdzie indziej niż tu — na
+## przykład gruszka CB, którą rysuje jej rodzic. Wskaż wtedy tego rodzica
+## (ścieżka `..`), inaczej klikanie zgaśnie, a obrazek zostanie na ekranie.
+@export_node_path("CanvasItem") var visual_root_path: NodePath
+
+## Czy przedmiot przenosi się do swojej pinezki na czas czynności — tak
+## jakby kierowca brał go do ręki. Po puszczeniu wraca na swoje miejsce.
+## Wymaga ustawionej pinezki.
+@export var move_to_focus_while_active := false
+
+## Ile sekund leci przedmiot między swoim miejscem a pinezką.
+## 0 = przeskok bez animacji.
+@export_range(0.0, 2.0, 0.01) var focus_travel_seconds := 0.2
+
 @export_group("Tempo kamery")
 
 ## Ile sekund trwa najazd kamery na tę aktywność. Jazda jest jednostajna,
@@ -54,6 +74,18 @@ const GROUP := &"cabin_activity"
 
 var zoom_target: CabinZoomTarget
 
+## Czy przedmiot jest odblokowany. Ustawia to kontroler, patrząc na chill.
+var available := true
+
+var _visual_root: CanvasItem
+
+## Węzeł, którym faktycznie ruszamy i który chowamy — sam przedmiot albo
+## wskazany visual_root.
+var _mover: Node2D
+var _home_position := Vector2.ZERO
+var _home_rotation := 0.0
+var _travel_tween: Tween
+
 @onready var _visual: Polygon2D = $Visual
 @onready var _art: Sprite2D = $Art
 @onready var _click_area: CollisionShape2D = $ClickArea
@@ -65,6 +97,10 @@ func _ready() -> void:
 		return
 
 	zoom_target = get_node_or_null(zoom_target_path) as CabinZoomTarget
+	_visual_root = get_node_or_null(visual_root_path) as CanvasItem
+	_mover = (_visual_root as Node2D) if _visual_root is Node2D else self
+	_home_position = _mover.position
+	_home_rotation = _mover.rotation
 	add_to_group(GROUP)
 	input_event.connect(_on_input_event)
 
@@ -89,6 +125,61 @@ func _apply_size() -> void:
 	_art.texture = texture
 	_art.visible = texture != null
 	_visual.visible = show_placeholder and texture == null
+
+
+## Pokazuje albo chowa przedmiot. Ukryty przestaje też łapać kliknięcia —
+## samo visible nie wyłącza obszaru Area2D.
+##
+## Ustawia wszystko za każdym razem, bez skrótu „nic się nie zmieniło".
+## Wcześniej ten skrót tu był i powodował, że gdy scena startowała
+## z visible = false, a próg chillu był spełniony, przedmiot zostawał
+## niewidzialny na zawsze — flaga zgadzała się od początku, więc nikt
+## widoczności nie poprawiał.
+func set_available(value: bool) -> void:
+	available = value
+	input_pickable = value
+	if _visual_root != null:
+		_visual_root.visible = value
+		return
+	visible = value
+
+
+## Woła to kontroler przy rozpoczęciu i zakończeniu czynności. Przenosi
+## przedmiot do pinezki i z powrotem, jeśli tak ustawiono.
+func set_active(value: bool) -> void:
+	if not move_to_focus_while_active or zoom_target == null or _mover == null:
+		return
+
+	var target := _home_position
+	var target_rotation := _home_rotation
+	if value:
+		# Pinezka żyje w innej gałęzi drzewa, więc jej globalną pozycję
+		# i obrót trzeba przeliczyć na układ rodzica przenoszonego węzła.
+		var parent := _mover.get_parent() as Node2D
+		if parent != null:
+			target = parent.to_local(zoom_target.global_position)
+			target_rotation = zoom_target.global_rotation - parent.global_rotation
+		else:
+			target = zoom_target.global_position
+			target_rotation = zoom_target.global_rotation
+
+	# Ubicie poprzedniego przelotu — bez tego szybkie łapanie i puszczanie
+	# zostawiłoby dwa tweeny szarpiące ten sam węzeł w różne strony.
+	if _travel_tween != null and _travel_tween.is_valid():
+		_travel_tween.kill()
+
+	if focus_travel_seconds <= 0.0:
+		_mover.position = target
+		_mover.rotation = target_rotation
+		return
+
+	_travel_tween = create_tween().set_parallel(true)
+	_travel_tween.tween_property(_mover, ^"position", target, focus_travel_seconds) \
+		.set_ease(Tween.EASE_OUT) \
+		.set_trans(Tween.TRANS_CUBIC)
+	_travel_tween.tween_property(_mover, ^"rotation", target_rotation, focus_travel_seconds) \
+		.set_ease(Tween.EASE_OUT) \
+		.set_trans(Tween.TRANS_CUBIC)
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:

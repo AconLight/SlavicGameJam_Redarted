@@ -154,7 +154,13 @@ Pole zadeklarowane wprost jako typ węzła:
 @export var controller: CabinActivityController   # NIE DZIAŁA u nas
 ```
 
-Godot zapisuje takie powiązanie w osobnej ewidencji, którą prowadzi **edytor**. Pliki scen w tym projekcie powstają pisane tekstem, więc linijka `controller = NodePath("../ActivityController")` jest po cichu ignorowana, a pole wczytuje się jako `null`. Zwykłe pola (liczby, teksty) działają normalnie — dlatego objaw jest mylący: logika chodzi, a kamera stoi.
+Sama linijka `controller = NodePath("../ActivityController")` nie wystarczy — pole wczytuje się jako `null`. Godot wymaga, żeby węzeł deklarował takie właściwości znacznikiem na swojej linii:
+
+```
+[node name="CabinCamera" type="Camera2D" parent="." node_paths=PackedStringArray("controller")]
+```
+
+Bez tego znacznika przypisanie jest po cichu ignorowane. Zwykłe pola (liczby, teksty) działają normalnie, dlatego objaw jest mylący: logika chodzi, a kamera stoi. Edytor dopisuje `node_paths` sam; pisząc scenę tekstem trzeba o nim pamiętać.
 
 Zamiast tego:
 
@@ -166,7 +172,7 @@ func _ready() -> void:
 	controller = get_node_or_null(controller_path) as CabinActivityController
 ```
 
-W inspektorze nadal jest przycisk do wskazania węzła myszką, więc sposób pracy się nie zmienia. Dotyczy to wszystkich trzech powiązań w kabinie.
+W inspektorze nadal jest przycisk do wskazania węzła myszką, więc sposób pracy się nie zmienia. Wszystkie powiązania w kabinie są zrobione tak — `NodePath` jest odporniejszy przy ręcznym pisaniu scen, bo nie wymaga pamiętania o `node_paths`.
 
 ### Drżenie kabiny — w `cabin_camera.gd`
 
