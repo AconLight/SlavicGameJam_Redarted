@@ -6,9 +6,13 @@
 [ext_resource type="Script" uid="uid://qhvrb7p4826d" path="res://scripts/cabin/cabin_activity_controller.gd" id="3_controller"]
 [ext_resource type="Script" uid="uid://by26rjje1tikn" path="res://scripts/cabin/cabin_camera.gd" id="4_camera"]
 [ext_resource type="Script" uid="uid://coddh63dgwhwv" path="res://scripts/cabin/cabin_debug_overlay.gd" id="5_debug"]
-[ext_resource type="Texture2D" uid="uid://dsde385pwn4u4" path="res://assets/source/art/aseprite/KABINA PLACEHOLDER 2.png" id="6_shell"]
+[ext_resource type="Texture2D" uid="uid://che32a537dtp8" path="res://assets/source/art/aseprite/kabina vol 2.png" id="6_shell"]
 [ext_resource type="Script" uid="uid://dht3vbrw3blxm" path="res://scripts/cabin/cabin_steering_wheel.gd" id="7_wheel"]
 [ext_resource type="Script" uid="uid://cw4uw7w78sxmu" path="res://scripts/cabin/cabin_cb_handset.gd" id="8_handset"]
+[ext_resource type="Texture2D" uid="uid://cpmfm4s0tb2ak" path="res://assets/source/art/aseprite/radio.png" id="9_radio"]
+[ext_resource type="Texture2D" uid="uid://dl3insxgnvsla" path="res://assets/source/art/aseprite/galka.png" id="10_galka"]
+[ext_resource type="Script" uid="uid://dpn1b5psi4q5h" path="res://scripts/cabin/cabin_knob.gd" id="11_knob"]
+[ext_resource type="Script" uid="uid://dccpa2gd15b82" path="res://scripts/cabin/cabin_tuning_slider.gd" id="12_slider"]
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
 
@@ -53,7 +57,7 @@ position = Vector2(960, 540)
 zoom = 1.0
 
 [node name="RadioFocus" parent="ZoomTargets" unique_id=1119953044 instance=ExtResource("1_zoom_target")]
-position = Vector2(1317, 783)
+position = Vector2(1449, 873)
 zoom = 3.0
 
 [node name="CbFocus" parent="ZoomTargets" unique_id=40439367 instance=ExtResource("1_zoom_target")]
@@ -63,11 +67,27 @@ zoom = 2.5
 [node name="Activities" type="Node2D" parent="." unique_id=819683887]
 
 [node name="Radio" parent="Activities" unique_id=1224293936 instance=ExtResource("2_activity")]
-position = Vector2(1317, 783)
+position = Vector2(1450, 871)
 activity_id = &"radio"
 zoom_target_path = NodePath("../../ZoomTargets/RadioFocus")
+texture = ExtResource("9_radio")
+click_size = Vector2(220, 170)
 approach_seconds = 10.0
 return_seconds = 0.45
+
+[node name="RadioKnob" type="Sprite2D" parent="Activities/Radio" unique_id=1128573589]
+position = Vector2(-59, 32)
+texture = ExtResource("10_galka")
+script = ExtResource("11_knob")
+controller_path = NodePath("../../../ActivityController")
+activity_id = &"radio"
+
+[node name="TuningSlider" type="Node2D" parent="Activities/Radio" unique_id=446672731]
+position = Vector2(-10, -35)
+script = ExtResource("12_slider")
+knob_path = NodePath("../RadioKnob")
+travel = 30.0
+bar_color = Color(0.74925476, 0.12429362, 0.12823176, 1)
 
 [node name="ActivityController" type="Node" parent="." unique_id=1401252265]
 script = ExtResource("3_controller")

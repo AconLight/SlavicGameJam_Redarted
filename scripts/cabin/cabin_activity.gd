@@ -19,6 +19,13 @@ const GROUP := &"cabin_activity"
 ## w cabin_camera.gd.
 @export_node_path("Marker2D") var zoom_target_path: NodePath
 
+## Grafika przedmiotu. Gdy ustawiona, zastępczy prostokąt znika sam.
+@export var texture: Texture2D:
+	set(value):
+		texture = value
+		if is_node_ready():
+			_apply_size()
+
 ## Rozmiar obszaru klikalnego.
 @export var click_size := Vector2(200.0, 120.0):
 	set(value):
@@ -26,8 +33,9 @@ const GROUP := &"cabin_activity"
 		if is_node_ready():
 			_apply_size()
 
-## Czy rysować zastępczy prostokąt. Wyłącz, gdy przedmiot ma już własną
-## grafikę i ten obszar ma być niewidzialny.
+## Czy rysować zastępczy prostokąt, gdy nie ma grafiki. Wyłącz, gdy
+## przedmiot jest już narysowany gdzie indziej i ten obszar ma być
+## niewidzialny.
 @export var show_placeholder := true:
 	set(value):
 		show_placeholder = value
@@ -47,6 +55,7 @@ const GROUP := &"cabin_activity"
 var zoom_target: CabinZoomTarget
 
 @onready var _visual: Polygon2D = $Visual
+@onready var _art: Sprite2D = $Art
 @onready var _click_area: CollisionShape2D = $ClickArea
 
 
@@ -76,7 +85,10 @@ func _apply_size() -> void:
 		Vector2(half.x, half.y),
 		Vector2(-half.x, half.y),
 	])
-	_visual.visible = show_placeholder
+
+	_art.texture = texture
+	_art.visible = texture != null
+	_visual.visible = show_placeholder and texture == null
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
