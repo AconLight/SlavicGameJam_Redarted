@@ -43,7 +43,7 @@ Boss uses the full actor scene only as a generic-content demonstration. It remai
 
 ## Tuning
 
-- `layout_size` stretches the reusable component from its 1152x648 design space. Set it to the visible windshield/canvas size in the scene that instances the asset.
+- Enable `fill_viewport` to stretch the component to the live viewport. The reusable asset enables it by default. Disable it only for fixed-size previews, then use `layout_size` to stretch from the 1152x648 design space.
 - Put `perspective_point` on the cockpit artwork's horizon.
 - Set `slot_lateral_spacing` for lane/roadside separation.
 - Set `curve_smoothness` toward `1.0` to spread the Bézier handles into a smoother, more circular path; `0.0` retains the sharper midpoint turn.

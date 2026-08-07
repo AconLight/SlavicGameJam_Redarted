@@ -7,6 +7,7 @@
 [node name="ScrollManager2D" type="Node2D" unique_id=1353085533]
 script = ExtResource("1_manager")
 layout_size = Vector2(1920, 1080)
+fill_viewport = true
 perspective_point = Vector2(400, 200)
 curve_factor = 0.33
 curve_smoothness = 1.0

@@ -54,6 +54,7 @@ text = "This demo instances the reusable ScrollManager2D component scene."
 scale = Vector2(0.6, 0.6)
 
 [node name="ScrollManager2D" parent="PreviewWorld" unique_id=1437775175 instance=ExtResource("1_scroll_manager")]
+fill_viewport = false
 draw_debug_guides = true
 
 [node name="PerspectiveGridOverlay" type="TextureRect" parent="PreviewWorld" unique_id=1603845548]

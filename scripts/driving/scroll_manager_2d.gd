@@ -5,6 +5,7 @@ const DESIGN_SIZE := Vector2(1152, 648)
 
 @export_group("Layout")
 @export var layout_size := DESIGN_SIZE
+@export var fill_viewport := false
 
 @export_group("Projection")
 @export var scroll_window := Rect2(140, 120, 880, 520)
@@ -37,9 +38,14 @@ func slot_to_lateral_offset(slot: int) -> float:
 
 
 func layout_scale() -> Vector2:
+	var effective_size := layout_size
+	if fill_viewport:
+		var viewport_size := get_viewport().get_visible_rect().size
+		if viewport_size.x > 0.0 and viewport_size.y > 0.0:
+			effective_size = viewport_size
 	return Vector2(
-		layout_size.x / DESIGN_SIZE.x,
-		layout_size.y / DESIGN_SIZE.y,
+		effective_size.x / DESIGN_SIZE.x,
+		effective_size.y / DESIGN_SIZE.y,
 	)
 
 
