@@ -14,12 +14,29 @@ extends Camera2D
 
 @export_node_path("Node") var controller_path: NodePath
 
+@export_group("Drżenie na wybojach")
+
+## Wychylenie na gładkiej drodze. Kabina nigdy nie staje — to jest
+## poziom, poniżej którego drżenie nie schodzi. 0 wyłącza całość.
+@export_range(0.0, 30.0, 0.5) var bump_amplitude_min := 2.0
+
+## Wychylenie w szczycie wyboja.
+@export_range(0.0, 60.0, 0.5) var bump_amplitude_max := 14.0
+
+## Ile podskoków na sekundę.
+@export_range(0.1, 12.0, 0.1) var bump_frequency := 2.2
+
+## Co ile mniej więcej sekund droga robi się wyboista. Mniej więcej,
+## bo szczyty są rozłożone nierówno.
+@export_range(1.0, 60.0, 0.5) var swell_period := 11.0
+
 var controller: CabinActivityController
 
 var _from_position := Vector2.ZERO
 var _from_zoom := Vector2.ONE
 var _elapsed := 0.0
 var _duration := 0.0
+var _bump_time := 0.0
 
 
 func _ready() -> void:
@@ -31,6 +48,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_apply_bump(delta)
+
 	if controller == null:
 		return
 	var target := controller.current_target()
@@ -50,6 +69,34 @@ func _process(delta: float) -> void:
 
 	_elapsed = minf(_elapsed + delta, _duration)
 	_apply(target, _elapsed / _duration)
+
+
+## Delikatne podskakiwanie na wybojach. Idzie przez offset, nie przez
+## position, więc nie miesza się z najazdem na aktywność.
+##
+## Dwie fale o niewspółmiernych częstotliwościach zamiast jednej — jedna
+## sinusoida czytałaby się jak metronom, a nie jak droga.
+func _apply_bump(delta: float) -> void:
+	_bump_time += delta
+
+	var wave := sin(_bump_time * TAU * bump_frequency)
+	wave += 0.45 * sin(_bump_time * TAU * bump_frequency * 1.7 + 1.3)
+	# Dzielenie przez zoom trzyma stałe wychylenie na ekranie — bez tego
+	# przy przybliżeniu 3x kabina trzęsłaby się trzy razy mocniej.
+	offset.y = wave * _swell_amplitude() / maxf(zoom.y, 0.01)
+
+
+## Amplituda drżenia, pełzająca między spokojem a wybojem.
+##
+## Dwie powolne fale o niewspółmiernych okresach, przemnożone i podniesione
+## do kwadratu. Iloczyn sprawia, że szczyty wypadają nieregularnie i nie
+## powtarzają się co równe tyle samo. Kwadrat spycha wynik w dół, więc
+## przez większość czasu kabina buja delikatnie, a mocno tylko chwilami.
+func _swell_amplitude() -> float:
+	var slow := 0.5 + 0.5 * sin(_bump_time * TAU / swell_period)
+	var slower := 0.5 + 0.5 * sin(_bump_time * TAU / (swell_period * 0.63) + 2.1)
+	var swell := pow(slow * slower, 2.0)
+	return lerpf(bump_amplitude_min, bump_amplitude_max, swell)
 
 
 func _apply(target: CabinZoomTarget, t: float) -> void:

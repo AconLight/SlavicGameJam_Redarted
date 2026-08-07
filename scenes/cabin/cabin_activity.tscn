@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://scripts/cabin/cabin_activity.gd" id="1_script"]
 
 [sub_resource type="RectangleShape2D" id="ClickShape"]
-size = Vector2(120, 70)
+size = Vector2(200, 120)
 
 [node name="CabinActivity" type="Area2D"]
 script = ExtResource("1_script")
@@ -11,7 +11,7 @@ input_pickable = true
 
 [node name="Visual" type="Polygon2D" parent="."]
 color = Color(0.35, 0.33, 0.3, 1)
-polygon = PackedVector2Array(-60, -35, 60, -35, 60, 35, -60, 35)
+polygon = PackedVector2Array(-100, -60, 100, -60, 100, 60, -100, 60)
 
 [node name="ClickArea" type="CollisionShape2D" parent="."]
 shape = SubResource("ClickShape")
