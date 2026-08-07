@@ -37,6 +37,7 @@ var _from_zoom := Vector2.ONE
 var _elapsed := 0.0
 var _duration := 0.0
 var _bump_time := 0.0
+var _swell := 0.0
 
 
 func _ready() -> void:
@@ -95,8 +96,15 @@ func _apply_bump(delta: float) -> void:
 func _swell_amplitude() -> float:
 	var slow := 0.5 + 0.5 * sin(_bump_time * TAU / swell_period)
 	var slower := 0.5 + 0.5 * sin(_bump_time * TAU / (swell_period * 0.63) + 2.1)
-	var swell := pow(slow * slower, 2.0)
-	return lerpf(bump_amplitude_min, bump_amplitude_max, swell)
+	_swell = pow(slow * slower, 2.0)
+	return lerpf(bump_amplitude_min, bump_amplitude_max, _swell)
+
+
+## Jak wyboista jest teraz droga, od 0 do 1. Do podpięcia rzeczy, które
+## mają się bujać razem z kabiną — żeby wszystko reagowało na tę samą
+## drogę, zamiast każde na własny zegar.
+func shake_intensity() -> float:
+	return _swell
 
 
 func _apply(target: CabinZoomTarget, t: float) -> void:

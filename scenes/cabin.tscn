@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://coddh63dgwhwv" path="res://scripts/cabin/cabin_debug_overlay.gd" id="5_debug"]
 [ext_resource type="Texture2D" uid="uid://dsde385pwn4u4" path="res://assets/source/art/aseprite/KABINA PLACEHOLDER 2.png" id="6_shell"]
 [ext_resource type="Script" uid="uid://dht3vbrw3blxm" path="res://scripts/cabin/cabin_steering_wheel.gd" id="7_wheel"]
+[ext_resource type="Script" uid="uid://cw4uw7w78sxmu" path="res://scripts/cabin/cabin_cb_handset.gd" id="8_handset"]
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
 
@@ -24,6 +25,20 @@ skew = 0.429351
 script = ExtResource("7_wheel")
 color = Color(0.7195724, 0.66633874, 0.775966, 1)
 
+[node name="CbHandset" type="Node2D" parent="Interior" unique_id=1660522973]
+position = Vector2(1200, 0)
+script = ExtResource("8_handset")
+camera_path = NodePath("../../CabinCamera")
+
+[node name="CbActivity" parent="Interior/CbHandset" instance=ExtResource("2_activity")]
+position = Vector2(0, 380)
+activity_id = &"cb_radio"
+zoom_target_path = NodePath("../../../ZoomTargets/CbFocus")
+click_size = Vector2(110, 180)
+show_placeholder = false
+approach_seconds = 10.0
+return_seconds = 0.45
+
 [node name="SpeedometerSlot" type="Marker2D" parent="Interior" unique_id=5633116]
 position = Vector2(633, 800)
 
@@ -36,6 +51,10 @@ zoom = 1.0
 [node name="RadioFocus" parent="ZoomTargets" unique_id=1119953044 instance=ExtResource("1_zoom_target")]
 position = Vector2(1317, 783)
 zoom = 3.0
+
+[node name="CbFocus" parent="ZoomTargets" instance=ExtResource("1_zoom_target")]
+position = Vector2(1200, 380)
+zoom = 2.5
 
 [node name="Activities" type="Node2D" parent="." unique_id=819683887]
 
