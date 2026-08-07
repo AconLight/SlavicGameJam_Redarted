@@ -2,6 +2,7 @@ extends Node
 
 @onready var score_label: Label = $ScoreLabel
 @onready var chill_label: Label = $ChillLabel
+@onready var chill_ProgressBar: TextureProgressBar = $ProgressBar
 
 var score: int = 0
 var chill: int = 50
@@ -96,3 +97,4 @@ func update_ui():
 	# The str() function converts integers to text that the Label can read
 	score_label.text = "Score: " + str(score)
 	chill_label.text = "Chill: " + str(chill)
+	chill_ProgressBar.value = chill

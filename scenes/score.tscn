@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://svjds2r8vbdy" path="res://scripts/score/HighScore.gd" id="1_bak1h"]
 [ext_resource type="Script" uid="uid://cl5p7r1gp1ndn" path="res://scripts/score/KeepScore.gd" id="2_plgac"]
+[ext_resource type="Texture2D" uid="uid://m7h6t3txc0qb" path="res://assets/source/art/raster/DarkBrownBackground.png" id="3_lew60"]
+[ext_resource type="Texture2D" uid="uid://b8ue348dpmf7g" path="res://assets/source/art/AI/ProgressBar.png" id="3_plgac"]
 
 [node name="score" type="Node2D" unique_id=333109457]
 
@@ -30,3 +32,15 @@ offset_left = 7.0
 offset_top = 51.0
 offset_right = 47.0
 offset_bottom = 74.0
+
+[node name="ProgressBar" type="TextureProgressBar" parent="CanvasLayer/KeepScore" unique_id=1931093257]
+offset_left = 16.999996
+offset_top = 115.0
+offset_right = 89.0
+offset_bottom = 727.0
+scale = Vector2(1.115, 1.115)
+fill_mode = 3
+texture_under = ExtResource("3_lew60")
+texture_progress = ExtResource("3_plgac")
+
+[node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/KeepScore/ProgressBar" unique_id=1040370969]
