@@ -47,7 +47,7 @@ func _ready():
 	brake_sound = AudioStreamPlayer.new()
 	add_child(brake_sound)
 
-	brake_sound.stream = load("res://car brake.mp3")
+	brake_sound.stream = load("res://assets/placeholders/universfield-car-braking-153305.mp3")
 
 
 	speed_changed.connect(_on_speed_changed)

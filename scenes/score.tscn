@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://blg0rb2cnou4x"]
+
+[ext_resource type="Script" uid="uid://svjds2r8vbdy" path="res://scripts/score/HighScore.gd" id="1_bak1h"]
+[ext_resource type="Script" uid="uid://cl5p7r1gp1ndn" path="res://scripts/score/KeepScore.gd" id="2_plgac"]
+
+[node name="score" type="Node2D" unique_id=333109457]
+
+[node name="HighScore" type="Node2D" parent="." unique_id=1281775409]
+script = ExtResource("1_bak1h")
+
+[node name="HighScoreLabel" type="Label" parent="HighScore" unique_id=416588683]
+offset_left = 148.0
+offset_top = 362.0
+offset_right = 188.0
+offset_bottom = 385.0
+
+[node name="KeepScore" type="Node2D" parent="." unique_id=543794784]
+script = ExtResource("2_plgac")
+
+[node name="ScoreLabel" type="Label" parent="KeepScore" unique_id=1994952802]
+offset_left = 577.0
+offset_top = 214.0
+offset_right = 660.0
+offset_bottom = 237.0
+
+[node name="ChillLabel" type="Label" parent="KeepScore" unique_id=1360919054]
+offset_left = 419.0
+offset_top = 246.0
+offset_right = 459.0
+offset_bottom = 269.0

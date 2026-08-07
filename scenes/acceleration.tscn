@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bfvl5woe7412m"]
+
+[ext_resource type="Texture2D" uid="uid://c5j3wbwqim1ip" path="res://assets/placeholders/Arrow.png" id="1_6kied"]
+[ext_resource type="Script" uid="uid://3qp42y5ics0m" path="res://scripts/speed/speed_arrow_rotator.gd" id="2_4u5qw"]
+[ext_resource type="Script" uid="uid://b0241c2akfghk" path="res://scripts/speed/Accelerometer.gd" id="3_s3slg"]
+
+[node name="Acceleration" type="Node2D" unique_id=501684751]
+
+[node name="ArrowSprite" type="Sprite2D" parent="." unique_id=1816043605 node_paths=PackedStringArray("speed_controller")]
+position = Vector2(452.99994, 279)
+scale = Vector2(0.267, 0.178)
+texture = ExtResource("1_6kied")
+centered = false
+offset = Vector2(-800, -17.73)
+script = ExtResource("2_4u5qw")
+speed_controller = NodePath("SpeedScript")
+
+[node name="SpeedScript" type="Node2D" parent="ArrowSprite" unique_id=1660232651]
+position = Vector2(-66.247086, -288.09995)
+script = ExtResource("3_s3slg")
