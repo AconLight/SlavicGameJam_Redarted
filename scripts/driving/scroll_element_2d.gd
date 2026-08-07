@@ -23,11 +23,12 @@ func _ready() -> void:
 	add_child(content)
 
 
-func apply_projection(screen_position: Vector2, screen_scale: Vector2, path_rotation: float, draw_order: int) -> void:
+func apply_projection(screen_position: Vector2, screen_scale: Vector2, path_rotation: float) -> void:
 	position = screen_position
 	scale = screen_scale * size_multiplier
 	rotation = 0.0 if projection_mode == ProjectionMode.VERTICAL else path_rotation
-	z_index = draw_order
+	# The hosting scene owns global draw order. Scroll elements stay at normal depth.
+	z_index = 0
 	visible = road_distance >= 0.0
 
 

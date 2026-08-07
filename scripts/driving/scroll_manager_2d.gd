@@ -50,7 +50,6 @@ func apply_projection(element: ScrollElement2D) -> void:
 		project_position(lateral_offset, visual_progress),
 		layout_scale() * project_scale(visual_progress),
 		project_rotation(lateral_offset, visual_progress),
-		int(visual_progress * 1000.0),
 	)
 
 
