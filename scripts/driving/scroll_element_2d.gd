@@ -23,9 +23,9 @@ func _ready() -> void:
 	add_child(content)
 
 
-func apply_projection(screen_position: Vector2, screen_scale: float, path_rotation: float, draw_order: int) -> void:
+func apply_projection(screen_position: Vector2, screen_scale: Vector2, path_rotation: float, draw_order: int) -> void:
 	position = screen_position
-	scale = Vector2.ONE * screen_scale * size_multiplier
+	scale = screen_scale * size_multiplier
 	rotation = 0.0 if projection_mode == ProjectionMode.VERTICAL else path_rotation
 	z_index = draw_order
 	visible = road_distance >= 0.0

@@ -43,8 +43,10 @@ Boss uses the full actor scene only as a generic-content demonstration. It remai
 
 ## Tuning
 
+- `layout_size` stretches the reusable component from its 1152x648 design space. Set it to the visible windshield/canvas size in the scene that instances the asset.
 - Put `perspective_point` on the cockpit artwork's horizon.
 - Set `slot_lateral_spacing` for lane/roadside separation.
+- Set `curve_smoothness` toward `1.0` to spread the Bézier handles into a smoother, more circular path; `0.0` retains the sharper midpoint turn.
 - Tune `far_to_near_distance_ratio` for physical perspective. `1` is nearly linear; `8` makes near apparent screen speed 64 times the horizon speed because screen motion follows inverse-square distance. This is a visual mapping, not a movement speed.
 - Change a handler's `road_spacing` to alter stripe frequency.
 

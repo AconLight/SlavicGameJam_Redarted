@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://boeg2w53umgwt"]
 
-[ext_resource type="PackedScene" path="res://scenes/components/scroll_manager_2d.tscn" id="1_scroll_manager"]
+[ext_resource type="PackedScene" uid="uid://0aald3n4od8k" path="res://scenes/components/scroll_manager_2d.tscn" id="1_scroll_manager"]
+[ext_resource type="Texture2D" uid="uid://brko8arggdkwu" path="res://assets/source/art/aseprite/grid.png" id="2_grid"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
 bg_color = Color(0.025, 0.04, 0.07, 1)
@@ -14,22 +15,24 @@ corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
-[node name="CockpitScrollManagerPreview" type="Node2D"]
+[node name="CockpitScrollManagerPreview" type="Node2D" unique_id=1866525030]
 
-[node name="Backdrop" type="ColorRect" parent="."]
+[node name="Backdrop" type="ColorRect" parent="." unique_id=1832832564]
 offset_right = 1152.0
 offset_bottom = 648.0
-color = Color(0.015, 0.025, 0.045, 1)
 mouse_filter = 2
+color = Color(0.015, 0.025, 0.045, 1)
 
-[node name="TitlePanel" type="Panel" parent="."]
+[node name="TitlePanel" type="Panel" parent="." unique_id=559839407]
+z_index = 3000
 offset_left = 20.0
 offset_top = 18.0
 offset_right = 700.0
 offset_bottom = 92.0
 theme_override_styles/panel = SubResource("StyleBox_panel")
 
-[node name="Title" type="Label" parent="TitlePanel"]
+[node name="Title" type="Label" parent="TitlePanel" unique_id=1387753877]
+layout_mode = 0
 offset_left = 14.0
 offset_top = 10.0
 offset_right = 660.0
@@ -38,7 +41,8 @@ theme_override_colors/font_color = Color(0.86, 0.93, 1, 1)
 theme_override_font_sizes/font_size = 20
 text = "Scroll Manager V2 - Projection and Spawn Lab"
 
-[node name="Hint" type="Label" parent="TitlePanel"]
+[node name="Hint" type="Label" parent="TitlePanel" unique_id=29838307]
+layout_mode = 0
 offset_left = 14.0
 offset_top = 39.0
 offset_right = 660.0
@@ -46,7 +50,20 @@ offset_bottom = 62.0
 theme_override_colors/font_color = Color(0.55, 0.68, 0.86, 1)
 text = "This demo instances the reusable ScrollManager2D component scene."
 
-[node name="ScrollManager2D" parent="." instance=ExtResource("1_scroll_manager")]
-perspective_point = Vector2(400, 200)
-world_scroll_speed = 0.13
-far_to_near_distance_ratio = 8.0
+[node name="PreviewWorld" type="Node2D" parent="." unique_id=1090155041]
+scale = Vector2(0.6, 0.6)
+
+[node name="ScrollManager2D" parent="PreviewWorld" unique_id=1437775175 instance=ExtResource("1_scroll_manager")]
+draw_debug_guides = true
+
+[node name="PerspectiveGridOverlay" type="TextureRect" parent="PreviewWorld" unique_id=1603845548]
+modulate = Color(1, 1, 1, 0.18)
+z_index = 2000
+offset_left = -28.333332
+offset_top = -68.33333
+offset_right = 1413.3333
+offset_bottom = 861.6666
+mouse_filter = 2
+texture = ExtResource("2_grid")
+expand_mode = 1
+stretch_mode = 6
