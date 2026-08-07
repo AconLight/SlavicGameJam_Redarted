@@ -168,6 +168,31 @@ func _ready() -> void:
 
 W inspektorze nadal jest przycisk do wskazania węzła myszką, więc sposób pracy się nie zmienia. Dotyczy to wszystkich trzech powiązań w kabinie.
 
+### Drżenie kabiny — w `cabin_camera.gd`
+
+Kabina nigdy nie stoi. Kamera dostaje pionowe wychylenie przez `offset`, nie przez `position`, więc podskakiwanie w ogóle nie miesza się z najazdem na aktywność — to dwa niezależne tory.
+
+Kształt drgania to złożenie dwóch fal o niewspółmiernych częstotliwościach; pojedyncza sinusoida czyta się jak metronom. Amplitudą steruje wolniejszy iloczyn dwóch kolejnych fal podniesiony do kwadratu, przez co kabina przez większość czasu buja delikatnie, a mocno tylko chwilami, w nieregularnych odstępach.
+
+| Pole na `CabinCamera` | Domyślnie | Znaczenie |
+| --- | --- | --- |
+| `bump_amplitude_min` | `2.0` | wychylenie na gładkiej drodze; `0` wyłącza całość |
+| `bump_amplitude_max` | `14.0` | wychylenie w szczycie wyboja |
+| `bump_frequency` | `2.2` | podskoków na sekundę |
+| `swell_period` | `11.0` | co ile mniej więcej sekund robi się wyboiście |
+
+Wychylenie jest dzielone przez `zoom`, więc przy przybliżeniu na aktywność kabina trzęsie się tak samo mocno na ekranie, a nie trzy razy bardziej.
+
+**Grafika kabiny musi być większa niż ekran.** Przy wychyleniu kamera wyjeżdża poza obrazek i widać jego krawędź. `CabinShell` jest przeskalowany o `1.0222`, co daje 12 pikseli zapasu w pionie. Reguła przy zmianie amplitudy: potrzebny zapas to `1.45 × bump_amplitude_max`, a skala to `(1080 + 2 × zapas) / 1080`.
+
+### CabinSteeringWheel — `cabin_steering_wheel.gd`
+
+Kierownica rysowana kodem: pierścień, szprychy, piasta i kolorowy znacznik na godzinie dwunastej. Kołysze się delikatnie lewo-prawo tym samym złożeniem dwóch fal. Znacznik i szprychy są konieczne — sam okrąg przy obrocie wygląda na nieruchomy.
+
+Skrypt jest `@tool`, więc kierownica rysuje się też w edytorze i da się ją ustawić myszką. Kołysanie jest wyłączone przy edycji.
+
+Atrapa na czas jamu. Gdy będzie grafika, wstawia się `Sprite2D` w to samo miejsce — a skrypt kołysania działa na dowolnym `Node2D`, więc sam ruch da się przenieść bez zmian.
+
 ### DebugOverlay — `cabin_debug_overlay.gd`
 
 `CanvasLayer` z etykietą, więc nie jeździ z kamerą. Pokazuje aktualną aktywność i czas trzymania, np. `radio — 3.2 s`, a w czasie powrotu informuje, że klikanie jest zablokowane. Narzędzie na czas budowy — wyłączane przełącznikiem `visible`, do skasowania gdy przestanie być potrzebne.
