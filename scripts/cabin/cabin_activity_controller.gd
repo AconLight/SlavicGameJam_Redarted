@@ -16,10 +16,23 @@ signal return_finished()
 ## Pinezka, do której kamera wraca, gdy nic się nie dzieje.
 @export_node_path("Marker2D") var neutral_target_path: NodePath
 
+## Węzeł z polem `chill` — w grze jest to KeepScore ze sceny score.
+## Puste albo nieodnalezione = wszystkie aktywności dostępne, dzięki czemu
+## samą kabinę da się odpalić i testować bez reszty gry.
+@export_node_path("Node") var chill_source_path: NodePath
+
+## Węzeł z metodami HeavyFoot() i HittinBrakes() — w grze Accelerometer.
+## Tir przyspiesza, dopóki trwa czynność, i hamuje po jej puszczeniu.
+@export_node_path("Node") var speed_source_path: NodePath
+
 ## Czy wypisywać zdarzenia do konsoli.
 @export var debug_log := true
 
 var neutral_target: CabinZoomTarget
+
+var _chill_source: Node
+var _speed_source: Node
+var _activities: Array[CabinActivity] = []
 
 var _active: CabinActivity = null
 var _held := 0.0
@@ -29,10 +42,14 @@ var _return_total := 0.0
 
 func _ready() -> void:
 	neutral_target = get_node_or_null(neutral_target_path) as CabinZoomTarget
+	_chill_source = get_node_or_null(chill_source_path)
+	_speed_source = get_node_or_null(speed_source_path)
 	_connect_activities.call_deferred()
 
 
 func _process(delta: float) -> void:
+	_refresh_availability()
+
 	if _active != null:
 		_held += delta
 		if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
@@ -86,18 +103,54 @@ func accepts_input() -> bool:
 	return _active == null and _return_left <= 0.0
 
 
+## Aktualny poziom chillu. Bez podpiętego źródła zwraca maksimum, więc
+## nic nie jest zablokowane.
+func current_chill() -> int:
+	if _chill_source == null:
+		return 100
+	var value: Variant = _chill_source.get(&"chill")
+	if value == null:
+		return 100
+	return int(value)
+
+
+## Zawołanie metody na cudzym węźle, jeśli ten węzeł i metoda istnieją.
+## Przy uruchomieniu samej kabiny żadnego z tych źródeł nie ma, a nazwy po
+## stronie score i prędkości mogą się kiedyś zmienić — kabina ma wtedy
+## dalej działać, tylko bez naliczania i bez przyspieszania.
+func _notify(source: Node, method: StringName) -> void:
+	if source != null and source.has_method(method):
+		source.call(method)
+
+
 func _connect_activities() -> void:
+	_activities.clear()
 	for node in get_tree().get_nodes_in_group(CabinActivity.GROUP):
 		var activity := node as CabinActivity
+		_activities.append(activity)
 		if not activity.press_requested.is_connected(_on_press_requested):
 			activity.press_requested.connect(_on_press_requested)
+	_refresh_availability()
+
+
+func _refresh_availability() -> void:
+	var chill := current_chill()
+	for activity in _activities:
+		# Trwającej aktywności nie chowamy w połowie trzymania, nawet gdyby
+		# chill zdążył spaść poniżej jej progu.
+		if activity == _active:
+			continue
+		activity.set_available(chill >= activity.min_chill)
 
 
 func _on_press_requested(activity: CabinActivity) -> void:
-	if not accepts_input():
+	if not accepts_input() or not activity.available:
 		return
 	_active = activity
 	_held = 0.0
+	activity.set_active(true)
+	_notify(_chill_source, &"ChillActivity")
+	_notify(_speed_source, &"HeavyFoot")
 	activity_started.emit(activity.activity_id)
 	if debug_log:
 		print("[cabin] start: ", activity.activity_id)
@@ -107,10 +160,13 @@ func _end() -> void:
 	var id := _active.activity_id
 	var held := _held
 	var seconds := maxf(_active.return_seconds, 0.0)
+	_active.set_active(false)
 	_active = null
 	_held = 0.0
 	_return_total = seconds
 	_return_left = seconds
+	_notify(_chill_source, &"EndChill")
+	_notify(_speed_source, &"HittinBrakes")
 	activity_ended.emit(id, held)
 	if debug_log:
 		print("[cabin] koniec: ", id, " trzymane=%.2fs, powrót=%.2fs" % [held, seconds])

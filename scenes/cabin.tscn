@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://dl3insxgnvsla" path="res://assets/source/art/aseprite/galka.png" id="10_galka"]
 [ext_resource type="Script" uid="uid://dpn1b5psi4q5h" path="res://scripts/cabin/cabin_knob.gd" id="11_knob"]
 [ext_resource type="Script" uid="uid://dccpa2gd15b82" path="res://scripts/cabin/cabin_tuning_slider.gd" id="12_slider"]
+[ext_resource type="Texture2D" uid="uid://5i38vvyl85u2" path="res://assets/placeholders/ukulele.png.webp" id="13_ukulele"]
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
 
@@ -24,7 +25,7 @@ scale = Vector2(1.0222, 1.0222)
 texture = ExtResource("6_shell")
 
 [node name="Acceleration" parent="Interior" unique_id=501684751 instance=ExtResource("2_on2ml")]
-position = Vector2(500, 550)
+position = Vector2(477.91, 653.97)
 
 [node name="SteeringWheel" type="Node2D" parent="Interior" unique_id=1085417509]
 position = Vector2(925.66, 1000)
@@ -44,11 +45,10 @@ activity_id = &"cb_radio"
 zoom_target_path = NodePath("../../../ZoomTargets/CbFocus")
 click_size = Vector2(110, 180)
 show_placeholder = false
+min_chill = 50
+visual_root_path = NodePath("..")
 approach_seconds = 10.0
 return_seconds = 0.45
-
-[node name="SpeedometerSlot" type="Marker2D" parent="Interior" unique_id=5633116]
-position = Vector2(633, 800)
 
 [node name="ZoomTargets" type="Node2D" parent="." unique_id=1760636923]
 
@@ -64,6 +64,11 @@ zoom = 3.0
 position = Vector2(1200, 380)
 zoom = 2.5
 
+[node name="UkuleleFocus" parent="ZoomTargets" unique_id=215320030 instance=ExtResource("1_zoom_target")]
+position = Vector2(1019, 936)
+rotation = -1.012291
+zoom = 2.0
+
 [node name="Activities" type="Node2D" parent="." unique_id=819683887]
 
 [node name="Radio" parent="Activities" unique_id=1224293936 instance=ExtResource("2_activity")]
@@ -74,6 +79,16 @@ texture = ExtResource("9_radio")
 click_size = Vector2(220, 170)
 approach_seconds = 10.0
 return_seconds = 0.45
+
+[node name="RadioKnob3" type="Sprite2D" parent="Activities/Radio" unique_id=2003324222]
+position = Vector2(0, 19.17)
+rotation = 0.8255407
+texture = ExtResource("10_galka")
+
+[node name="RadioKnob2" type="Sprite2D" parent="Activities/Radio" unique_id=4564636]
+position = Vector2(51, 13)
+rotation = -0.9948377
+texture = ExtResource("10_galka")
 
 [node name="RadioKnob" type="Sprite2D" parent="Activities/Radio" unique_id=1128573589]
 position = Vector2(-59, 32)
@@ -89,9 +104,23 @@ knob_path = NodePath("../RadioKnob")
 travel = 30.0
 bar_color = Color(0.74925476, 0.12429362, 0.12823176, 1)
 
+[node name="Ukulele" parent="Activities" unique_id=375787849 instance=ExtResource("2_activity")]
+position = Vector2(1735, 888)
+scale = Vector2(0.25, 0.25)
+activity_id = &"ukulele"
+zoom_target_path = NodePath("../../ZoomTargets/UkuleleFocus")
+texture = ExtResource("13_ukulele")
+click_size = Vector2(800, 1395)
+min_chill = 75
+move_to_focus_while_active = true
+approach_seconds = 10.0
+return_seconds = 0.45
+
 [node name="ActivityController" type="Node" parent="." unique_id=1401252265]
 script = ExtResource("3_controller")
 neutral_target_path = NodePath("../ZoomTargets/NeutralFocus")
+chill_source_path = NodePath("../../score/CanvasLayer/KeepScore")
+speed_source_path = NodePath("../Interior/Acceleration/ArrowSprite/SpeedScript")
 
 [node name="CabinCamera" type="Camera2D" parent="." unique_id=472975596]
 position = Vector2(960, 540)

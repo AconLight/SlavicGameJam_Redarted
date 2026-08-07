@@ -1,13 +1,18 @@
 [gd_scene format=3 uid="uid://ddpd3k6sht0r4"]
 
 [ext_resource type="PackedScene" uid="uid://b0ufvxdpypoj8" path="res://scenes/cabin.tscn" id="1_o5qli"]
-[ext_resource type="PackedScene" path="res://scenes/components/scroll_manager_2d.tscn" id="1_sugp2"]
+[ext_resource type="PackedScene" uid="uid://0aald3n4od8k" path="res://scenes/components/scroll_manager_2d.tscn" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://blg0rb2cnou4x" path="res://scenes/score.tscn" id="2_0wfyh"]
 
 [node name="Main" type="Node2D" unique_id=596678821]
 
-[node name="score" parent="." unique_id=333109457 instance=ExtResource("2_0wfyh")]
+[node name="ScrollManager2D" parent="." unique_id=1353085533 instance=ExtResource("1_sugp2")]
+perspective_point = Vector2(500, 100)
+max_angle_left = -55.7
+max_angle_right = 83.4
+curve_factor = 0.24
+near_scale = 8.0
 
-[node name="ScrollManager2D" parent="." unique_id=147460520 instance=ExtResource("1_sugp2")]
+[node name="score" parent="." unique_id=333109457 instance=ExtResource("2_0wfyh")]
 
 [node name="Cabin" parent="." unique_id=489044161 instance=ExtResource("1_o5qli")]
