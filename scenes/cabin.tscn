@@ -1,0 +1,73 @@
+[gd_scene format=3 uid="uid://b0ufvxdpypoj8"]
+
+[ext_resource type="PackedScene" path="res://scenes/cabin/cabin_zoom_target.tscn" id="1_zoom_target"]
+[ext_resource type="PackedScene" path="res://scenes/cabin/cabin_activity.tscn" id="2_activity"]
+[ext_resource type="Script" uid="uid://qhvrb7p4826d" path="res://scripts/cabin/cabin_activity_controller.gd" id="3_controller"]
+[ext_resource type="Script" uid="uid://by26rjje1tikn" path="res://scripts/cabin/cabin_camera.gd" id="4_camera"]
+[ext_resource type="Script" uid="uid://coddh63dgwhwv" path="res://scripts/cabin/cabin_debug_overlay.gd" id="5_debug"]
+
+[node name="Cabin" type="Node2D" unique_id=489044161]
+
+[node name="Interior" type="Node2D" parent="." unique_id=1102283152]
+
+[node name="CabinShell" type="Node2D" parent="Interior" unique_id=1231148686]
+
+[node name="FrameTop" type="Polygon2D" parent="Interior/CabinShell" unique_id=1534192645]
+color = Color(0.13, 0.12, 0.11, 1)
+polygon = PackedVector2Array(0, 0, 1152, 0, 1152, 60, 0, 60)
+
+[node name="FrameLeft" type="Polygon2D" parent="Interior/CabinShell" unique_id=1767488061]
+color = Color(0.13, 0.12, 0.11, 1)
+polygon = PackedVector2Array(0, 60, 140, 60, 140, 380, 0, 380)
+
+[node name="FrameRight" type="Polygon2D" parent="Interior/CabinShell" unique_id=657462427]
+color = Color(0.13, 0.12, 0.11, 1)
+polygon = PackedVector2Array(1012, 60, 1152, 60, 1152, 380, 1012, 380)
+
+[node name="Dashboard" type="Polygon2D" parent="Interior/CabinShell" unique_id=1251119070]
+color = Color(0.17, 0.15, 0.14, 1)
+polygon = PackedVector2Array(0, 380, 1152, 380, 1152, 648, 0, 648)
+
+[node name="SpeedometerSlot" type="Marker2D" parent="Interior" unique_id=5633116]
+position = Vector2(380, 480)
+
+[node name="ZoomTargets" type="Node2D" parent="." unique_id=1760636923]
+
+[node name="NeutralFocus" parent="ZoomTargets" unique_id=1802378661 instance=ExtResource("1_zoom_target")]
+position = Vector2(576, 324)
+zoom = 1.0
+
+[node name="RadioFocus" parent="ZoomTargets" unique_id=1119953044 instance=ExtResource("1_zoom_target")]
+position = Vector2(790, 470)
+zoom = 3.0
+
+[node name="Activities" type="Node2D" parent="." unique_id=819683887]
+
+[node name="Radio" parent="Activities" unique_id=1224293936 instance=ExtResource("2_activity")]
+position = Vector2(790, 470)
+activity_id = &"radio"
+zoom_target_path = NodePath("../../ZoomTargets/RadioFocus")
+approach_seconds = 10.0
+return_seconds = 0.45
+
+[node name="ActivityController" type="Node" parent="." unique_id=1401252265]
+script = ExtResource("3_controller")
+neutral_target_path = NodePath("../ZoomTargets/NeutralFocus")
+
+[node name="CabinCamera" type="Camera2D" parent="." unique_id=472975596]
+position = Vector2(576, 324)
+script = ExtResource("4_camera")
+controller_path = NodePath("../ActivityController")
+
+[node name="DebugOverlay" type="CanvasLayer" parent="." unique_id=259505102]
+script = ExtResource("5_debug")
+controller_path = NodePath("../ActivityController")
+
+[node name="StatusLabel" type="Label" parent="DebugOverlay" unique_id=11426381]
+offset_left = 24.0
+offset_top = 20.0
+offset_right = 620.0
+offset_bottom = 56.0
+theme_override_colors/font_color = Color(0.75, 0.95, 0.7, 1)
+theme_override_font_sizes/font_size = 20
+text = "—"
