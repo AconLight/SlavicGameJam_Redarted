@@ -10,6 +10,14 @@
 
 **Spec:** [`docs/cabin/2026-08-07-cabin-activities-design.md`](2026-08-07-cabin-activities-design.md)
 
+> **Stan: wykonane.** Plan zostawiony jako zapis przebiegu. Trzy rzeczy poszły inaczej niż tu napisano, wszystkie opisane w specu:
+>
+> - Powiązania między węzłami musiały zmienić typ na `NodePath` — pola zadeklarowane jako typ węzła nie przenoszą się przez plik sceny pisany tekstem.
+> - Doszła blokada klikania na czas powrotu kamery, a czasy najazdu i powrotu wylądowały na aktywności zamiast na pinezce.
+> - Najazd jest jednostajny, nie wygładzany wykładniczo. Wyhamowanie zostało tylko na powrocie.
+>
+> Aktualny opis komponentów jest w specu, nie tutaj.
+
 ## Global Constraints
 
 - Godot 4.7.1, wszystko wewnątrz `~/Documents/GAMEJAM/` — bez instalacji globalnych.

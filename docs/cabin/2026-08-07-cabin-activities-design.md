@@ -21,8 +21,9 @@ W zakresie:
 - scena wnętrza kabiny na zastępczej grafice
 - dwa rodzaje klocków stawianych myszką w edytorze: punkt zoomu i aktywność
 - **jedna aktywność na start: radio** (szukanie stacji z muzyką). CB i ukulele dojdą później tym samym klockiem
-- kamera dryfująca w stronę aktywności i wracająca do spoczynku
+- kamera jadąca w stronę aktywności i wracająca do spoczynku
 - kontroler trzymania, mierzący czas i ogłaszający sygnały
+- blokada klikania, dopóki kamera nie wróci na miejsce; czasy najazdu i powrotu ustawiane osobno dla każdej aktywności
 - tymczasowy napis diagnostyczny
 
 Poza zakresem, świadomie:
@@ -83,7 +84,8 @@ Rozszerza `Marker2D`. Nieruchoma pinezka: „kamero, przyjedź tutaj i przybliż
 | Pole w inspektorze | Domyślnie | Znaczenie |
 | --- | --- | --- |
 | `zoom` | `1.35` | siła przybliżenia; `1.0` to widok normalny |
-| `approach_speed` | `2.5` | jak szybko kamera tu dojeżdża; mniej = leniwiej |
+
+Pinezka **nie zna tempa**. Czasy najazdu i powrotu należą do aktywności, bo dwie aktywności mogą wskazywać tę samą pinezkę i jechać do niej z różną szybkością.
 
 Zależności: brak.
 
@@ -91,10 +93,12 @@ Zależności: brak.
 
 Rozszerza `Area2D`, w środku `Sprite2D` z obrazkiem przedmiotu i `CollisionShape2D` wyznaczający obszar klikalny. W `_ready` dopisuje się do grupy `cabin_activity`.
 
-| Pole w inspektorze | Znaczenie |
-| --- | --- |
-| `activity_id` | identyfikator, np. `radio`; trafia do sygnałów |
-| `zoom_target` | przeciągnięty z drzewka krzyżyk; puste = kamera nie najeżdża i zostaje w spoczynku |
+| Pole w inspektorze | Domyślnie | Znaczenie |
+| --- | --- | --- |
+| `activity_id` | — | identyfikator, np. `radio`; trafia do sygnałów |
+| `zoom_target_path` | — | wskazany myszką krzyżyk; puste = kamera nie najeżdża i zostaje w spoczynku |
+| `approach_seconds` | `3.0` | ile trwa najazd kamery na tę aktywność |
+| `return_seconds` | `1.8` | ile trwa powrót i jak długo klikanie jest zablokowane |
 
 Wystawia sygnał `press_requested(activity)`, gdy na obszarze wciśnięto lewy przycisk myszy. Sama nie decyduje, czy aktywność ruszy — to należy do kontrolera.
 
@@ -104,46 +108,69 @@ Zależności: opcjonalnie jeden `CabinZoomTarget`.
 
 Rozszerza `Node`. Jedyne miejsce z logiką stanu. Nie ma pozycji ani grafiki.
 
-Odpowiada za: pilnowanie, że naraz trwa najwyżej jedna aktywność; mierzenie czasu trzymania; wskazywanie kamerze aktualnego celu; ogłaszanie sygnałów.
+Ma trzy stany: bezczynność, trwająca aktywność, powrót kamery. Odpowiada za pilnowanie, że naraz trwa najwyżej jedna aktywność; mierzenie czasu trzymania; wskazywanie kamerze aktualnego celu; ogłaszanie sygnałów.
 
 | Pole w inspektorze | Znaczenie |
 | --- | --- |
-| `neutral_target` | pinezka spoczynku |
+| `neutral_target_path` | pinezka spoczynku |
 | `debug_log` | czy wypisywać zdarzenia do konsoli |
 
 ```gdscript
 signal activity_started(activity_id: StringName)
 signal activity_ended(activity_id: StringName, held_seconds: float)
+signal return_started(return_seconds: float)
+signal return_finished()
 
 func current_target() -> CabinZoomTarget   # cel dla kamery, nigdy null
 func active_id() -> StringName             # pusty StringName gdy nic nie trwa
 func held_seconds() -> float
+func active_approach_seconds() -> float
+func is_returning() -> bool
+func return_progress() -> float            # 0.0 … 1.0
+func accepts_input() -> bool
 ```
 
 Puszczenie przycisku wykrywa odpytywaniem w `_process`, nie zdarzeniem na obszarze. Dzięki temu zjechanie myszką z radia w trakcie trzymania **nie** przerywa aktywności — liczy się dopiero puszczenie lewego przycisku, gdziekolwiek na ekranie. To wybaczające zachowanie jest zamierzone.
 
-Nowa aktywność nie zostanie rozpoczęta, dopóki poprzednia trwa.
+**Dopóki kamera nie wróci na miejsce, nie da się kliknąć niczego.** Po puszczeniu aktywności kontroler wchodzi w stan powrotu na `return_seconds` tej aktywności i odrzuca wszystkie kliknięcia. Ten sam zegar napędza ruch kamery, więc blokada i obraz nie mogą się rozjechać. Nowa aktywność nie ruszy też, dopóki trwa poprzednia.
 
 Zależności: grupa `cabin_activity`, jeden `CabinZoomTarget` jako spoczynek.
 
 ### CabinCamera — `cabin_camera.gd`
 
-Rozszerza `Camera2D`. W każdej klatce dryfuje ku celowi wskazanemu przez kontroler:
+Rozszerza `Camera2D`. Jedzie do celu wskazanego przez kontroler, przejazdem na czas — nie ściganiem celu z klatki na klatkę.
+
+**Najazd jest jednostajny**: kamera pokonuje drogę równo od pierwszej do ostatniej klatki, przez `approach_seconds` aktywności. Pierwsze podejście używało wygładzania wykładniczego, ale ono z definicji rusza szybko i pełznie na końcu — przy powolnym „ruchu głową" wyglądało to na zryw i zostało odrzucone.
+
+**Powrót wyhamowuje na końcu** (`smoothstep`) i trwa `return_seconds`. Napędza go zegar kontrolera, ten sam, który trzyma blokadę klikania — dzięki temu obraz i blokada kończą się co do klatki razem.
+
+Zależności: `CabinActivityController`, wskazany raz w scenie.
+
+### Pułapka: powiązania między węzłami muszą być typu `NodePath`
+
+Pole zadeklarowane wprost jako typ węzła:
 
 ```gdscript
-var target := controller.current_target()
-var weight := 1.0 - exp(-target.approach_speed * delta)
-global_position = global_position.lerp(target.global_position, weight)
-zoom = zoom.lerp(Vector2.ONE * target.zoom, weight)
+@export var controller: CabinActivityController   # NIE DZIAŁA u nas
 ```
 
-Wygładzanie wykładnicze: ruch startuje żwawo i miękko hamuje przy celu, bez szarpnięć, tak samo przy 30 i przy 144 klatkach. Powrót do spoczynku używa tej samej ścieżki kodu co dojazd.
+Godot zapisuje takie powiązanie w osobnej ewidencji, którą prowadzi **edytor**. Pliki scen w tym projekcie powstają pisane tekstem, więc linijka `controller = NodePath("../ActivityController")` jest po cichu ignorowana, a pole wczytuje się jako `null`. Zwykłe pola (liczby, teksty) działają normalnie — dlatego objaw jest mylący: logika chodzi, a kamera stoi.
 
-Zależności: `CabinActivityController`, podłączony raz w scenie.
+Zamiast tego:
+
+```gdscript
+@export_node_path("Node") var controller_path: NodePath
+var controller: CabinActivityController
+
+func _ready() -> void:
+	controller = get_node_or_null(controller_path) as CabinActivityController
+```
+
+W inspektorze nadal jest przycisk do wskazania węzła myszką, więc sposób pracy się nie zmienia. Dotyczy to wszystkich trzech powiązań w kabinie.
 
 ### DebugOverlay — `cabin_debug_overlay.gd`
 
-`CanvasLayer` z etykietą, więc nie jeździ z kamerą. Pokazuje aktualną aktywność i czas trzymania, np. `radio — 3.2 s`. Narzędzie na czas budowy — wyłączane przełącznikiem `visible`, do skasowania gdy przestanie być potrzebne.
+`CanvasLayer` z etykietą, więc nie jeździ z kamerą. Pokazuje aktualną aktywność i czas trzymania, np. `radio — 3.2 s`, a w czasie powrotu informuje, że klikanie jest zablokowane. Narzędzie na czas budowy — wyłączane przełącznikiem `visible`, do skasowania gdy przestanie być potrzebne.
 
 Zależności: `CabinActivityController`.
 
@@ -151,9 +178,9 @@ Zależności: `CabinActivityController`.
 
 1. Gracz wciska lewy przycisk nad radiem. `CabinActivity` ogłasza `press_requested`.
 2. Kontroler sprawdza, czy nic nie trwa. Zapamiętuje aktywność, zeruje licznik, ogłasza `activity_started("radio")`.
-3. W kolejnych klatkach licznik rośnie, a kamera dryfuje ku `RadioFocus`.
-4. Gracz puszcza przycisk. Kontroler ogłasza `activity_ended("radio", 3.2)` i wraca do spoczynku.
-5. Kamera tą samą drogą dryfuje do `NeutralFocus`.
+3. W kolejnych klatkach licznik rośnie, a kamera jednostajnie jedzie ku `RadioFocus` przez `approach_seconds`.
+4. Gracz puszcza przycisk. Kontroler ogłasza `activity_ended("radio", 3.2)`, potem `return_started(0.45)` i przestaje przyjmować kliknięcia.
+5. Kamera wraca do `NeutralFocus`, wyhamowując na końcu. Po `return_seconds` leci `return_finished()` i klikanie znów działa.
 
 ## Jak dodać nową aktywność
 
@@ -163,7 +190,8 @@ Bez pisania kodu:
 2. Przeciągnij `cabin_activity.tscn` do `Activities`, nazwij `CbRadio`.
 3. Wstaw obrazek przedmiotu i dopasuj obszar klikalny.
 4. Wpisz `activity_id` = `cb_radio`.
-5. Przeciągnij `CbRadioFocus` w pole `zoom_target`.
+5. Wskaż `CbRadioFocus` w polu `zoom_target_path`.
+6. Ustaw `approach_seconds` i `return_seconds` — tempo należy do aktywności, nie do pinezki.
 
 Uruchom i sprawdź. Aktywność sama się zarejestruje.
 
