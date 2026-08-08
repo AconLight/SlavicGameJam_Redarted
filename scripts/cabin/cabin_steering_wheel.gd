@@ -70,6 +70,16 @@ extends Node2D
 ## Ile trwa wyhamowanie do bezruchu i powrót do kołysania.
 @export_range(0.05, 3.0, 0.05) var pause_seconds := 0.35
 
+@export_group("Zjeżdżanie z drogi")
+
+## Węzeł CabinDrift ze scenie rozgrywki. Puste albo nieodnalezione = kierownica
+## nie reaguje na zjazd, dzięki czemu kabina odpalona osobno działa dalej.
+@export_node_path("Node") var drift_source_path: NodePath
+
+## O ile stopni przekręca się kierownica przy pełnym zjeżdżeniu na pobocze.
+## To jedyne ostrzeżenie, jakie gracz ma przed wypadnięciem z drogi.
+@export_range(0.0, 180.0, 1.0) var drift_degrees := 45.0
+
 @export_group("Kołysanie")
 
 ## Maksymalne wychylenie w stopniach. Ma być ledwo widoczne.
@@ -84,11 +94,15 @@ var _time := 0.0
 ## szarpały kierownicą.
 var _pause_blend := 0.0
 var _paused := false
+var _drift_source: Node
 
 
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
+	_drift_source = get_node_or_null(drift_source_path)
+	if not drift_source_path.is_empty() and _drift_source == null:
+		push_warning("[kierownica] nie ma węzła zjazdu pod \"%s\"" % drift_source_path)
 	var controller := get_node_or_null(controller_path) as CabinActivityController
 	if controller == null:
 		return
@@ -112,9 +126,15 @@ func _process(delta: float) -> void:
 
 	_pause_blend = move_toward(_pause_blend, 1.0 if _paused else 0.0, delta / maxf(pause_seconds, 0.01))
 
+	# Zjazd przekręca kierownicę także wtedy, gdy kołysanie stoi — inaczej
+	# jedyne ostrzeżenie przed wypadnięciem gasłoby przy czynnościach, które
+	# kierownicę zatrzymują.
+	var drift := _drift_degrees()
+
 	# W pełnym bezruchu nie liczymy dalej czasu, więc po puszczeniu czynności
 	# kołysanie wraca z tej samej fazy i nie przeskakuje.
 	if is_equal_approx(_pause_blend, 1.0):
+		rotation_degrees = drift
 		return
 
 	_time += delta
@@ -122,7 +142,14 @@ func _process(delta: float) -> void:
 	# wybojach — pojedyncza sinusoida wygląda jak wahadło zegara.
 	var wave := sin(_time * TAU * sway_frequency)
 	wave += 0.4 * sin(_time * TAU * sway_frequency * 1.6 + 0.7)
-	rotation_degrees = wave * sway_degrees * (1.0 - _pause_blend)
+	rotation_degrees = wave * sway_degrees * (1.0 - _pause_blend) + drift
+
+
+## Przekręcenie wynikające ze zjeżdżania z pasa, w stopniach.
+func _drift_degrees() -> float:
+	if _drift_source == null or not _drift_source.has_method(&"drift_signed"):
+		return 0.0
+	return _drift_source.call(&"drift_signed") * drift_degrees
 
 
 func _draw() -> void:

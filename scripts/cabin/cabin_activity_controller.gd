@@ -35,6 +35,9 @@ var _speed_source: Node
 var _activities: Array[CabinActivity] = []
 
 var _active: CabinActivity = null
+
+## Akcja, którą trzymana jest bieżąca czynność. Puste = trzyma ją myszka.
+var _hold_action: StringName = &""
 var _held := 0.0
 var _return_left := 0.0
 var _return_total := 0.0
@@ -52,7 +55,7 @@ func _process(delta: float) -> void:
 
 	if _active != null:
 		_held += delta
-		if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		if _hold_released():
 			_end()
 		return
 
@@ -75,6 +78,12 @@ func current_target() -> CabinZoomTarget:
 ## Identyfikator trwającej aktywności albo pusty StringName.
 func active_id() -> StringName:
 	return _active.activity_id if _active != null else &""
+
+
+## Trwająca czynność albo null. Do czytania jej własnych parametrów przez
+## rzeczy, które nie mają po co znać nazw czynności — patrz cabin_drift.gd.
+func active_activity() -> CabinActivity:
+	return _active
 
 
 func held_seconds() -> float:
@@ -143,14 +152,26 @@ func _refresh_availability() -> void:
 		activity.set_available(chill >= activity.min_chill)
 
 
-func _on_press_requested(activity: CabinActivity) -> void:
+## Czy kierowca puścił przedmiot. Sposób puszczenia musi być ten sam co chwytu:
+## czynność chwycona klawiszem trwa do puszczenia klawisza, bo w przeciwnym
+## razie urwałaby się natychmiast — przycisk myszy przecież nie jest wciśnięty.
+func _hold_released() -> bool:
+	if _hold_action != &"":
+		return not Input.is_action_pressed(_hold_action)
+	return not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
+
+
+func _on_press_requested(activity: CabinActivity, held_by_action: bool) -> void:
 	if not accepts_input() or not activity.available:
 		return
 	_active = activity
+	_hold_action = activity.activation_action if held_by_action else &""
 	_held = 0.0
 	activity.set_active(true)
 	_notify(_chill_source, &"ChillActivity")
-	_notify(_speed_source, &"HeavyFoot")
+	# Gaz i hamowanie chodzą parą: czego kierowca nie dodaje, tego nie zdejmuje.
+	if activity.accelerates:
+		_notify(_speed_source, &"HeavyFoot")
 	activity_started.emit(activity.activity_id)
 	if debug_log:
 		print("[cabin] start: ", activity.activity_id)
@@ -160,13 +181,16 @@ func _end() -> void:
 	var id := _active.activity_id
 	var held := _held
 	var seconds := maxf(_active.return_seconds, 0.0)
+	var was_accelerating := _active.accelerates
 	_active.set_active(false)
 	_active = null
+	_hold_action = &""
 	_held = 0.0
 	_return_total = seconds
 	_return_left = seconds
 	_notify(_chill_source, &"EndChill")
-	_notify(_speed_source, &"HittinBrakes")
+	if was_accelerating:
+		_notify(_speed_source, &"HittinBrakes")
 	activity_ended.emit(id, held)
 	if debug_log:
 		print("[cabin] koniec: ", id, " trzymane=%.2fs, powrót=%.2fs" % [held, seconds])

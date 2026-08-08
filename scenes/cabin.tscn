@@ -107,8 +107,9 @@ activity_id = &"cb_radio"
 zoom_target_path = NodePath("../../../ZoomTargets/CbFocus")
 click_size = Vector2(110, 180)
 show_placeholder = false
-min_chill = 50
+min_chill = 40
 visual_root_path = NodePath("..")
+activation_action = &"cabin_keypad"
 approach_seconds = 10.0
 return_seconds = 0.45
 
@@ -119,6 +120,7 @@ script = ExtResource("7_wheel")
 color = Color(0.7176471, 0.6666667, 0.7764706, 0)
 show_marker = false
 controller_path = NodePath("../../ActivityController")
+drift_source_path = NodePath("../../../Drift")
 
 [node name="kiera" type="Sprite2D" parent="Interior/SteeringWheel" unique_id=187241406]
 position = Vector2(-7.8254895, 6.7114143)
@@ -180,7 +182,7 @@ poses = {
 &"ukulele": NodePath("../reka-okno-ukulele")
 }
 
-[node name="ukulele-gra-poza" type="Sprite2D" parent="Interior"]
+[node name="ukulele-gra-poza" type="Sprite2D" parent="Interior" unique_id=422895928]
 position = Vector2(521, 914)
 scale = Vector2(1.1931819, 1.2142856)
 texture = ExtResource("13_4nevi")
@@ -250,20 +252,22 @@ knob_path = NodePath("../RadioKnob")
 travel = 30.0
 bar_color = Color(0.74925476, 0.12429362, 0.12823176, 1)
 
-[node name="ukulele-schowane" type="Node2D" parent="Activities"]
+[node name="ukulele-schowane" type="Node2D" parent="Activities" unique_id=1779206417]
 position = Vector2(1735, 1500)
 
 [node name="Ukulele" parent="Activities" unique_id=375787849 instance=ExtResource("2_activity")]
 position = Vector2(1735, 888)
 activity_id = &"ukulele"
 zoom_target_path = NodePath("../../ZoomTargets/UkuleleFocus")
-active_pose_path = NodePath("../ukulele-schowane")
-focus_travel_seconds = 0.5
 texture = ExtResource("13_2gupc")
 click_size = Vector2(290, 450)
-min_chill = 75
+min_chill = 60
 move_to_focus_while_active = true
+active_pose_path = NodePath("../ukulele-schowane")
+focus_travel_seconds = 0.5
 sway_degrees_while_active = 4.0
+accelerates = false
+drift_per_second = 0.15
 approach_seconds = 10.0
 return_seconds = 0.45
 
@@ -319,9 +323,12 @@ script = ExtResource("24_engine")
 
 [node name="CabinCamera" type="Camera2D" parent="." unique_id=472975596]
 position = Vector2(960, 540)
+ignore_rotation = false
 script = ExtResource("4_camera")
 controller_path = NodePath("../ActivityController")
 bumped_paths = Array[NodePath]([NodePath("../Interior"), NodePath("../Activities")])
+drift_source_path = NodePath("../../Drift")
+drift_tilt_degrees = -20.0
 
 [node name="DebugOverlay" type="CanvasLayer" parent="." unique_id=259505102]
 script = ExtResource("5_debug")

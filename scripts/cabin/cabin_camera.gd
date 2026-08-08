@@ -38,6 +38,22 @@ extends Camera2D
 ## na ekranie do zera.
 @export var bumped_paths: Array[NodePath] = []
 
+@export_group("Przechył na zjeżdżaniu")
+
+## Węzeł CabinDrift ze sceny rozgrywki. Puste albo nieodnalezione = kamera stoi
+## prosto, więc sama kabina odpalona osobno działa dalej.
+@export_node_path("Node") var drift_source_path: NodePath
+
+## O ile stopni przekręca się kadr przy pełnym zjeżdżeniu na pobocze. Wartość
+## ujemna przechyla w drugą stronę. Wymaga odznaczonego ignore_rotation na
+## kamerze — z zaznaczonym Godot obrót kamery pomija.
+@export_range(-30.0, 30.0, 0.5) var drift_tilt_degrees := -10.0
+
+## Ile zoomu dokładamy przy pełnym zjeżdżeniu. Przechylony kadr odsłania puste
+## narożniki ekranu, bo grafika kabiny ma tylko dwa procent zapasu — lekkie
+## przybliżenie chowa je z powrotem.
+@export_range(0.0, 0.5, 0.01) var drift_zoom_boost := 0.06
+
 var controller: CabinActivityController
 
 var _from_position := Vector2.ZERO
@@ -48,9 +64,20 @@ var _bump_time := 0.0
 var _swell := 0.0
 var _bumped: Array[Node2D] = []
 var _bumped_home: Array[Vector2] = []
+var _drift_source: Node
+
+## Zoom zadany przez przejazd kamery, bez dodatku od zjeżdżania. Przechył
+## mnoży ten zapis, a nie własny wynik z poprzedniej klatki — inaczej dodatek
+## narastałby sam z siebie w klatkach, w których przejazd nie liczy zoomu.
+var _base_zoom := Vector2.ONE
 
 
 func _ready() -> void:
+	_drift_source = get_node_or_null(drift_source_path)
+	if not drift_source_path.is_empty() and _drift_source == null:
+		push_warning("[kamera] nie ma węzła zjazdu pod \"%s\"" % drift_source_path)
+	_base_zoom = zoom
+
 	for path in bumped_paths:
 		var node := get_node_or_null(path) as Node2D
 		if node != null:
@@ -66,7 +93,12 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_apply_bump(delta)
+	_drive_trip(delta)
+	# Na końcu, bo przechył opiera się na zoomie policzonym przez przejazd.
+	_apply_drift_tilt()
 
+
+func _drive_trip(delta: float) -> void:
 	if controller == null:
 		return
 	var target := controller.current_target()
@@ -86,6 +118,16 @@ func _process(delta: float) -> void:
 
 	_elapsed = minf(_elapsed + delta, _duration)
 	_apply(target, _elapsed / _duration)
+
+
+## Przechylenie kadru razem z torem jazdy. Im dalej tir na poboczu, tym mocniej
+## obrócony obraz — drugie ostrzeżenie obok przekręconej kierownicy.
+func _apply_drift_tilt() -> void:
+	if _drift_source == null or not _drift_source.has_method(&"drift_signed"):
+		return
+	var signed: float = _drift_source.call(&"drift_signed")
+	rotation = deg_to_rad(signed * drift_tilt_degrees)
+	zoom = _base_zoom * (1.0 + absf(signed) * drift_zoom_boost)
 
 
 ## Delikatne podskakiwanie na wybojach. Przesuwa wskazane węzły kabiny,
@@ -127,7 +169,8 @@ func shake_intensity() -> float:
 
 func _apply(target: CabinZoomTarget, t: float) -> void:
 	global_position = _from_position.lerp(target.global_position, t)
-	zoom = _from_zoom.lerp(Vector2.ONE * target.zoom, t)
+	_base_zoom = _from_zoom.lerp(Vector2.ONE * target.zoom, t)
+	zoom = _base_zoom
 
 
 func _on_activity_started(_activity_id: StringName) -> void:
@@ -140,6 +183,8 @@ func _on_return_started(_seconds: float) -> void:
 
 func _begin_trip(duration: float) -> void:
 	_from_position = global_position
-	_from_zoom = zoom
+	# Zapis bez dodatku od zjeżdżania, inaczej przejazd rozpoczęty na poboczu
+	# wpiekłby przechył w cel i został z nim po powrocie na pas.
+	_from_zoom = _base_zoom
 	_elapsed = 0.0
 	_duration = maxf(duration, 0.0)
