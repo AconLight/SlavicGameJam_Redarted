@@ -108,16 +108,20 @@ func apply_projection(element: ScrollElement2D) -> void:
 	if element.uses_flat_ground_projection():
 		element.apply_flat_ground_projection(
 			project_flat_quad(element.slot, element.road_distance, element.flat_road_length, element.flat_half_width_in_slots),
-			element_z_index,
+			element_z_index + element.render_order_offset,
 			lateral_offset,
 		)
 		return
 	var visual_progress := road_to_visual_progress(element.road_distance)
+	# Near Offset affects scale only: the element keeps traveling to the camera,
+	# but its size freezes before the final perspective-growth slice.
+	var scale_road_distance := minf(element.road_distance, 1.0 - element.near_offset)
+	var scale_visual_progress := road_to_visual_progress(scale_road_distance)
 	element.apply_projection(
 		project_position(lateral_offset, visual_progress),
-		layout_scale() * project_scale(visual_progress),
+		layout_scale() * project_scale(scale_visual_progress),
 		project_rotation(lateral_offset, visual_progress),
-		element_z_index,
+		element_z_index + element.render_order_offset,
 		lateral_offset,
 	)
 

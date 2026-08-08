@@ -12,14 +12,16 @@ enum DebugVisual { NONE, STRIPE, TREE, CAR }
 @export_range(0.01, 8.0, 0.01) var size_multiplier := 1.0
 @export var content_scene: PackedScene
 @export var debug_visual: DebugVisual = DebugVisual.NONE
+@export_range(-100, 100, 1) var render_order_offset := 0
 @export_range(0.001, 0.25, 0.001) var flat_road_length := 0.022
 @export_range(0.01, 1.0, 0.01) var flat_half_width_in_slots := 0.14
 @export_group("Lane Warp Shader")
 @export var use_lane_warp_shader := false
-@export_range(0.0, 0.35, 0.005) var lane_warp_strength := 0.14
+@export_range(0.0, 0.8, 0.005) var lane_warp_strength := 0.14
 
 # Physical distance along the road. The manager converts this to visual progress.
 var road_distance := 0.0
+@export_range(0.0, 0.95, 0.01) var near_offset := 0.0
 var _flat_ground_quad := PackedVector2Array()
 var _lane_warp_material: ShaderMaterial
 
@@ -108,7 +110,7 @@ func _update_lane_warp(effective_lane_offset: float) -> void:
 	if not use_lane_warp_shader:
 		return
 	_setup_lane_warp_shader()
-	var warp_amount := clampf(effective_lane_offset * lane_warp_strength, -0.35, 0.35)
+	var warp_amount := clampf(effective_lane_offset * lane_warp_strength, -0.8, 0.8)
 	_lane_warp_material.set_shader_parameter(&"warp_amount", warp_amount)
 
 

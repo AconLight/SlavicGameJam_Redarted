@@ -1,7 +1,7 @@
 shader_type canvas_item;
 
 // Positive shifts the texture's middle right; negative shifts it left.
-uniform float warp_amount : hint_range(-0.35, 0.35, 0.001) = 0.0;
+uniform float warp_amount : hint_range(-0.8, 0.8, 0.001) = 0.0;
 
 void fragment() {
 	vec2 warped_uv = UV;
