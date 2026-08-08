@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/driving/roadside_speed_meter.gd" id="1_meter"]
 [ext_resource type="Texture2D" path="res://assets/source/art/aseprite/fotoradar.png" id="2_artwork"]
+[ext_resource type="AudioStream" path="res://assets/source/audio/sfx/FLASH.wav" id="3_flash_sound"]
 
 [node name="RoadsideSpeedCamera" type="Node2D"]
 script = ExtResource("1_meter")
@@ -13,3 +14,7 @@ position = Vector2(-120, -780)
 z_index = -1
 texture = ExtResource("2_artwork")
 centered = false
+
+[node name="FlashSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_flash_sound")
+volume_db = -3.0

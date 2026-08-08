@@ -19,6 +19,8 @@ var _violation_pending := false
 var _signalist: GameStateSignalist
 var _scroll_element: ScrollElement2D
 
+@onready var _flash_sound: AudioStreamPlayer = $FlashSound
+
 const LENS_POSITION := Vector2(-40, -685)
 
 
@@ -43,6 +45,7 @@ func _process(_delta: float) -> void:
 			_violation_pending = false
 			_flash_left = flash_duration
 			_afterglow_left = afterglow_duration
+			_flash_sound.play()
 			_signalist.report_speed_camera_passed(camera_id, speed_limit_kmh)
 	_flash_left = maxf(0.0, _flash_left - _delta)
 	_afterglow_left = maxf(0.0, _afterglow_left - _delta)
