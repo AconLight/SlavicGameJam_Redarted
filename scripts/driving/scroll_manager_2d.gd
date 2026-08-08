@@ -20,8 +20,6 @@ const DESIGN_SIZE := Vector2(1152, 648)
 @export_range(0.1, 8.0, 0.01) var near_scale := 2.5
 @export_range(0.2, 4.0, 0.01) var scale_easing := 1.45
 @export_range(0.05, 0.5, 0.01) var slot_lateral_spacing := 0.22
-@export var minimum_slot := -10
-@export var maximum_slot := 10
 @export var slot_origin := 0
 
 @export_group("Render")
@@ -160,8 +158,9 @@ func _near_endpoint(lateral_offset: float) -> Vector2:
 
 
 func _slot_value_to_lateral_offset(slot_value: float) -> float:
-	var usable_slot := clampf(slot_value, float(minimum_slot), float(maximum_slot))
-	return clampf((usable_slot + float(slot_origin)) * slot_lateral_spacing, -1.0, 1.0)
+	# Lanes are intentionally unbounded. With origin -2, lane 12 maps to the
+	# physical rightmost lane 10; higher values may extend beyond it on purpose.
+	return (slot_value + float(slot_origin)) * slot_lateral_spacing
 
 
 func _lane_angle_degrees(lateral_offset: float) -> float:
