@@ -4,7 +4,7 @@ extends Sprite2D
 @export var max_speed := 130.0
 
 @export var min_angle := -80.0
-@export var max_angle := 160.0
+@export var max_angle := 170.0
 
 @export var smooth_speed := 5.0
 
