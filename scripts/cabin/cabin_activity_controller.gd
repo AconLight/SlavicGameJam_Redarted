@@ -176,8 +176,8 @@ func _on_press_requested(activity: CabinActivity, held_by_action: bool) -> void:
 	activity.set_active(true)
 	_notify(_chill_source, &"ChillActivity")
 	# Gaz i hamowanie chodzą parą: czego kierowca nie dodaje, tego nie zdejmuje.
-	#if activity.accelerates:
-		#_notify(_speed_source, &"HeavyFoot")
+	if activity.accelerates:
+		_notify(_speed_source, &"HeavyFoot")
 	activity_started.emit(activity.activity_id)
 	if debug_log:
 		print("[cabin] start: ", activity.activity_id)
