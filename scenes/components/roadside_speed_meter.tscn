@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/driving/roadside_speed_meter.gd" id="1_meter"]
+[ext_resource type="Texture2D" path="res://assets/source/art/aseprite/fotoradar.png" id="2_artwork"]
 
 [node name="RoadsideSpeedCamera" type="Node2D"]
 script = ExtResource("1_meter")
+
+[node name="Artwork" type="Sprite2D" parent="."]
+position = Vector2(-120, -780)
+texture = ExtResource("2_artwork")
+centered = false

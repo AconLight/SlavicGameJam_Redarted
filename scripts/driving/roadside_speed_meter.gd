@@ -14,6 +14,8 @@ var _flash_left := 0.0
 var _signalist: GameStateSignalist
 var _scroll_element: ScrollElement2D
 
+const LENS_POSITION := Vector2(-40, -685)
+
 
 func _ready() -> void:
 	_scroll_element = get_parent() as ScrollElement2D
@@ -41,15 +43,6 @@ func _connect_signalist() -> void:
 
 
 func _draw() -> void:
-	# Texture-free placeholder: a pole-mounted camera with a visible limit plate.
-	draw_rect(Rect2(-7, -2, 14, 38), Color("44484b"), true)
-	draw_rect(Rect2(-26, -46, 52, 38), Color("5d6265"), true)
-	draw_rect(Rect2(-26, -46, 52, 38), Color("1b1d1f"), false, 3.0)
-	draw_circle(Vector2(10, -28), 9.0, Color("151719"))
-	draw_circle(Vector2(10, -28), 5.0, Color("c84232") if _flash_left <= 0.0 else Color.WHITE)
-	draw_circle(Vector2(10, -28), 2.0, Color("24110d"))
-	draw_circle(Vector2(-9, -28), 11.0, Color("f0eee7"))
-	draw_arc(Vector2(-9, -28), 9.0, 0.0, TAU, 24, Color("c43232"), 2.5)
-	draw_string(ThemeDB.fallback_font, Vector2(-16, -24), str(roundi(speed_limit_kmh)), HORIZONTAL_ALIGNMENT_LEFT, 16, 9, Color("171a1d"))
+	# The final fotoradar artwork is a child Sprite2D. Draw only its triggered flash.
 	if _flash_left > 0.0:
-		draw_circle(Vector2(26, -38), 22.0, Color(1.0, 1.0, 0.93, 0.7))
+		draw_circle(LENS_POSITION, 42.0, Color(1.0, 1.0, 0.93, 0.82))

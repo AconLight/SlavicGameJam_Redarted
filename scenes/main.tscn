@@ -4,19 +4,21 @@
 [ext_resource type="PackedScene" uid="uid://0aald3n4od8k" path="res://scenes/components/scroll_manager_2d.tscn" id="1_sugp2"]
 [ext_resource type="PackedScene" uid="uid://blg0rb2cnou4x" path="res://scenes/score.tscn" id="2_0wfyh"]
 [ext_resource type="PackedScene" path="res://scenes/components/game_state_signalist.tscn" id="3_signalist"]
+[ext_resource type="PackedScene" path="res://scenes/components/speed_camera_flash_effect.tscn" id="4_flash_effect"]
 
 [node name="Main" type="Node2D" unique_id=596678821]
 
 [node name="ScrollManager2D" parent="." unique_id=1353085533 instance=ExtResource("1_sugp2")]
 z_index = -10
-perspective_point = Vector2(500, 100)
-max_angle_left = -55.7
-max_angle_right = 83.4
+perspective_point = Vector2(560, 180)
 curve_factor = 0.24
 near_scale = 8.0
 
 [node name="score" parent="." unique_id=333109457 instance=ExtResource("2_0wfyh")]
 
-[node name="GameStateSignalist" parent="." instance=ExtResource("3_signalist")]
+[node name="GameStateSignalist" parent="." unique_id=2026274012 instance=ExtResource("3_signalist")]
 accelerator_path = NodePath("../Cabin/Interior/Acceleration/ArrowSprite/SpeedScript")
+
+[node name="SpeedCameraFlashEffect" parent="." unique_id=1446824941 instance=ExtResource("4_flash_effect")]
+
 [node name="Cabin" parent="." unique_id=489044161 instance=ExtResource("1_o5qli")]
