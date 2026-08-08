@@ -6,7 +6,7 @@
 
 [node name="RoadsideSpeedCamera" type="Node2D"]
 script = ExtResource("1_meter")
-speed_limit_kmh = 80.0
+speed_limit_kmh = 84.0
 detection_road_distance = 0.86
 
 [node name="Artwork" type="Sprite2D" parent="."]
