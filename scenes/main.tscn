@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://d1rre2fpfya1l"]
+[gd_scene format=3 uid="uid://ddpd3k6sht0r4"]
 
 [ext_resource type="PackedScene" uid="uid://b0ufvxdpypoj8" path="res://scenes/cabin.tscn" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://0aald3n4od8k" path="res://scenes/components/scroll_manager_2d.tscn" id="1_sugp2"]
@@ -9,7 +9,7 @@
 
 [node name="Main" type="Node2D" unique_id=596678821]
 
-[node name="Otoczenie" parent="." instance=ExtResource("5_otoczenie")]
+[node name="Otoczenie" parent="." unique_id=630666765 instance=ExtResource("5_otoczenie")]
 
 [node name="ScrollManager2D" parent="." unique_id=1353085533 instance=ExtResource("1_sugp2")]
 z_index = -10
