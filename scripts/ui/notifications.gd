@@ -21,7 +21,7 @@ func _connect_signalist() -> void:
 
 func _on_photo_taken(_camera_id: StringName, speed_kmh: float, speed_limit_kmh: float):
 	# Format the text to show the penalty and the speeds
-	text = "-%d CHILL!\nFOTORADAR"
+	text = "-%d CHILL!\nSpeeding!" % [chill_penalty]
 	
 	var keep_score = get_tree().get_first_node_in_group("keep_score")
 	if keep_score: keep_score.AddChill(-chill_penalty)
@@ -40,7 +40,7 @@ func play_flash_animation():
 	tween.tween_property(self, "modulate:a", 1.0, 0.1) 
 	
 	# Step B: Hold it on screen for 0.15 seconds
-	tween.tween_interval(0.55)                         
+	tween.tween_interval(0.65)                         
 	
 	# Step C: Fade out to invisible (0.0) over 0.1 seconds
 	tween.tween_property(self, "modulate:a", 0.0, 0.1) 
