@@ -13,3 +13,10 @@ Thumbs.db
 
 # Local diagnostics and throwaway output
 *.log
+
+# Wyniki gry. Każdy przejazd u każdego przepisuje te pliki, więc w repozytorium
+# biły się przy każdym pushu. Leżą w projekcie, a nie w user://, bo user://
+# wskazuje katalog poza folderem repozytorium — patrz scripts/score/leaderboard.gd.
+# Brak plików kod znosi: lista jest wtedy pusta, rekord zerowy.
+resources/data/leaderboard.json
+resources/data/highscore.json

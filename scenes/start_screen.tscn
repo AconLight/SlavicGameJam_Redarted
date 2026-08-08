@@ -46,6 +46,15 @@ offset_bottom = 900.0
 theme_override_constants/separation = 28
 alignment = 1
 
+[node name="LastScore" type="Label" parent="Panel" unique_id=17808584]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.58, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.02, 0.01, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 56
+text = "TWÓJ WYNIK: 0"
+horizontal_alignment = 1
+
 [node name="ScoresTitle" type="Label" parent="Panel" unique_id=17808585]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.67, 0.78, 1)

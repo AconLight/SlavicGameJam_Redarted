@@ -13,7 +13,13 @@ extends Control
 ## ekran gaśnie dokładnie na moment wejścia rozgrywki.
 @export_range(0.0, 10.0, 0.1) var start_delay_seconds := 2.0
 
+## Ile trwa rozjaśnianie po powrocie z rozgrywki. Wejście po koniec gry zastaje
+## czarny ekran — ten sam, którym gasła kabina — więc szew między scenami
+## trzeba zakryć. Przy pierwszym uruchomieniu nie ma czego rozjaśniać.
+@export_range(0.0, 5.0, 0.1) var fade_in_seconds := 0.8
+
 @onready var _scores: Label = $Panel/Scores
+@onready var _last_score: Label = $Panel/LastScore
 @onready var _start_button: Button = $Panel/StartButton
 @onready var _key_start: AudioStreamPlayer = $KeyStart
 @onready var _fade: ColorRect = $Fade
@@ -21,9 +27,26 @@ extends Control
 
 
 func _ready() -> void:
+	_show_last_score()
 	_show_scores()
 	_start_button.pressed.connect(_on_start_pressed)
 	_start_button.grab_focus()
+
+
+## Wynik przejazdu, z którego właśnie wróciliśmy. Przy pierwszym wejściu do gry
+## nie ma czego pokazywać, więc etykieta zostaje schowana.
+func _show_last_score() -> void:
+	if Leaderboard.last_score < 0:
+		_last_score.visible = false
+		return
+
+	_last_score.visible = true
+	_last_score.text = "TWÓJ WYNIK: %d" % Leaderboard.last_score
+
+	if fade_in_seconds <= 0.0:
+		return
+	_fade.color.a = 1.0
+	create_tween().tween_property(_fade, ^"color:a", 0.0, fade_in_seconds)
 
 
 func _show_scores() -> void:
