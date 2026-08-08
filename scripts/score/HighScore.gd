@@ -1,7 +1,9 @@
 extends Node
 
 @onready var highscore_label: Label = $HighScoreLabel
-const HIGHSCORE_PATH = "user://highscore.json"
+# W projekcie, nie w user:// — user:// to katalog danych aplikacji w systemie,
+# czyli poza folderem repozytorium. Patrz scripts/score/leaderboard.gd.
+const HIGHSCORE_PATH = "res://resources/data/highscore.json"
 var highscore: int = 0
 
 func _ready():
