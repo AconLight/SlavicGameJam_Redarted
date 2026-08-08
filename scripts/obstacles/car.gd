@@ -1,4 +1,3 @@
-
 extends Sprite2D
 
 var keep_score
@@ -61,6 +60,9 @@ func play_animation_sequence() -> void:
 	# 1. Drive/fly in from the side.
 	await approach()
 
+	# 1b. Wiggle a bit before deciding anything.
+	await wiggle_once()
+
 	# 2. Randomly decide whether this car performs a brake check.
 	var should_check_brakes: bool = [true, false].pick_random()
 
@@ -115,7 +117,8 @@ func approach() -> void:
 func brake_check_sequence() -> void:
 	var backup_count: int = 0
 
-	# The car will wiggle a random number of times.
+	# The car will wiggle a random number of times before it gives up
+	# and just drives off.
 	var wait_cycles: int = randi_range(4, 9)
 
 	for i in range(wait_cycles):
@@ -135,7 +138,7 @@ func brake_check_sequence() -> void:
 		print("active = ", active)
 
 		# -------------------------
-		# PLAYER IS BRAKING
+		# PLAYER IS BRAKING -> BACK UP
 		# -------------------------
 		if active:
 
@@ -148,20 +151,23 @@ func brake_check_sequence() -> void:
 
 			await back_up(backup_count)
 
-			# Maximum of 3 backups.
+			# Backed up 3 times: the brake check landed. Report it
+			# and stop wiggling/backing up (the car will drive away
+			# afterwards, back in play_animation_sequence).
 			if backup_count >= MAX_BACKUPS:
-				print("Maximum backups reached.")
-				break
+				print("Maximum backups reached. Reporting brake check.")
+				report_brake_check()
+				return
 
 		# -------------------------
-		# PLAYER IS NOT BRAKING
+		# PLAYER IS NOT BRAKING -> KEEP WIGGLING
 		# -------------------------
 		else:
-			print("Player stopped braking.")
+			print("Player not braking, wiggling again.")
 
-			report_brake_check()
-
-			return
+	# Ran out of wiggle cycles without ever hitting 3 backups.
+	# The car just gives up and runs away.
+	print("Ran out of wiggles. Running away.")
 
 
 # ============================================================

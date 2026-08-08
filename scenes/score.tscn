@@ -54,7 +54,7 @@ texture_progress_offset = Vector2(0, -10)
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/KeepScore/ProgressBar" unique_id=1040370969]
 z_index = -1
-position = Vector2(511.21075, 105.8296)
+position = Vector2(512.1076, 51.12108)
 texture = ExtResource("4_xcjqx")
 
 [node name="Notifications" type="Label" parent="CanvasLayer/KeepScore" unique_id=769599410]
