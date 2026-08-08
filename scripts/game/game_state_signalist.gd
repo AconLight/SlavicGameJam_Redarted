@@ -23,9 +23,11 @@ func _ready() -> void:
 
 func report_speed_camera_passed(camera_id: StringName, speed_limit_kmh: float) -> void:
 	speed_camera_passed.emit(camera_id, current_speed_kmh, speed_limit_kmh)
-	if current_speed_kmh > speed_limit_kmh:
-		speed_camera_triggered.emit(camera_id, current_speed_kmh, speed_limit_kmh)
-		speed_camera_photo_taken.emit(camera_id, current_speed_kmh, speed_limit_kmh)
+
+
+func report_speed_camera_photo_taken(camera_id: StringName, speed_limit_kmh: float) -> void:
+	speed_camera_triggered.emit(camera_id, current_speed_kmh, speed_limit_kmh)
+	speed_camera_photo_taken.emit(camera_id, current_speed_kmh, speed_limit_kmh)
 
 
 func _connect_accelerator() -> void:

@@ -47,6 +47,14 @@ texture_progress = ExtResource("3_plgac")
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/KeepScore/ProgressBar" unique_id=1040370969]
 
 [node name="Notifications" type="Label" parent="CanvasLayer/KeepScore" unique_id=769599410]
-offset_right = 40.0
-offset_bottom = 23.0
+offset_left = 440.0
+offset_top = 90.0
+offset_right = 1480.0
+offset_bottom = 270.0
+theme_override_colors/font_color = Color(1, 0.88, 0.58, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.02, 0.01, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 52
+horizontal_alignment = 1
+vertical_alignment = 1
 script = ExtResource("5_68bkv")

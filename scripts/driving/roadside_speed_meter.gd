@@ -46,7 +46,7 @@ func _process(_delta: float) -> void:
 			_flash_left = flash_duration
 			_afterglow_left = afterglow_duration
 			_flash_sound.play()
-			_signalist.report_speed_camera_passed(camera_id, speed_limit_kmh)
+			_signalist.report_speed_camera_photo_taken(camera_id, speed_limit_kmh)
 	_flash_left = maxf(0.0, _flash_left - _delta)
 	_afterglow_left = maxf(0.0, _afterglow_left - _delta)
 	queue_redraw()
