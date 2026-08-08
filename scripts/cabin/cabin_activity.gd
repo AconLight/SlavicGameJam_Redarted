@@ -58,6 +58,11 @@ const GROUP := &"cabin_activity"
 ## Wymaga ustawionej pinezki.
 @export var move_to_focus_while_active := false
 
+## Dokąd przenieść przedmiot na czas czynności. Puste = na swoją pinezkę
+## zoomu. Ustaw, gdy ma jechać gdzie indziej niż patrzy kamera — na przykład
+## ukulele zjeżdża pod ekran, a w kadrze zostaje osobna grafika grania.
+@export_node_path("Node2D") var active_pose_path: NodePath
+
 ## Ile sekund leci przedmiot między swoim miejscem a pinezką.
 ## 0 = przeskok bez animacji.
 @export_range(0.0, 2.0, 0.01) var focus_travel_seconds := 0.2
@@ -80,6 +85,7 @@ const GROUP := &"cabin_activity"
 @export_range(0.0, 10.0, 0.05) var return_seconds := 1.8
 
 var zoom_target: CabinZoomTarget
+var _active_pose: Node2D
 
 ## Czy przedmiot jest odblokowany. Ustawia to kontroler, patrząc na chill.
 var available := true
@@ -107,6 +113,9 @@ func _ready() -> void:
 		return
 
 	zoom_target = get_node_or_null(zoom_target_path) as CabinZoomTarget
+	_active_pose = get_node_or_null(active_pose_path) as Node2D
+	if _active_pose != null:
+		_active_pose.visible = false
 	_visual_root = get_node_or_null(visual_root_path) as CanvasItem
 	_mover = (_visual_root as Node2D) if _visual_root is Node2D else self
 	_home_position = _mover.position
@@ -176,7 +185,10 @@ func set_active(value: bool) -> void:
 	_is_active = value
 	_sway_time = 0.0
 
-	if not move_to_focus_while_active or zoom_target == null or _mover == null:
+	# Własna poza ma pierwszeństwo nad pinezką kamery.
+	var destination: Node2D = _active_pose if _active_pose != null else zoom_target
+
+	if not move_to_focus_while_active or destination == null or _mover == null:
 		# Kołysać można się też bez przenoszenia — wtedy wokół własnego kąta.
 		if _mover != null:
 			_active_rotation = _mover.rotation
@@ -189,11 +201,11 @@ func set_active(value: bool) -> void:
 		# i obrót trzeba przeliczyć na układ rodzica przenoszonego węzła.
 		var parent := _mover.get_parent() as Node2D
 		if parent != null:
-			target = parent.to_local(zoom_target.global_position)
-			target_rotation = zoom_target.global_rotation - parent.global_rotation
+			target = parent.to_local(destination.global_position)
+			target_rotation = destination.global_rotation - parent.global_rotation
 		else:
-			target = zoom_target.global_position
-			target_rotation = zoom_target.global_rotation
+			target = destination.global_position
+			target_rotation = destination.global_rotation
 
 	_active_rotation = target_rotation
 

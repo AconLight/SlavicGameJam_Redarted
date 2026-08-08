@@ -16,7 +16,8 @@
 [ext_resource type="Texture2D" uid="uid://dl3insxgnvsla" path="res://assets/source/art/aseprite/galka.png" id="10_galka"]
 [ext_resource type="Script" uid="uid://dpn1b5psi4q5h" path="res://scripts/cabin/cabin_knob.gd" id="11_knob"]
 [ext_resource type="Script" uid="uid://dccpa2gd15b82" path="res://scripts/cabin/cabin_tuning_slider.gd" id="12_slider"]
-[ext_resource type="Texture2D" uid="uid://5i38vvyl85u2" path="res://assets/placeholders/ukulele.png.webp" id="13_ukulele"]
+[ext_resource type="Texture2D" uid="uid://cn8ftxqopdbgp" path="res://assets/source/art/aseprite/ukulele na siedzieniu.png" id="13_2gupc"]
+[ext_resource type="Texture2D" uid="uid://cev8ajcw5srw2" path="res://assets/source/art/aseprite/ukulale gra.png" id="13_4nevi"]
 [ext_resource type="Texture2D" uid="uid://dfnme22o5g567" path="res://assets/source/art/aseprite/CB radio - kabel.png" id="14_cable"]
 [ext_resource type="Texture2D" uid="uid://2noyk23id7gb" path="res://assets/source/art/aseprite/CB radio - gruszkaDOBRA WERSJA.png" id="15_body"]
 [ext_resource type="Script" uid="uid://bartn07dbbc2v" path="res://scripts/cabin/cabin_radio_audio.gd" id="16_radio_audio"]
@@ -127,6 +128,14 @@ texture = ExtResource("4_xuxmy")
 [node name="lapa" type="Node2D" parent="Interior/SteeringWheel" unique_id=1687659225]
 position = Vector2(50.65, 16.59)
 
+[node name="reka-ukulele" type="Sprite2D" parent="Interior/SteeringWheel/lapa" unique_id=610500660]
+z_index = 1
+position = Vector2(-6.7976274, -1.1537628)
+rotation = -0.52185345
+scale = Vector2(0.4835467, 0.6834006)
+skew = -0.033753037
+texture = ExtResource("4_rivfo")
+
 [node name="reka-radio" type="Sprite2D" parent="Interior/SteeringWheel/lapa" unique_id=225228096]
 visible = false
 position = Vector2(173.73923, 87.43683)
@@ -135,6 +144,7 @@ scale = Vector2(0.4712269, 0.8959968)
 texture = ExtResource("4_rivfo")
 
 [node name="reka-cb" type="Sprite2D" parent="Interior/SteeringWheel/lapa" unique_id=1362004048]
+visible = false
 position = Vector2(116.69226, -87.0597)
 rotation = 0.90582585
 scale = Vector2(0.5007308, 1.1164169)
@@ -151,12 +161,41 @@ script = ExtResource("26_pose_swap")
 controller_path = NodePath("../../../../ActivityController")
 poses = {
 &"cb_radio": NodePath("../reka-cb"),
-&"radio": NodePath("../reka-radio")
+&"radio": NodePath("../reka-radio"),
+&"ukulele": NodePath("../reka-ukulele")
 }
 
+[node name="reka-okno-ukulele" type="Sprite2D" parent="Interior" unique_id=434374095]
+position = Vector2(61, 966)
+rotation = -1.4294246
+texture = ExtResource("9_52sum")
+
 [node name="Sprite2D" type="Sprite2D" parent="Interior" unique_id=2139746717]
+z_index = 1
 position = Vector2(214, 951)
 texture = ExtResource("9_52sum")
+script = ExtResource("26_pose_swap")
+controller_path = NodePath("../../ActivityController")
+poses = {
+&"ukulele": NodePath("../reka-okno-ukulele")
+}
+
+[node name="ukulele-gra-poza" type="Sprite2D" parent="Interior"]
+position = Vector2(521, 914)
+scale = Vector2(1.1931819, 1.2142856)
+texture = ExtResource("13_4nevi")
+
+[node name="Ukulele-gra" type="Sprite2D" parent="Interior" unique_id=611099491]
+z_index = 1
+position = Vector2(521, 1400)
+scale = Vector2(1.1931819, 1.2142856)
+texture = ExtResource("13_4nevi")
+script = ExtResource("26_pose_swap")
+controller_path = NodePath("../../ActivityController")
+poses = {
+&"ukulele": NodePath("../ukulele-gra-poza")
+}
+swap_seconds = 0.5
 
 [node name="ZoomTargets" type="Node2D" parent="." unique_id=1760636923]
 
@@ -174,7 +213,6 @@ zoom = 2.5
 
 [node name="UkuleleFocus" parent="ZoomTargets" unique_id=215320030 instance=ExtResource("1_zoom_target")]
 position = Vector2(925, 796.99994)
-rotation = -1.012291
 zoom = 2.0
 
 [node name="Activities" type="Node2D" parent="." unique_id=819683887]
@@ -212,13 +250,17 @@ knob_path = NodePath("../RadioKnob")
 travel = 30.0
 bar_color = Color(0.74925476, 0.12429362, 0.12823176, 1)
 
+[node name="ukulele-schowane" type="Node2D" parent="Activities"]
+position = Vector2(1735, 1500)
+
 [node name="Ukulele" parent="Activities" unique_id=375787849 instance=ExtResource("2_activity")]
 position = Vector2(1735, 888)
-scale = Vector2(0.25, 0.25)
 activity_id = &"ukulele"
 zoom_target_path = NodePath("../../ZoomTargets/UkuleleFocus")
-texture = ExtResource("13_ukulele")
-click_size = Vector2(800, 1395)
+active_pose_path = NodePath("../ukulele-schowane")
+focus_travel_seconds = 0.5
+texture = ExtResource("13_2gupc")
+click_size = Vector2(290, 450)
 min_chill = 75
 move_to_focus_while_active = true
 sway_degrees_while_active = 4.0
@@ -279,6 +321,7 @@ script = ExtResource("24_engine")
 position = Vector2(960, 540)
 script = ExtResource("4_camera")
 controller_path = NodePath("../ActivityController")
+bumped_paths = Array[NodePath]([NodePath("../Interior"), NodePath("../Activities")])
 
 [node name="DebugOverlay" type="CanvasLayer" parent="." unique_id=259505102]
 script = ExtResource("5_debug")
