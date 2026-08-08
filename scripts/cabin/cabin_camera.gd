@@ -30,6 +30,14 @@ extends Camera2D
 ## bo szczyty są rozłożone nierówno.
 @export_range(1.0, 60.0, 0.5) var swell_period := 11.0
 
+## Węzły, które podskakują na wybojach — wnętrze kabiny i jej przedmioty.
+##
+## Drżenie idzie po nich, a nie po kamerze, bo kamera rusza całym widokiem
+## i wtedy skakałaby też droga oraz niebo. Pinezek zoomu tu nie ma i mieć
+## nie może: gdyby drgały, kamera goniłaby za nimi i drżenie zniosłoby się
+## na ekranie do zera.
+@export var bumped_paths: Array[NodePath] = []
+
 var controller: CabinActivityController
 
 var _from_position := Vector2.ZERO
@@ -38,9 +46,17 @@ var _elapsed := 0.0
 var _duration := 0.0
 var _bump_time := 0.0
 var _swell := 0.0
+var _bumped: Array[Node2D] = []
+var _bumped_home: Array[Vector2] = []
 
 
 func _ready() -> void:
+	for path in bumped_paths:
+		var node := get_node_or_null(path) as Node2D
+		if node != null:
+			_bumped.append(node)
+			_bumped_home.append(node.position)
+
 	controller = get_node_or_null(controller_path) as CabinActivityController
 	if controller == null:
 		return
@@ -72,8 +88,8 @@ func _process(delta: float) -> void:
 	_apply(target, _elapsed / _duration)
 
 
-## Delikatne podskakiwanie na wybojach. Idzie przez offset, nie przez
-## position, więc nie miesza się z najazdem na aktywność.
+## Delikatne podskakiwanie na wybojach. Przesuwa wskazane węzły kabiny,
+## nie kamerę — kamera rusza całym widokiem, więc skakałaby też droga.
 ##
 ## Dwie fale o niewspółmiernych częstotliwościach zamiast jednej — jedna
 ## sinusoida czytałaby się jak metronom, a nie jak droga.
@@ -84,7 +100,9 @@ func _apply_bump(delta: float) -> void:
 	wave += 0.45 * sin(_bump_time * TAU * bump_frequency * 1.7 + 1.3)
 	# Dzielenie przez zoom trzyma stałe wychylenie na ekranie — bez tego
 	# przy przybliżeniu 3x kabina trzęsłaby się trzy razy mocniej.
-	offset.y = wave * _swell_amplitude() / maxf(zoom.y, 0.01)
+	var shift := wave * _swell_amplitude() / maxf(zoom.y, 0.01)
+	for index in _bumped.size():
+		_bumped[index].position.y = _bumped_home[index].y + shift
 
 
 ## Amplituda drżenia, pełzająca między spokojem a wybojem.
