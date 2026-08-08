@@ -35,6 +35,7 @@ const ScrollElementScript := preload("res://scripts/driving/scroll_element_2d.gd
 var _manager: ScrollManager2D
 var _random := RandomNumberGenerator.new()
 var _time_until_spawn := 0.0
+var _spawn_distance_accumulator := 0.0
 
 
 func _ready() -> void:
@@ -57,12 +58,28 @@ func _find_manager() -> ScrollManager2D:
 
 func _process(delta: float) -> void:
 	_update_active_elements(delta)
+	if derive_interval_from_road_spacing:
+		_spawn_by_road_distance(delta)
+		return
 	_time_until_spawn -= delta
 	if _time_until_spawn > 0.0:
 		return
 	if _active_count() < max_active_elements:
 		_spawn(0.0)
-	_time_until_spawn = _spawn_interval()
+		_time_until_spawn = _spawn_interval()
+
+
+func _spawn_by_road_distance(delta: float) -> void:
+	# Keeping the spawn clock in road-distance space prevents gaps when the
+	# accelerator changes the world-scroll speed. All elements in a configured
+	# line are therefore separated by exactly road_spacing.
+	var relative_speed := maxf(0.0, 1.0 + relative_speed_min)
+	_spawn_distance_accumulator += _manager.effective_world_scroll_speed() * relative_speed * delta
+	while _spawn_distance_accumulator >= road_spacing and _active_count() < max_active_elements:
+		_spawn_distance_accumulator -= road_spacing
+		# The new item has already travelled the leftover amount this frame, so it
+		# lands on the same distance grid as every older item.
+		_spawn(_spawn_distance_accumulator)
 
 
 func _update_active_elements(delta: float) -> void:
