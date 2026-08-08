@@ -31,6 +31,12 @@
 [ext_resource type="Script" uid="uid://br16cj3fsg6c4" path="res://scripts/cabin/cabin_engine_audio.gd" id="24_engine"]
 [ext_resource type="AudioStream" uid="uid://dgxw2hj34typo" path="res://assets/source/audio/sfx/EngineRunning.mp3" id="25_engine_mp3"]
 [ext_resource type="Script" uid="uid://chvv26qpu4yax" path="res://scripts/cabin/cabin_pose_swap.gd" id="26_pose_swap"]
+[ext_resource type="Script" uid="uid://bylckpdkgpyi" path="res://scripts/cabin/cabin_passive_activity.gd" id="27_passive"]
+[ext_resource type="Script" uid="uid://ca2mkap6aqmxy" path="res://scripts/cabin/cabin_music_notes.gd" id="28_notes"]
+[ext_resource type="Script" uid="uid://cnpotmrvpjhy5" path="res://scripts/cabin/cabin_activity_cooldown.gd" id="29_cooldown"]
+[ext_resource type="Texture2D" uid="uid://p6uov7tq0r0k" path="res://assets/source/art/aseprite/radio bez obwódki.png" id="30_radio_locked"]
+[ext_resource type="Texture2D" uid="uid://ckvbvn2bdsixr" path="res://assets/source/art/aseprite/CB radio - gruszka bez obwódki.png" id="31_cb_locked"]
+[ext_resource type="Texture2D" uid="uid://b5otbdfrwnfi" path="res://assets/source/art/aseprite/ukulele na siedzieniu bez obwódki.png" id="32_uku_locked"]
 [ext_resource type="AudioStream" uid="uid://deo32mk7olydl" path="res://assets/source/audio/sfx/CB_1.wav" id="cb1"]
 [ext_resource type="AudioStream" uid="uid://cu3bkyu5kc32b" path="res://assets/source/audio/sfx/CB_2.wav" id="cb2"]
 [ext_resource type="AudioStream" uid="uid://d0egpeeqg58mk" path="res://assets/source/audio/sfx/CB_3.wav" id="cb3"]
@@ -78,6 +84,8 @@ script = ExtResource("8_handset")
 camera_path = NodePath("../../CabinCamera")
 controller_path = NodePath("../../ActivityController")
 held_pose_path = NodePath("body-cb")
+activity_path = NodePath("CbActivity")
+locked_texture = ExtResource("31_cb_locked")
 
 [node name="body-cb" type="Sprite2D" parent="Interior/CbHandset" unique_id=739765761]
 texture_filter = 1
@@ -224,6 +232,7 @@ position = Vector2(1445, 876)
 activity_id = &"radio"
 zoom_target_path = NodePath("../../ZoomTargets/RadioFocus")
 texture = ExtResource("9_radio")
+locked_texture = ExtResource("30_radio_locked")
 click_size = Vector2(220, 170)
 approach_seconds = 10.0
 return_seconds = 0.45
@@ -252,6 +261,11 @@ knob_path = NodePath("../RadioKnob")
 travel = 30.0
 bar_color = Color(0.74925476, 0.12429362, 0.12823176, 1)
 
+[node name="MusicNotes" type="Node2D" parent="Activities" unique_id=1779206418]
+position = Vector2(1445, 764)
+script = ExtResource("28_notes")
+source_path = NodePath("../../RadioPassive")
+
 [node name="ukulele-schowane" type="Node2D" parent="Activities" unique_id=1779206417]
 position = Vector2(1735, 1500)
 
@@ -260,6 +274,7 @@ position = Vector2(1735, 888)
 activity_id = &"ukulele"
 zoom_target_path = NodePath("../../ZoomTargets/UkuleleFocus")
 texture = ExtResource("13_2gupc")
+locked_texture = ExtResource("32_uku_locked")
 click_size = Vector2(290, 450)
 min_chill = 60
 move_to_focus_while_active = true
@@ -276,6 +291,23 @@ script = ExtResource("3_controller")
 neutral_target_path = NodePath("../ZoomTargets/NeutralFocus")
 chill_source_path = NodePath("../../score/CanvasLayer/KeepScore")
 speed_source_path = NodePath("../Interior/Acceleration/ArrowSprite/SpeedScript")
+
+[node name="CbCooldown" type="Node" parent="." unique_id=574560890]
+script = ExtResource("29_cooldown")
+activity_path = NodePath("../Interior/CbHandset/CbActivity")
+controller_path = NodePath("../ActivityController")
+
+[node name="UkuleleCooldown" type="Node" parent="." unique_id=574560891]
+script = ExtResource("29_cooldown")
+activity_path = NodePath("../Activities/Ukulele")
+controller_path = NodePath("../ActivityController")
+lock_seconds_max = 10.0
+
+[node name="RadioPassive" type="Node" parent="." unique_id=574560889]
+script = ExtResource("27_passive")
+activity_path = NodePath("../Activities/Radio")
+controller_path = NodePath("../ActivityController")
+chill_source_path = NodePath("../../score/CanvasLayer/KeepScore")
 
 [node name="RadioAudio" type="Node" parent="." unique_id=574560888]
 script = ExtResource("16_radio_audio")

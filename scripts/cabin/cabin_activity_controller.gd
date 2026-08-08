@@ -149,7 +149,13 @@ func _refresh_availability() -> void:
 		# chill zdążył spaść poniżej jej progu.
 		if activity == _active:
 			continue
-		activity.set_available(chill >= activity.min_chill)
+		# Próg działa raz, w jedną stronę. Przedmiot zdobyty chillem zostaje
+		# w kabinie na resztę przejazdu — mrugające co chwilę ukulele wyglądało
+		# jak błąd, a gracz nie ma jak zaplanować czynności, która znika mu
+		# z ekranu w połowie zjazdu chillu.
+		if not activity.chill_unlocked and chill >= activity.min_chill:
+			activity.chill_unlocked = true
+		activity.set_available(activity.chill_unlocked)
 
 
 ## Czy kierowca puścił przedmiot. Sposób puszczenia musi być ten sam co chwytu:
@@ -162,7 +168,7 @@ func _hold_released() -> bool:
 
 
 func _on_press_requested(activity: CabinActivity, held_by_action: bool) -> void:
-	if not accepts_input() or not activity.available:
+	if not accepts_input() or not activity.available or activity.locked:
 		return
 	_active = activity
 	_hold_action = activity.activation_action if held_by_action else &""
