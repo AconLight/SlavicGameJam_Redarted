@@ -7,7 +7,7 @@
 [node name="ScrollManager2D" type="Node2D" unique_id=1353085533]
 z_index = -10
 script = ExtResource("1_manager")
-layout_size = Vector2(1920, 1080)
+layout_size = Vector2(1920, 1180)
 fill_viewport = true
 perspective_point = Vector2(560, 270)
 max_angle_left = -82.9
@@ -45,7 +45,6 @@ derive_interval_from_road_spacing = true
 road_spacing = 0.065
 max_active_elements = 16
 prewarm_count = 16
-prewarm_start_distance = 0.0
 prewarm_spacing = 0.065
 spawn_immediately = false
 
@@ -63,7 +62,6 @@ derive_interval_from_road_spacing = true
 road_spacing = 0.065
 max_active_elements = 16
 prewarm_count = 16
-prewarm_start_distance = 0.0
 prewarm_spacing = 0.065
 spawn_immediately = false
 
