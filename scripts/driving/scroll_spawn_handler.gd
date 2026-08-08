@@ -13,6 +13,10 @@ const ScrollElementScript := preload("res://scripts/driving/scroll_element_2d.gd
 @export_range(0.01, 8.0, 0.01) var size_multiplier_max := 1.0
 @export_range(0.001, 0.25, 0.001) var flat_road_length := 0.022
 @export_range(0.01, 1.0, 0.01) var flat_half_width_in_slots := 0.14
+@export_group("Lane Warp Shader")
+@export var use_lane_warp_shader := false
+@export_range(0.0, 0.35, 0.005) var lane_warp_strength := 0.14
+@export_group("")
 @export_range(0.05, 30.0, 0.01) var spawn_interval_seconds := 1.0
 @export var derive_interval_from_road_spacing := false
 @export_range(0.001, 1.0, 0.001) var road_spacing := 0.08
@@ -77,6 +81,8 @@ func _spawn(road_distance: float) -> void:
 	element.size_multiplier = _random.randf_range(size_multiplier_min, size_multiplier_max)
 	element.flat_road_length = flat_road_length
 	element.flat_half_width_in_slots = flat_half_width_in_slots
+	element.use_lane_warp_shader = use_lane_warp_shader
+	element.lane_warp_strength = lane_warp_strength
 	element.road_distance = road_distance
 	add_child(element)
 	_manager.apply_projection(element)

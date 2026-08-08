@@ -104,19 +104,21 @@ func layout_scale() -> Vector2:
 
 
 func apply_projection(element: ScrollElement2D) -> void:
+	var lateral_offset := slot_to_lateral_offset(element.slot)
 	if element.uses_flat_ground_projection():
 		element.apply_flat_ground_projection(
 			project_flat_quad(element.slot, element.road_distance, element.flat_road_length, element.flat_half_width_in_slots),
 			element_z_index,
+			lateral_offset,
 		)
 		return
 	var visual_progress := road_to_visual_progress(element.road_distance)
-	var lateral_offset := slot_to_lateral_offset(element.slot)
 	element.apply_projection(
 		project_position(lateral_offset, visual_progress),
 		layout_scale() * project_scale(visual_progress),
 		project_rotation(lateral_offset, visual_progress),
 		element_z_index,
+		lateral_offset,
 	)
 
 
