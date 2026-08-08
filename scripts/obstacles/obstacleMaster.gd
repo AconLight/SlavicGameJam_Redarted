@@ -50,14 +50,14 @@ func spawn_random_obstacle():
 	var random_obstacle = randi() % ObstacleType.size()
 	
 	match random_obstacle:
-		ObstacleType.SPEED_CAMERA:
-			trigger_speed_camera()
+		#ObstacleType.SPEED_CAMERA:
+			#trigger_speed_camera()
 		ObstacleType.SIDE_VEHICLE:
 			trigger_side_vehicle()
-		ObstacleType.SPEED_INCREASE:
-			trigger_speed_increase()
-		ObstacleType.FALL_OUT:
-			trigger_fall_out()
+		#ObstacleType.SPEED_INCREASE:
+			#trigger_speed_increase()
+		#ObstacleType.FALL_OUT:
+			#trigger_fall_out()
 
 # --- Obstacle Triggers ---
 

@@ -2,23 +2,40 @@
 extends Sprite2D
 
 var keep_score
-var active := false
+var active: bool = false
 
-const APPROACH_POSITION := Vector2(1000, 500)
-const BACKUP_DISTANCE := 50.0
-const MAX_BACKUPS := 3
+# Where the car should ENTER from the side.
+const START_POSITION: Vector2 = Vector2(-300, 1600)
 
-const DRIVE_AWAY_POSITION := Vector2(950, 650)
-const TELEPORT_POSITION := Vector2(-1000, -1000)
+# Where the car stops after entering.
+const APPROACH_POSITION: Vector2 = Vector2(1000, 500)
+
+# How far the car backs up each time.
+const BACKUP_DISTANCE: float = 50.0
+
+# Maximum number of times it can back up.
+const MAX_BACKUPS: int = 3
+
+# Where the car goes when leaving.
+const DRIVE_AWAY_POSITION: Vector2 = Vector2(950, 450)
+
+# Where the car is hidden after finishing.
+const TELEPORT_POSITION: Vector2 = Vector2(-1000, -1000)
 
 
 func _ready() -> void:
 	keep_score = get_tree().get_first_node_in_group(&"keep_score")
+
+	# Make absolutely sure the car starts from the side.
+	position = START_POSITION
+	scale = Vector2.ONE
+	rotation_degrees = 0.0
+
 	call_deferred("_connect_signalist")
 
 
 func _connect_signalist() -> void:
-	var signalist := get_tree().get_first_node_in_group(
+	var signalist: GameStateSignalist = get_tree().get_first_node_in_group(
 		&"game_state_signalist"
 	) as GameStateSignalist
 
@@ -35,25 +52,36 @@ func _connect_signalist() -> void:
 # ============================================================
 
 func play_animation_sequence() -> void:
+
+	# Always start from the side.
+	position = START_POSITION
+	scale = Vector2.ONE
+	rotation_degrees = 0.0
+
+	# 1. Drive/fly in from the side.
 	await approach()
 
+	# 2. Randomly decide whether this car performs a brake check.
 	var should_check_brakes: bool = [true, false].pick_random()
 
 	if should_check_brakes:
 		await brake_check_sequence()
 
+	# 3. Leave the scene.
 	await drive_away()
 
+	# 4. Hide/reset the car.
 	teleport()
 
 
 # ============================================================
-# STEP 1 - APPROACH
+# STEP 1 - ENTER FROM SIDE
 # ============================================================
 
 func approach() -> void:
-	var tween := create_tween()
+	var tween: Tween = create_tween()
 
+	# Move horizontally from the side.
 	tween.tween_property(
 		self,
 		"position:x",
@@ -61,6 +89,7 @@ func approach() -> void:
 		5.0
 	).set_trans(Tween.TRANS_LINEAR)
 
+	# Move vertically slightly to create the curved entrance.
 	tween.parallel().tween_property(
 		self,
 		"position:y",
@@ -68,6 +97,7 @@ func approach() -> void:
 		5.0
 	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
+	# Become smaller as it approaches.
 	tween.parallel().tween_property(
 		self,
 		"scale",
@@ -83,36 +113,55 @@ func approach() -> void:
 # ============================================================
 
 func brake_check_sequence() -> void:
-	var backup_count := 0
+	var backup_count: int = 0
 
-	# Random amount of time before the brake check starts.
-	var wait_cycles := randi_range(4, 9)
+	# The car will wiggle a random number of times.
+	var wait_cycles: int = randi_range(4, 9)
 
 	for i in range(wait_cycles):
+
+		print("Wiggle ", i + 1, "/", wait_cycles)
+
+		# -------------------------
+		# WIGGLE
+		# -------------------------
 		await wiggle_once()
 
-	# Now actually perform the brake check.
-	while backup_count < MAX_BACKUPS:
-
+		# -------------------------
+		# CHECK BRAKING
+		# -------------------------
 		update_active_from_chill()
 
-		print("Brake check. active = ", active)
+		print("active = ", active)
 
-		if not active:
-			# Player is not braking.
-			# Brake check is considered complete.
+		# -------------------------
+		# PLAYER IS BRAKING
+		# -------------------------
+		if active:
+
+			backup_count += 1
+
+			print(
+				"Player is braking. Backing up #",
+				backup_count
+			)
+
+			await back_up(backup_count)
+
+			# Maximum of 3 backups.
+			if backup_count >= MAX_BACKUPS:
+				print("Maximum backups reached.")
+				break
+
+		# -------------------------
+		# PLAYER IS NOT BRAKING
+		# -------------------------
+		else:
+			print("Player stopped braking.")
+
 			report_brake_check()
+
 			return
-
-		# Player is braking.
-		# Back up another 50 pixels.
-		backup_count += 1
-
-		print("Backing up: ", backup_count, "/", MAX_BACKUPS)
-
-		await back_up(backup_count)
-
-	print("Maximum backups reached.")
 
 
 # ============================================================
@@ -120,7 +169,7 @@ func brake_check_sequence() -> void:
 # ============================================================
 
 func wiggle_once() -> void:
-	var tween := create_tween()
+	var tween: Tween = create_tween()
 
 	tween.tween_property(
 		self,
@@ -144,11 +193,17 @@ func wiggle_once() -> void:
 # ============================================================
 
 func back_up(backup_count: int) -> void:
-	var target_position := position + Vector2(0, BACKUP_DISTANCE)
 
-	var duration := 1.0 + (backup_count - 1) * 0.05
+	# Use the CURRENT real position of the Sprite.
+	var target_position: Vector2 = position + Vector2(
+		0,
+		BACKUP_DISTANCE
+	)
 
-	var tween := create_tween()
+	# Each backup can become slightly slower.
+	var duration: float = 1.0 + (backup_count - 1) * 0.05
+
+	var tween: Tween = create_tween()
 
 	tween.tween_property(
 		self,
@@ -168,10 +223,11 @@ func back_up(backup_count: int) -> void:
 
 
 # ============================================================
-# READ PLAYER STATE
+# READ PLAYER BRAKING STATE
 # ============================================================
 
 func update_active_from_chill() -> void:
+
 	if keep_score == null:
 		active = false
 		return
@@ -182,11 +238,12 @@ func update_active_from_chill() -> void:
 
 
 # ============================================================
-# REPORT SUCCESSFUL BRAKE CHECK
+# BRAKE CHECK SUCCESS
 # ============================================================
 
 func report_brake_check() -> void:
-	var signalist := get_tree().get_first_node_in_group(
+
+	var signalist: GameStateSignalist = get_tree().get_first_node_in_group(
 		&"game_state_signalist"
 	) as GameStateSignalist
 
@@ -195,15 +252,17 @@ func report_brake_check() -> void:
 
 
 # ============================================================
-# STEP 4 - DRIVE AWAY
+# STEP 3 - DRIVE AWAY
 # ============================================================
 
 func drive_away() -> void:
-	var target_position := DRIVE_AWAY_POSITION + Vector2(0, -200)
 
-	# Reset rotation first.
-	var tween := create_tween()
+	# Move upward from the current position.
+	var target_position: Vector2 = DRIVE_AWAY_POSITION
 
+	var tween: Tween = create_tween()
+
+	# Straighten the car.
 	tween.tween_property(
 		self,
 		"rotation_degrees",
@@ -211,6 +270,7 @@ func drive_away() -> void:
 		1.0
 	)
 
+	# Move away.
 	tween.parallel().tween_property(
 		self,
 		"position",
@@ -218,6 +278,7 @@ func drive_away() -> void:
 		1.5
 	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
+	# Shrink away.
 	tween.parallel().tween_property(
 		self,
 		"scale",
@@ -229,10 +290,11 @@ func drive_away() -> void:
 
 
 # ============================================================
-# STEP 5 - TELEPORT
+# STEP 4 - TELEPORT / RESET
 # ============================================================
 
 func teleport() -> void:
+
 	position = TELEPORT_POSITION
 	scale = Vector2.ONE
 	rotation_degrees = 0.0
