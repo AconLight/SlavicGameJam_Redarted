@@ -26,7 +26,7 @@ const OSCILLATION_STEP := 1.0
 const OSCILLATION_TIME := 0.5
 
 const BRAKE_RATE := 25.0
-const ACCEL_RATE := 2.0
+const ACCEL_RATE := 20.0
 
 
 var direction := 1
