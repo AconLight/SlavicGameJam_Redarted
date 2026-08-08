@@ -4,9 +4,9 @@ extends CanvasLayer
 ## Full-screen enforcement-camera flash. It listens to GameStateSignalist so
 ## camera objects stay responsible only for detecting a violation.
 
-@export_range(0.0, 1.0, 0.01) var peak_alpha := 0.96
-@export_range(0.01, 1.0, 0.01) var flash_in_seconds := 0.04
-@export_range(0.0, 1.0, 0.01) var hold_seconds := 0.14
+@export_range(0.0, 1.0, 0.01) var peak_alpha := 0.99
+@export_range(0.01, 1.0, 0.01) var flash_in_seconds := 0.02
+@export_range(0.0, 1.0, 0.01) var hold_seconds := 0.08
 @export_range(0.05, 5.0, 0.05) var fade_seconds := 1.35
 
 @onready var _overlay: ColorRect = $Overlay
