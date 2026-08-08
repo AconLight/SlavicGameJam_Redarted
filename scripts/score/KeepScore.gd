@@ -76,14 +76,16 @@ func EndChill():
 
 # Determines score multiplier from chill amount
 func get_chill_multiplier() -> int:
-	if chill <= 25:
+	if chill <= 19:
 		return 1
-	elif chill <= 50:
+	elif chill <= 39:
 		return 2
-	elif chill <= 80:
+	elif chill <= 59:
+		return 3
+	elif chill <= 79:
 		return 4
 	else:
-		return 8
+		return 5
 
 # Add chill from other actions
 func AddChill(amount: int):

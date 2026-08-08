@@ -2,9 +2,16 @@
 
 [ext_resource type="Script" uid="uid://svjds2r8vbdy" path="res://scripts/score/HighScore.gd" id="1_bak1h"]
 [ext_resource type="Script" uid="uid://cl5p7r1gp1ndn" path="res://scripts/score/KeepScore.gd" id="2_plgac"]
-[ext_resource type="Texture2D" uid="uid://m7h6t3txc0qb" path="res://assets/source/art/raster/DarkBrownBackground.png" id="3_lew60"]
-[ext_resource type="Texture2D" uid="uid://b8ue348dpmf7g" path="res://assets/source/art/AI/ProgressBar.png" id="3_plgac"]
+[ext_resource type="Texture2D" uid="uid://b4ve1x447g5k1" path="res://assets/source/art/aseprite/chill meter empty.png" id="3_68bkv"]
+[ext_resource type="Texture2D" uid="uid://cus0u6tub5mqe" path="res://assets/source/art/aseprite/chill meter FULL , BEZ GŁOWY.png" id="4_68bkv"]
+[ext_resource type="Texture2D" uid="uid://dc2e06bpek5sv" path="res://assets/source/art/aseprite/chill meter.png" id="4_xcjqx"]
 [ext_resource type="Script" uid="uid://lnnyxai80f50" path="res://scripts/ui/notifications.gd" id="5_68bkv"]
+[ext_resource type="Texture2D" uid="uid://cn84viqw5ni6s" path="res://assets/source/art/aseprite/mnożnik 3.png" id="7_3eqfp"]
+[ext_resource type="Script" uid="uid://cvi1d41f6imhu" path="res://scripts/ui/multiscore.gd" id="8_x4ir2"]
+[ext_resource type="Texture2D" uid="uid://cfkmypibt3oho" path="res://assets/source/art/aseprite/mnożnik 1.png" id="9_y1470"]
+[ext_resource type="Texture2D" uid="uid://wpgautwnqh0u" path="res://assets/source/art/aseprite/mnożnik 2.png" id="10_7wwd1"]
+[ext_resource type="Texture2D" uid="uid://b4fs60763l4db" path="res://assets/source/art/aseprite/mnożnik 4.png" id="11_vl7ir"]
+[ext_resource type="Texture2D" uid="uid://c2n6fhh0a3nq7" path="res://assets/source/art/aseprite/mnożnik 5.png" id="12_ejv83"]
 
 [node name="score" type="Node2D" unique_id=333109457]
 
@@ -23,10 +30,10 @@ offset_bottom = 218.0
 script = ExtResource("2_plgac")
 
 [node name="ScoreLabel" type="Label" parent="CanvasLayer/KeepScore" unique_id=1994952802]
-offset_left = 1623.0
-offset_top = 148.0
-offset_right = 1706.0
-offset_bottom = 171.0
+offset_left = 115.0
+offset_top = 193.0
+offset_right = 198.0
+offset_bottom = 216.0
 
 [node name="ChillLabel" type="Label" parent="CanvasLayer/KeepScore" unique_id=1360919054]
 offset_left = 1627.0
@@ -35,16 +42,20 @@ offset_right = 1667.0
 offset_bottom = 128.0
 
 [node name="ProgressBar" type="TextureProgressBar" parent="CanvasLayer/KeepScore" unique_id=1931093257]
-offset_left = 1809.0
-offset_top = 31.999992
-offset_right = 1881.0
-offset_bottom = 644.0
+offset_left = 8.0
+offset_top = 10.0
+offset_right = 887.8206
+offset_bottom = 130.0
 scale = Vector2(1.115, 1.115)
-fill_mode = 3
-texture_under = ExtResource("3_lew60")
-texture_progress = ExtResource("3_plgac")
+step = -1.0
+texture_under = ExtResource("3_68bkv")
+texture_progress = ExtResource("4_68bkv")
+texture_progress_offset = Vector2(0, -10)
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/KeepScore/ProgressBar" unique_id=1040370969]
+z_index = -1
+position = Vector2(511.21075, 105.8296)
+texture = ExtResource("4_xcjqx")
 
 [node name="Notifications" type="Label" parent="CanvasLayer/KeepScore" unique_id=769599410]
 offset_left = 440.0
@@ -58,3 +69,13 @@ theme_override_font_sizes/font_size = 52
 horizontal_alignment = 1
 vertical_alignment = 1
 script = ExtResource("5_68bkv")
+
+[node name="multiscore" type="Sprite2D" parent="CanvasLayer/KeepScore" unique_id=871051010]
+position = Vector2(1068, 68)
+texture = ExtResource("7_3eqfp")
+script = ExtResource("8_x4ir2")
+texture_x1 = ExtResource("9_y1470")
+texture_x2 = ExtResource("10_7wwd1")
+texture_x3 = ExtResource("7_3eqfp")
+texture_x4 = ExtResource("11_vl7ir")
+texture_x5 = ExtResource("12_ejv83")
