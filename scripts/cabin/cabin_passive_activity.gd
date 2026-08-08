@@ -38,10 +38,20 @@ signal playback_finished()
 ## wrażenia, że kliknięcie przepadło.
 @export_range(0, 10, 1) var min_chill_per_second := 1
 
+@export_group("Dźwięk")
+
+## Zagra w chwili, gdy czynność kończy pracę i znowu da się ją złapać — trzask
+## szukania stacji mówi graczowi, że radio jest wolne, bez patrzenia na nutki.
+## Wymaga węzła AudioStreamPlayer o nazwie Finish.
+@export var finish_stream: AudioStream
+
+@export_range(-40.0, 24.0, 0.1) var finish_volume_db := 0.0
+
 @export var debug_log := true
 
 var _activity: CabinActivity
 var _chill_source: Node
+var _finish_player: AudioStreamPlayer
 
 var _chill_per_second := 0
 var _seconds_left := 0.0
@@ -51,6 +61,10 @@ var _to_next_tick := 0.0
 func _ready() -> void:
 	_activity = get_node_or_null(activity_path) as CabinActivity
 	_chill_source = get_node_or_null(chill_source_path)
+	_finish_player = get_node_or_null(^"Finish") as AudioStreamPlayer
+	if _finish_player != null:
+		_finish_player.stream = finish_stream
+		_finish_player.volume_db = finish_volume_db
 
 	var controller := get_node_or_null(controller_path) as CabinActivityController
 	if controller == null or _activity == null:
@@ -99,7 +113,7 @@ func _on_activity_ended(ended_id: StringName, held_seconds: float) -> void:
 	_chill_per_second = clampi(int(floorf(held_seconds)), min_chill_per_second, max_chill_per_second)
 	_seconds_left = play_seconds
 	_to_next_tick = tick_seconds
-	_activity.set_locked(true)
+	_activity.set_locked(true, self)
 	playback_started.emit(_chill_per_second)
 	if debug_log:
 		print("[radio w tle] gra %.0f s, %d chillu na sekundę" % [play_seconds, _chill_per_second])
@@ -109,7 +123,9 @@ func _stop() -> void:
 	_seconds_left = 0.0
 	_chill_per_second = 0
 	if _activity != null:
-		_activity.set_locked(false)
+		_activity.set_locked(false, self)
+	if _finish_player != null and _finish_player.stream != null:
+		_finish_player.play()
 	playback_finished.emit()
 	if debug_log:
 		print("[radio w tle] koniec grania")

@@ -37,6 +37,14 @@
 [ext_resource type="Texture2D" uid="uid://p6uov7tq0r0k" path="res://assets/source/art/aseprite/radio bez obwódki.png" id="30_radio_locked"]
 [ext_resource type="Texture2D" uid="uid://ckvbvn2bdsixr" path="res://assets/source/art/aseprite/CB radio - gruszka bez obwódki.png" id="31_cb_locked"]
 [ext_resource type="Texture2D" uid="uid://b5otbdfrwnfi" path="res://assets/source/art/aseprite/ukulele na siedzieniu bez obwódki.png" id="32_uku_locked"]
+[ext_resource type="Texture2D" uid="uid://bumql4ag6a8qg" path="res://assets/source/art/aseprite/nutka.png" id="33_nutka"]
+[ext_resource type="AudioStream" uid="uid://b4xggvqagscgo" path="res://assets/source/audio/sfx/609613__chungus43a__fm-radio-static.wav" id="34_static"]
+[ext_resource type="Script" uid="uid://wpkt0iekxqs" path="res://scripts/cabin/cabin_cigarette.gd" id="35_cigarette"]
+[ext_resource type="Texture2D" uid="uid://b88ww73w7g3ed" path="res://assets/source/art/aseprite/Papieros idle.png" id="36_cig_idle"]
+[ext_resource type="Texture2D" uid="uid://c6a16dl07yi6a" path="res://assets/source/art/aseprite/Papieros zaciągnięcie.png" id="37_cig_puff"]
+[ext_resource type="AudioStream" uid="uid://b08t52v5ya8xw" path="res://assets/source/audio/sfx/824425__kalinkamalinka__lighter_9.wav" id="38_lighter"]
+[ext_resource type="AudioStream" uid="uid://40boilpatonc" path="res://assets/source/audio/sfx/393049__sbaneat__fumar.wav" id="39_fumar"]
+[ext_resource type="Script" uid="uid://cpp63mbc56sxd" path="res://scripts/cabin/cabin_smoke.gd" id="40_smoke"]
 [ext_resource type="AudioStream" uid="uid://deo32mk7olydl" path="res://assets/source/audio/sfx/CB_1.wav" id="cb1"]
 [ext_resource type="AudioStream" uid="uid://cu3bkyu5kc32b" path="res://assets/source/audio/sfx/CB_2.wav" id="cb2"]
 [ext_resource type="AudioStream" uid="uid://d0egpeeqg58mk" path="res://assets/source/audio/sfx/CB_3.wav" id="cb3"]
@@ -65,6 +73,12 @@
 [ext_resource type="AudioStream" uid="uid://d1eflvm0gx60n" path="res://assets/source/audio/sfx/UKULELE_1.wav" id="uku1"]
 [ext_resource type="AudioStream" uid="uid://ccd2wk2gi6xo5" path="res://assets/source/audio/sfx/UKULELE_2.wav" id="uku2"]
 [ext_resource type="AudioStream" uid="uid://c5sambe0xe7on" path="res://assets/source/audio/sfx/UKULELE_odstaw.wav" id="ukuoff"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3oxjx"]
+size = Vector2(120, 80)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q4j56"]
+size = Vector2(90, 160)
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
 
@@ -115,7 +129,7 @@ activity_id = &"cb_radio"
 zoom_target_path = NodePath("../../../ZoomTargets/CbFocus")
 click_size = Vector2(110, 180)
 show_placeholder = false
-min_chill = 40
+min_chill = 20
 visual_root_path = NodePath("..")
 activation_action = &"cabin_keypad"
 approach_seconds = 10.0
@@ -219,11 +233,11 @@ zoom = 3.0
 
 [node name="CbFocus" parent="ZoomTargets" unique_id=40439367 instance=ExtResource("1_zoom_target")]
 position = Vector2(1200, 380)
-zoom = 2.5
+zoom = 1.5
 
 [node name="UkuleleFocus" parent="ZoomTargets" unique_id=215320030 instance=ExtResource("1_zoom_target")]
 position = Vector2(925, 796.99994)
-zoom = 2.0
+zoom = 1.5
 
 [node name="Activities" type="Node2D" parent="." unique_id=819683887]
 
@@ -265,6 +279,8 @@ bar_color = Color(0.74925476, 0.12429362, 0.12823176, 1)
 position = Vector2(1445, 764)
 script = ExtResource("28_notes")
 source_path = NodePath("../../RadioPassive")
+texture = ExtResource("33_nutka")
+note_scale = 0.4
 
 [node name="ukulele-schowane" type="Node2D" parent="Activities" unique_id=1779206417]
 position = Vector2(1735, 1500)
@@ -276,7 +292,7 @@ zoom_target_path = NodePath("../../ZoomTargets/UkuleleFocus")
 texture = ExtResource("13_2gupc")
 locked_texture = ExtResource("32_uku_locked")
 click_size = Vector2(290, 450)
-min_chill = 60
+min_chill = 40
 move_to_focus_while_active = true
 active_pose_path = NodePath("../ukulele-schowane")
 focus_travel_seconds = 0.5
@@ -285,6 +301,67 @@ accelerates = false
 drift_per_second = 0.15
 approach_seconds = 10.0
 return_seconds = 0.45
+
+[node name="Papieros" type="Node2D" parent="Activities" unique_id=1779206420]
+position = Vector2(700, 900)
+script = ExtResource("35_cigarette")
+chill_source_path = NodePath("../../../score/CanvasLayer/KeepScore")
+cigarette_texture = ExtResource("36_cig_idle")
+puff_node_path = NodePath("Sprite2D")
+puff_texture = ExtResource("37_cig_puff")
+blocked_activity_paths = Array[NodePath]([NodePath("../Ukulele")])
+hidden_while_puffing = Array[NodePath]([NodePath("../../Interior/Sprite2D"), NodePath("Cigarette/Art"), NodePath("Cigarette/Smoke")])
+lighter_stream = ExtResource("38_lighter")
+puff_stream = ExtResource("39_fumar")
+
+[node name="Case" type="Node2D" parent="Activities/Papieros" unique_id=1779206421]
+position = Vector2(546, -127)
+
+[node name="Art" type="Sprite2D" parent="Activities/Papieros/Case" unique_id=1779206422]
+visible = false
+
+[node name="Placeholder" type="Polygon2D" parent="Activities/Papieros/Case" unique_id=1779206423]
+color = Color(0.16, 0.13, 0.19, 1)
+polygon = PackedVector2Array(-60, -40, 60, -40, 60, 40, -60, 40)
+
+[node name="Area" type="Area2D" parent="Activities/Papieros/Case" unique_id=1779206424]
+
+[node name="Shape" type="CollisionShape2D" parent="Activities/Papieros/Case/Area" unique_id=1779206425]
+shape = SubResource("RectangleShape2D_3oxjx")
+
+[node name="Cigarette" type="Node2D" parent="Activities/Papieros" unique_id=1779206426]
+position = Vector2(-222, -54)
+
+[node name="Art" type="Sprite2D" parent="Activities/Papieros/Cigarette" unique_id=1779206427]
+texture = ExtResource("36_cig_idle")
+
+[node name="Smoke" type="Node2D" parent="Activities/Papieros/Cigarette" unique_id=1779206433]
+position = Vector2(51, -57)
+script = ExtResource("40_smoke")
+source_path = NodePath("../..")
+
+[node name="Placeholder" type="Polygon2D" parent="Activities/Papieros/Cigarette" unique_id=1779206428]
+visible = false
+color = Color(0.85, 0.83, 0.76, 1)
+polygon = PackedVector2Array(-45, -80, 45, -80, 45, 80, -45, 80)
+
+[node name="Area" type="Area2D" parent="Activities/Papieros/Cigarette" unique_id=1779206429]
+
+[node name="Shape" type="CollisionShape2D" parent="Activities/Papieros/Cigarette/Area" unique_id=1779206430]
+position = Vector2(8, -6)
+rotation = -1.9914206
+shape = SubResource("RectangleShape2D_q4j56")
+
+[node name="Lighter" type="AudioStreamPlayer" parent="Activities/Papieros" unique_id=1779206431]
+volume_db = 24.0
+
+[node name="Puff" type="AudioStreamPlayer" parent="Activities/Papieros" unique_id=1779206432]
+volume_db = 19.716
+
+[node name="Sprite2D" type="Sprite2D" parent="Activities/Papieros" unique_id=1713933761]
+z_index = 1
+position = Vector2(-90, -122)
+texture = ExtResource("37_cig_puff")
 
 [node name="ActivityController" type="Node" parent="." unique_id=1401252265]
 script = ExtResource("3_controller")
@@ -308,6 +385,9 @@ script = ExtResource("27_passive")
 activity_path = NodePath("../Activities/Radio")
 controller_path = NodePath("../ActivityController")
 chill_source_path = NodePath("../../score/CanvasLayer/KeepScore")
+finish_stream = ExtResource("34_static")
+
+[node name="Finish" type="AudioStreamPlayer" parent="RadioPassive" unique_id=574560892]
 
 [node name="RadioAudio" type="Node" parent="." unique_id=574560888]
 script = ExtResource("16_radio_audio")

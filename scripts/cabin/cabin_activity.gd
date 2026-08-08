@@ -143,7 +143,14 @@ var chill_unlocked := false
 ## Czy przedmiot jest chwilowo zajęty czym innym — radio grające po użyciu.
 ## Zamknięty przedmiot zostaje widoczny, tylko nie da się go złapać: gracz
 ## musi widzieć radio, które właśnie gra, inaczej zniknięcie wygląda na błąd.
+##
+## Tylko do czytania. Zamykać przez set_locked(), bo zamków bywa naraz kilka.
 var locked := false
+
+## Kto trzyma zamek. Ukulele zamyka na przykład i własna blokada po odłożeniu,
+## i wyjęty papieros — bez liczenia właścicieli ten, kto skończy pierwszy,
+## otwierałby przedmiot zamknięty jeszcze przez kogoś innego.
+var _locks: Dictionary = {}
 
 var _visual_root: CanvasItem
 
@@ -248,8 +255,15 @@ func set_available(value: bool) -> void:
 
 
 ## Zamyka albo otwiera przedmiot na czas, gdy jest czym innym zajęty.
-func set_locked(value: bool) -> void:
-	locked = value
+##
+## `owner` to węzeł zamykający — każdy trzyma własny zamek i otwiera tylko
+## swój. Przedmiot jest zamknięty, dopóki został choć jeden.
+func set_locked(value: bool, owner: Object = self) -> void:
+	if value:
+		_locks[owner] = true
+	else:
+		_locks.erase(owner)
+	locked = not _locks.is_empty()
 	_apply_state()
 
 

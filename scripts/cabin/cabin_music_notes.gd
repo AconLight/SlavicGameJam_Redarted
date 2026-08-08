@@ -11,9 +11,41 @@ extends Node2D
 ## Węzeł z metodami chill_per_second() i is_playing() — w grze radio w tle.
 @export_node_path("Node") var source_path: NodePath
 
-@export var color := Color(0.06, 0.05, 0.08, 1.0)
+## Grafika nutki. Powinna być biała: barwa nakłada się mnożeniem, więc biel
+## przyjmuje każdy kolor, a to, co na grafice jest czarne, czarne zostanie.
+## Puste = rysujemy zastępcze prostokąciki.
+@export var texture: Texture2D:
+	set(value):
+		texture = value
+		queue_redraw()
 
-## Rozmiar jednej nutki.
+## Kolory kolejnych nutek, brane po kolei od lewej. Krótsza lista niż rząd
+## nutek zaczyna się powtarzać od początku.
+##
+## Kolor wynika z miejsca w rzędzie, nie z losowania — ta sama nutka ma zawsze
+## ten sam kolor przez całe granie, więc rząd nie migocze.
+@export var colors: Array[Color] = [
+	Color(0.93, 0.27, 0.24, 1.0),
+	Color(0.98, 0.72, 0.20, 1.0),
+	Color(0.42, 0.78, 0.35, 1.0),
+	Color(0.29, 0.62, 0.89, 1.0),
+	Color(0.66, 0.40, 0.82, 1.0),
+	Color(0.96, 0.47, 0.62, 1.0),
+	Color(0.31, 0.78, 0.74, 1.0),
+	Color(0.99, 0.55, 0.26, 1.0),
+]:
+	set(value):
+		colors = value
+		queue_redraw()
+
+## Ile razy powiększyć grafikę nutki. Bez znaczenia dla zastępczych
+## prostokącików — te trzymają się `note_size`.
+@export_range(0.05, 20.0, 0.05) var note_scale := 1.0:
+	set(value):
+		note_scale = value
+		queue_redraw()
+
+## Rozmiar zastępczego prostokącika, gdy nie ma grafiki.
 @export var note_size := Vector2(22.0, 30.0):
 	set(value):
 		note_size = value
@@ -81,7 +113,11 @@ func _draw() -> void:
 	if count <= 0:
 		return
 
-	var step := note_size.x + spacing
+	var size := note_size
+	if texture != null:
+		size = texture.get_size() * note_scale
+
+	var step := size.x + spacing
 	# Rysujemy od środka węzła, żeby rząd nutek rósł na boki równo i pinezka
 	# została tam, gdzie ją postawiono.
 	var start_x := -(count - 1) * step * 0.5
@@ -89,5 +125,15 @@ func _draw() -> void:
 	for index in count:
 		var phase := TAU * (_time * bounce_frequency + index * phase_step)
 		var lift := sin(phase) * bounce_pixels
-		var top_left := Vector2(start_x + index * step - note_size.x * 0.5, -note_size.y * 0.5 - lift)
-		draw_rect(Rect2(top_left, note_size), color)
+		var top_left := Vector2(start_x + index * step - size.x * 0.5, -size.y * 0.5 - lift)
+		var tint := _color_for(index)
+		if texture != null:
+			draw_texture_rect(texture, Rect2(top_left, size), false, tint)
+		else:
+			draw_rect(Rect2(top_left, size), tint)
+
+
+func _color_for(index: int) -> Color:
+	if colors.is_empty():
+		return Color.WHITE
+	return colors[index % colors.size()]

@@ -44,7 +44,7 @@ func _process(delta: float) -> void:
 	_seconds_left -= delta
 	if _seconds_left <= 0.0:
 		_seconds_left = 0.0
-		_activity.set_locked(false)
+		_activity.set_locked(false, self)
 		cooldown_finished.emit()
 		if debug_log:
 			print("[blokada] ", _activity.activity_id, " znowu dostępne")
@@ -62,7 +62,7 @@ func _on_activity_ended(ended_id: StringName, _held_seconds: float) -> void:
 	var span_min := minf(lock_seconds_min, lock_seconds_max)
 	var span_max := maxf(lock_seconds_min, lock_seconds_max)
 	_seconds_left = randf_range(span_min, span_max)
-	_activity.set_locked(true)
+	_activity.set_locked(true, self)
 	cooldown_started.emit(_seconds_left)
 	if debug_log:
 		print("[blokada] %s na %.1f s" % [_activity.activity_id, _seconds_left])

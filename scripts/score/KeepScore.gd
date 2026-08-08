@@ -67,17 +67,16 @@ func _on_chill_decay():
 		chill = clamp(chill, 0, 100)
 		# NEW: Update screen when variables decay
 		update_ui()
-
-		if chill == 0:
-			EndChill()
-			GameOver()
+	# Chill na zerze nie kończy już przejazdu — leży sobie na zerze, mnożnik
+	# spada do jedynki i tyle. Koniec przynosi zegar trasy (scripts/game/run_clock.gd)
+	# albo wypadnięcie z drogi.
 	#print("Score: ", score, " | Chill: ", chill)
 
 
-# Koniec przejazdu — chill na zerze albo wypadnięcie z drogi. Odmierzacze
+# Koniec przejazdu — przejechana trasa albo wypadnięcie z drogi. Odmierzacze
 # stają, żeby wynik nie zmieniał się już po ogłoszeniu końca: inaczej rekord
 # poszedłby na listę raz na sekundę, a gracz mógłby dalej klikać aktywności
-# na czarnym ekranie. Wynik zapisujemy tutaj, żeby każdy sposób zginięcia
+# na czarnym ekranie. Wynik zapisujemy tutaj, żeby każdy sposób zakończenia
 # trafiał na listę tą samą drogą.
 func GameOver():
 	if game_is_over:

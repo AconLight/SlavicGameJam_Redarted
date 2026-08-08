@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://d1rre2fpfya1l"]
+[gd_scene format=3 uid="uid://ddpd3k6sht0r4"]
 
 [ext_resource type="PackedScene" uid="uid://b0ufvxdpypoj8" path="res://scenes/cabin.tscn" id="1_o5qli"]
 [ext_resource type="PackedScene" uid="uid://0aald3n4od8k" path="res://scenes/components/scroll_manager_2d.tscn" id="1_sugp2"]
@@ -10,6 +10,10 @@
 [ext_resource type="PackedScene" uid="uid://xwim1vfpercc" path="res://scenes/car.tscn" id="10_choun"]
 [ext_resource type="Script" uid="uid://xcgsn7foxsea" path="res://scripts/cabin/cabin_drift.gd" id="10_drift"]
 [ext_resource type="PackedScene" uid="uid://brmge3gip27pb" path="res://scenes/obstacle_master.tscn" id="10_ya4ey"]
+[ext_resource type="Script" uid="uid://yj2as2ucoq68" path="res://scripts/game/run_clock.gd" id="11_clock"]
+[ext_resource type="Texture2D" uid="uid://bmopiacy1k5x8" path="res://assets/source/art/aseprite/pasek trasy.png" id="11_eb6dy"]
+[ext_resource type="Texture2D" uid="uid://c011wdhagym5h" path="res://assets/source/art/aseprite/znacznik paska trasy.png" id="12_trceg"]
+[ext_resource type="Script" uid="uid://b58707crkillx" path="res://scripts/ui/route_bar.gd" id="13_routebar"]
 
 [node name="Main" type="Node2D" unique_id=596678821]
 
@@ -29,6 +33,10 @@ accelerator_path = NodePath("../Cabin/Interior/Acceleration/ArrowSprite/SpeedScr
 [node name="SpeedCameraFlashEffect" parent="." unique_id=1446824941 instance=ExtResource("4_flash_effect")]
 
 [node name="Cabin" parent="." unique_id=489044161 instance=ExtResource("1_o5qli")]
+
+[node name="RunClock" type="Node" parent="." unique_id=1902334474]
+script = ExtResource("11_clock")
+score_source_path = NodePath("../score/CanvasLayer/KeepScore")
 
 [node name="Drift" type="Node" parent="." unique_id=1902334473]
 script = ExtResource("10_drift")
@@ -54,3 +62,24 @@ color = Color(0, 0, 0, 0)
 [node name="Car" parent="." unique_id=1468817716 instance=ExtResource("10_choun")]
 
 [node name="ObstacleMaster" parent="." unique_id=417307942 instance=ExtResource("10_ya4ey")]
+
+[node name="RouteBar" type="CanvasLayer" parent="." unique_id=1903660962]
+script = ExtResource("13_routebar")
+clock_path = NodePath("../RunClock")
+marker_path = NodePath("market")
+start_path = NodePath("start")
+end_path = NodePath("end")
+
+[node name="bar" type="Sprite2D" parent="RouteBar" unique_id=2013991834]
+position = Vector2(532, 167)
+texture = ExtResource("11_eb6dy")
+
+[node name="market" type="Sprite2D" parent="RouteBar" unique_id=547909233]
+position = Vector2(91, 159)
+texture = ExtResource("12_trceg")
+
+[node name="start" type="Marker2D" parent="RouteBar" unique_id=557884107]
+position = Vector2(45, 156)
+
+[node name="end" type="Marker2D" parent="RouteBar" unique_id=1739058847]
+position = Vector2(983, 157)
