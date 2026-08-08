@@ -18,7 +18,6 @@
 [ext_resource type="Texture2D" uid="uid://5i38vvyl85u2" path="res://assets/placeholders/ukulele.png.webp" id="13_ukulele"]
 [ext_resource type="Texture2D" uid="uid://dfnme22o5g567" path="res://assets/source/art/aseprite/CB radio - kabel.png" id="14_cable"]
 [ext_resource type="Texture2D" uid="uid://2noyk23id7gb" path="res://assets/source/art/aseprite/CB radio - gruszkaDOBRA WERSJA.png" id="15_body"]
-[ext_resource type="Texture2D" uid="uid://d2aidelrgo3i2" path="res://assets/source/art/aseprite/droga trójkat.png" id="16_road_background"]
 [ext_resource type="Script" uid="uid://bartn07dbbc2v" path="res://scripts/cabin/cabin_radio_audio.gd" id="16_radio_audio"]
 [ext_resource type="AudioStream" uid="uid://dcrmlfwk14e60" path="res://assets/source/audio/sfx/TUNING_RADIO.wav" id="17_tuning"]
 [ext_resource type="AudioStream" uid="uid://tudd3bj2q15p" path="res://assets/source/audio/sfx/DJ_1.wav" id="18_dj1"]
@@ -59,12 +58,6 @@
 [ext_resource type="AudioStream" uid="uid://c5sambe0xe7on" path="res://assets/source/audio/sfx/UKULELE_odstaw.wav" id="ukuoff"]
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
-
-[node name="RoadBackground" type="Sprite2D" parent="."]
-position = Vector2(0, 452)
-z_index = -20
-texture = ExtResource("16_road_background")
-centered = false
 
 [node name="Interior" type="Node2D" parent="." unique_id=1102283152]
 

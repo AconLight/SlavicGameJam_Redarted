@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" uid="uid://d2aidelrgo3i2" path="res://assets/source/art/aseprite/droga trójkat.png" id="1_road"]
+
+[node name="Otoczenie" type="Node2D"]
+
+[node name="RoadBackground" type="Sprite2D" parent="."]
+position = Vector2(0, 452)
+z_index = -20
+texture = ExtResource("1_road")
+centered = false
