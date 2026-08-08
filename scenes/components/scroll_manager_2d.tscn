@@ -3,10 +3,9 @@
 [ext_resource type="Script" uid="uid://cjtfr2blq4t6n" path="res://scripts/driving/scroll_manager_2d.gd" id="1_manager"]
 [ext_resource type="Script" uid="uid://ccjjvw2gv3moq" path="res://scripts/driving/scroll_spawn_handler.gd" id="2_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/components/roadside_speed_meter.tscn" id="4_speed_meter"]
-[ext_resource type="Texture2D" path="res://assets/source/art/aseprite/ROAD NOISE LIGHT.png" id="5_noise_light"]
-[ext_resource type="Texture2D" path="res://assets/source/art/aseprite/ROAD NOISE SHADOW.png" id="6_noise_shadow"]
-[ext_resource type="PackedScene" path="res://scenes/components/right_grass.tscn" id="7_right_grass"]
-[ext_resource type="Texture2D" path="res://assets/source/art/aseprite/Pole - tło.png" id="8_field_background"]
+[ext_resource type="Texture2D" uid="uid://c1bkvpsrc0yis" path="res://assets/source/art/aseprite/Pole - tło.png" id="8_field_background"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_tree_left.tscn" id="12_tree_left"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_tree_right.tscn" id="13_tree_right"]
 
 [node name="ScrollManager2D" type="Node2D" unique_id=1353085533]
 z_index = -10
@@ -19,14 +18,14 @@ curve_factor = 0.24
 curve_smoothness = 1.0
 world_scroll_speed = 0.04
 far_to_near_distance_ratio = 43.5
-far_scale = 0.03
-near_scale = 6.0
+far_scale = 0.12
+near_scale = 7.26
 slot_lateral_spacing = 0.1
 slot_origin = -2
 draw_debug_guides = false
 
-[node name="FieldBackground" type="Sprite2D" parent="."]
-z_index = -11
+[node name="FieldBackground" type="Sprite2D" parent="." unique_id=1270815360]
+z_index = -32
 position = Vector2(0, -273)
 texture = ExtResource("8_field_background")
 centered = false
@@ -37,33 +36,20 @@ centered = false
 script = ExtResource("2_spawner")
 debug_visual = 1
 slot_choices = PackedInt32Array(0)
+render_order_offset = 1
 derive_interval_from_road_spacing = true
 road_spacing = 0.044
 max_active_elements = 24
 
-[node name="RoadNoise" type="Node2D" parent="ScrollableElements"]
-script = ExtResource("2_spawner")
-slot_choices = PackedInt32Array(-2, -1, 0, 1, 2)
-render_order_offset = -1
-flat_road_length = 0.018
-flat_half_width_in_slots = 0.18
-flat_texture_choices = Array[Texture2D]([ExtResource("5_noise_light"), ExtResource("6_noise_shadow")])
-derive_interval_from_road_spacing = true
-road_spacing = 0.01
-max_active_elements = 120
-prewarm_count = 100
-prewarm_spacing = 0.01
-spawn_immediately = false
-
 [node name="LeftRoadsideTrees" type="Node2D" parent="ScrollableElements" unique_id=673420513]
-visible = false
 script = ExtResource("2_spawner")
+content_scene = ExtResource("12_tree_left")
 projection_mode = 1
-debug_visual = 2
-slot_choices = PackedInt32Array(-8)
-size_multiplier_min = 2.85
-size_multiplier_max = 2.85
-near_offset = 0.03
+slot_choices = PackedInt32Array(-5)
+lane_offset = -0.5
+visibility_start_distance = 0.1
+size_multiplier_min = 0.2
+size_multiplier_max = 0.2
 derive_interval_from_road_spacing = true
 road_spacing = 0.065
 max_active_elements = 16
@@ -72,29 +58,13 @@ prewarm_spacing = 0.065
 spawn_immediately = false
 
 [node name="RightRoadsideTrees" type="Node2D" parent="ScrollableElements" unique_id=1809849607]
-visible = false
 script = ExtResource("2_spawner")
+content_scene = ExtResource("13_tree_right")
 projection_mode = 1
-debug_visual = 2
-slot_choices = PackedInt32Array(11)
-size_multiplier_min = 2.85
-size_multiplier_max = 2.85
-near_offset = 0.03
-derive_interval_from_road_spacing = true
-road_spacing = 0.065
-max_active_elements = 16
-prewarm_count = 16
-prewarm_spacing = 0.065
-spawn_immediately = false
-
-[node name="RightGrass" type="Node2D" parent="ScrollableElements"]
-script = ExtResource("2_spawner")
-content_scene = ExtResource("7_right_grass")
-projection_mode = 2
-slot_choices = PackedInt32Array(11)
+slot_choices = PackedInt32Array(9)
+visibility_start_distance = 0.1
 size_multiplier_min = 0.2
 size_multiplier_max = 0.2
-near_offset = 0.03
 derive_interval_from_road_spacing = true
 road_spacing = 0.065
 max_active_elements = 16

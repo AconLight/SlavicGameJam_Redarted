@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/source/art/aseprite/drzewo 1 prawe.png" id="1_tree"]
+
+[node name="RoadsideTreeRight" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-250, -630)
+texture = ExtResource("1_tree")
+centered = false

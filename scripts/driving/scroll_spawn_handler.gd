@@ -4,9 +4,13 @@ extends Node2D
 const ScrollElementScript := preload("res://scripts/driving/scroll_element_2d.gd")
 
 @export var content_scene: PackedScene
-@export_enum("Flat", "Vertical", "Expand Right") var projection_mode := 0
+@export_enum("Flat", "Vertical", "Expand Right", "Expand Left") var projection_mode := 0
 @export_enum("None", "Stripe", "Tree", "Car") var debug_visual := 0
 @export var slot_choices := PackedInt32Array([0])
+## Fine-tunes every selected integer slot, allowing placements such as -5.5.
+@export_range(-1.0, 1.0, 0.1) var lane_offset := 0.0
+## Keeps new elements hidden until this fraction of their road path has elapsed.
+@export_range(0.0, 1.0, 0.01) var visibility_start_distance := 0.0
 @export_range(-0.95, 3.0, 0.01) var relative_speed_min := 0.0
 @export_range(-0.95, 3.0, 0.01) var relative_speed_max := 0.0
 @export_range(0.01, 8.0, 0.01) var size_multiplier_min := 1.0
@@ -27,13 +31,20 @@ const ScrollElementScript := preload("res://scripts/driving/scroll_element_2d.gd
 ## One multiplier is chosen for each upcoming timed spawn. Leave as [1] for
 ## a fixed interval; use [1, 2, 3] to make each spawn 1–3 times rarer.
 @export var spawn_interval_multipliers := PackedInt32Array([1])
-@export_range(1, 120, 1) var max_active_elements := 12
-@export_range(0, 120, 1) var prewarm_count := 0
+@export_range(1, 1000, 1) var max_active_elements := 12
+@export_range(0, 1000, 1) var prewarm_count := 0
 @export_range(0.0, 1.0, 0.01) var prewarm_start_distance := 0.0
 @export_range(0.001, 1.0, 0.001) var prewarm_spacing := 0.08
 @export var spawn_immediately := true
 
+@export_group("Signal Spawn")
+## When enabled, this handler creates elements only in response to the shared
+## speed-camera trigger; normal timer and road-distance spawn clocks are off.
+@export var spawn_on_speed_camera_trigger := false
+@export_range(0.0, 1.0, 0.01) var signal_spawn_start_distance := 0.0
+
 var _manager: ScrollManager2D
+var _signalist: GameStateSignalist
 var _random := RandomNumberGenerator.new()
 var _time_until_spawn := 0.0
 var _spawn_distance_accumulator := 0.0
@@ -46,6 +57,8 @@ func _ready() -> void:
 	for index in prewarm_count:
 		_spawn(prewarm_start_distance + float(index) * prewarm_spacing)
 	_time_until_spawn = 0.0 if spawn_immediately else _next_spawn_interval()
+	if spawn_on_speed_camera_trigger:
+		call_deferred("_connect_speed_camera_trigger")
 
 
 func _find_manager() -> ScrollManager2D:
@@ -59,6 +72,8 @@ func _find_manager() -> ScrollManager2D:
 
 func _process(delta: float) -> void:
 	_update_active_elements(delta)
+	if spawn_on_speed_camera_trigger:
+		return
 	if derive_interval_from_road_spacing:
 		_spawn_by_road_distance(delta)
 		return
@@ -83,6 +98,20 @@ func _spawn_by_road_distance(delta: float) -> void:
 		_spawn(_spawn_distance_accumulator)
 
 
+func _connect_speed_camera_trigger() -> void:
+	_signalist = get_tree().get_first_node_in_group(&"game_state_signalist") as GameStateSignalist
+	if _signalist == null:
+		push_warning("Signal-spawn handler could not find GameStateSignalist.")
+		return
+	if not _signalist.speed_camera_trigger.is_connected(_on_speed_camera_trigger):
+		_signalist.speed_camera_trigger.connect(_on_speed_camera_trigger)
+
+
+func _on_speed_camera_trigger() -> void:
+	if _active_count() < max_active_elements:
+		_spawn(signal_spawn_start_distance)
+
+
 func _update_active_elements(delta: float) -> void:
 	for child in get_children():
 		var element := child as ScrollElement2D
@@ -101,6 +130,8 @@ func _spawn(road_distance: float) -> void:
 	element.debug_visual = debug_visual
 	element.content_scene = content_scene
 	element.slot = slot_choices[_random.randi_range(0, slot_choices.size() - 1)] if not slot_choices.is_empty() else 0
+	element.lane_offset = float(element.slot) + lane_offset
+	element.visibility_start_distance = visibility_start_distance
 	element.relative_speed = _random.randf_range(relative_speed_min, relative_speed_max)
 	element.size_multiplier = _random.randf_range(size_multiplier_min, size_multiplier_max)
 	element.near_offset = near_offset

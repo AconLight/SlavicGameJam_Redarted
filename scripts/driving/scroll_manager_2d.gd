@@ -12,6 +12,8 @@ const DESIGN_SIZE := Vector2(1152, 648)
 @export var perspective_point := Vector2(580, 162)
 @export_range(-89.0, 0.0, 0.1) var max_angle_left := -56.0
 @export_range(0.0, 89.0, 0.1) var max_angle_right := 56.0
+## Extends every horizon-to-near trajectory. 1.0 keeps the original length.
+@export_range(0.5, 4.0, 0.05) var trajectory_length_multiplier := 1.0
 @export_range(0.0, 1.0, 0.01) var curve_factor := 0.18
 @export_range(0.0, 1.0, 0.01) var curve_smoothness := 0.75
 @export_range(0.01, 2.0, 0.01) var world_scroll_speed := 0.07
@@ -69,7 +71,7 @@ func slot_to_lateral_offset(slot: int) -> float:
 	return _slot_value_to_lateral_offset(float(slot))
 
 
-func project_flat_quad(slot: int, road_distance: float, road_length: float, half_width_in_slots: float) -> PackedVector2Array:
+func project_flat_quad(slot: float, road_distance: float, road_length: float, half_width_in_slots: float) -> PackedVector2Array:
 	var far_distance := clampf(road_distance, 0.0, 1.0)
 	var near_distance := clampf(road_distance + road_length, 0.0, 1.0)
 	var lane_offset := _slot_value_to_lateral_offset(float(slot))
@@ -104,10 +106,10 @@ func layout_scale() -> Vector2:
 
 
 func apply_projection(element: ScrollElement2D) -> void:
-	var lateral_offset := slot_to_lateral_offset(element.slot)
+	var lateral_offset := _slot_value_to_lateral_offset(element.lane_offset)
 	if element.uses_flat_ground_projection():
 		element.apply_flat_ground_projection(
-			project_flat_quad(element.slot, element.road_distance, element.flat_road_length, element.flat_half_width_in_slots),
+			project_flat_quad(element.lane_offset, element.road_distance, element.flat_road_length, element.flat_half_width_in_slots),
 			element_z_index + element.render_order_offset,
 			lateral_offset,
 		)
@@ -160,7 +162,7 @@ func project_rotation(lateral_offset: float, visual_progress: float) -> float:
 func _near_endpoint(lateral_offset: float) -> Vector2:
 	var angle_degrees := _lane_angle_degrees(lateral_offset)
 	var ray := Vector2(sin(deg_to_rad(angle_degrees)), cos(deg_to_rad(angle_degrees)))
-	return perspective_point + ray * scroll_window.size.y * 1.08
+	return perspective_point + ray * scroll_window.size.y * 1.08 * trajectory_length_multiplier
 
 
 func _slot_value_to_lateral_offset(slot_value: float) -> float:
