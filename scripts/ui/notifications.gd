@@ -34,13 +34,13 @@ func play_flash_animation():
 	var tween = create_tween()
 	
 	# We want it to blink on and off 3 times
-	tween.set_loops(3)
+	tween.set_loops(5)
 
 	# Step A: Fade in instantly to full opacity (1.0) over 0.1 seconds
 	tween.tween_property(self, "modulate:a", 1.0, 0.1) 
 	
 	# Step B: Hold it on screen for 0.15 seconds
-	tween.tween_interval(0.15)                         
+	tween.tween_interval(0.35)                         
 	
 	# Step C: Fade out to invisible (0.0) over 0.1 seconds
 	tween.tween_property(self, "modulate:a", 0.0, 0.1) 

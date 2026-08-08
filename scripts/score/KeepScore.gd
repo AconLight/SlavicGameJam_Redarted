@@ -5,7 +5,7 @@ extends Node
 @onready var chill_ProgressBar: TextureProgressBar = $ProgressBar
 
 var score: int = 0
-var chill: int = 10
+var chill: int = 50
 var chill_active: bool = false
 
 var chill_timer: Timer
@@ -49,7 +49,7 @@ func ChillActivity():
 # Runs every second while Space is held
 func _on_chill_tick():
 	score += 100 * get_chill_multiplier()
-	chill += 10
+	chill += 5
 	chill = clamp(chill, 0, 100)
 	# NEW: Update screen when variables increase
 	update_ui() 
