@@ -3,12 +3,25 @@
 [ext_resource type="Script" uid="uid://cjtfr2blq4t6n" path="res://scripts/driving/scroll_manager_2d.gd" id="1_manager"]
 [ext_resource type="Script" uid="uid://ccjjvw2gv3moq" path="res://scripts/driving/scroll_spawn_handler.gd" id="2_spawner"]
 [ext_resource type="PackedScene" path="res://scenes/components/roadside_speed_meter.tscn" id="4_speed_meter"]
+[ext_resource type="Texture2D" uid="uid://d2aidelrgo3i2" path="res://assets/source/art/aseprite/droga trójkat.png" id="5_road_background"]
 
 [node name="ScrollManager2D" type="Node2D" unique_id=1353085533]
 z_index = -10
 script = ExtResource("1_manager")
-perspective_point = Vector2(930, 452)
-world_scroll_speed = 0.11
+layout_size = Vector2(1920, 1080)
+fill_viewport = true
+perspective_point = Vector2(560, 270)
+max_angle_left = -82.9
+max_angle_right = 89.0
+curve_factor = 0.24
+curve_smoothness = 1.0
+world_scroll_speed = 0.17
+far_to_near_distance_ratio = 43.5
+far_scale = 0.03
+near_scale = 6.0
+slot_lateral_spacing = 0.1
+slot_origin = -2
+draw_debug_guides = false
 
 [node name="ScrollableElements" type="Node" parent="." unique_id=621694593]
 
@@ -24,12 +37,12 @@ max_active_elements = 24
 script = ExtResource("2_spawner")
 projection_mode = 1
 debug_visual = 2
+use_lane_warp_shader = true
+lane_warp_strength = 0.7
 slot_choices = PackedInt32Array(-8)
 size_multiplier_min = 1.8
 size_multiplier_max = 3.9
 near_offset = 0.03
-use_lane_warp_shader = true
-lane_warp_strength = 0.7
 spawn_interval_seconds = 1.2
 max_active_elements = 7
 prewarm_count = 7
@@ -41,12 +54,12 @@ spawn_immediately = false
 script = ExtResource("2_spawner")
 projection_mode = 1
 debug_visual = 2
+use_lane_warp_shader = true
+lane_warp_strength = 0.7
 slot_choices = PackedInt32Array(11)
 size_multiplier_min = 1.8
 size_multiplier_max = 3.9
 near_offset = 0.03
-use_lane_warp_shader = true
-lane_warp_strength = 0.7
 spawn_interval_seconds = 1.2
 max_active_elements = 7
 prewarm_count = 7
@@ -58,10 +71,10 @@ spawn_immediately = false
 script = ExtResource("2_spawner")
 content_scene = ExtResource("4_speed_meter")
 projection_mode = 1
-slot_choices = PackedInt32Array(8)
-size_multiplier_min = 0.25077975
-size_multiplier_max = 0.25077975
 render_order_offset = 2
+slot_choices = PackedInt32Array(8)
+size_multiplier_min = 0.1475175
+size_multiplier_max = 0.1475175
 spawn_interval_seconds = 7.0
 max_active_elements = 1
 prewarm_count = 1

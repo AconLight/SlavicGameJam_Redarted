@@ -1,29 +1,26 @@
 class_name ScrollManager2D
 extends Node2D
 
-const DESIGN_SIZE := Vector2(1920, 1080)
+const DESIGN_SIZE := Vector2(1152, 648)
 
 @export_group("Layout")
 @export var layout_size := DESIGN_SIZE
-@export var fill_viewport := true
+@export var fill_viewport := false
 
 @export_group("Projection")
 @export var scroll_window := Rect2(140, 120, 880, 520)
-@export var perspective_point := Vector2(560, 270)
-@export_range(-89.0, 0.0, 0.1) var max_angle_left := -82.9
-@export_range(0.0, 89.0, 0.1) var max_angle_right := 89.0
-## Multiplier for the near end of each perspective path. A value above 1 lets
-## elements exit outside the visible road before their lifetime ends.
-@export_range(1.0, 4.0, 0.05) var near_path_extension := 3.0
-@export_range(0.0, 1.0, 0.01) var curve_factor := 0.24
-@export_range(0.0, 1.0, 0.01) var curve_smoothness := 1.0
-@export_range(0.01, 2.0, 0.01) var world_scroll_speed := 0.17
-@export_range(1.01, 100.0, 0.01) var far_to_near_distance_ratio := 43.5
-@export_range(0.01, 1.0, 0.01) var far_scale := 0.03
-@export_range(0.1, 8.0, 0.01) var near_scale := 6.0
+@export var perspective_point := Vector2(580, 162)
+@export_range(-89.0, 0.0, 0.1) var max_angle_left := -56.0
+@export_range(0.0, 89.0, 0.1) var max_angle_right := 56.0
+@export_range(0.0, 1.0, 0.01) var curve_factor := 0.18
+@export_range(0.0, 1.0, 0.01) var curve_smoothness := 0.75
+@export_range(0.01, 2.0, 0.01) var world_scroll_speed := 0.07
+@export_range(1.01, 100.0, 0.01) var far_to_near_distance_ratio := 8.0
+@export_range(0.01, 1.0, 0.01) var far_scale := 0.08
+@export_range(0.1, 8.0, 0.01) var near_scale := 2.5
 @export_range(0.2, 4.0, 0.01) var scale_easing := 1.45
-@export_range(0.05, 0.5, 0.01) var slot_lateral_spacing := 0.1
-@export var slot_origin := -2
+@export_range(0.05, 0.5, 0.01) var slot_lateral_spacing := 0.22
+@export var slot_origin := 0
 
 @export_group("Render")
 ## Absolute canvas depth used by generated elements. Keep this below cabin art.
@@ -39,7 +36,7 @@ const DESIGN_SIZE := Vector2(1920, 1080)
 @export var use_game_state_speed := true
 
 @export_group("Debug")
-@export var draw_debug_guides := false
+@export var draw_debug_guides := true
 
 var _driving_speed_kmh := 0.0
 var _signalist: GameStateSignalist
@@ -163,7 +160,7 @@ func project_rotation(lateral_offset: float, visual_progress: float) -> float:
 func _near_endpoint(lateral_offset: float) -> Vector2:
 	var angle_degrees := _lane_angle_degrees(lateral_offset)
 	var ray := Vector2(sin(deg_to_rad(angle_degrees)), cos(deg_to_rad(angle_degrees)))
-	return perspective_point + ray * scroll_window.size.y * near_path_extension
+	return perspective_point + ray * scroll_window.size.y * 1.08
 
 
 func _slot_value_to_lateral_offset(slot_value: float) -> float:
