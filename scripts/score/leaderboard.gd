@@ -19,6 +19,14 @@ extends RefCounted
 const PATH := "res://resources/data/leaderboard.json"
 const MAX_ENTRIES := 10
 
+## Wynik przejazdu, który właśnie się skończył. -1 = jeszcze nikt nie jechał
+## od włączenia gry.
+##
+## Statyczna, bo musi przeżyć zmianę scen — węzły giną razem ze sceną, a wynik
+## jest potrzebny dopiero na ekranie po koniec gry. Nie leci do pliku, bo to
+## stan jednego uruchomienia, nie zapis.
+static var last_score := -1
+
 
 ## Wyniki od najwyższego. Pusta lista, gdy nikt jeszcze nie jechał.
 static func load_scores() -> Array[int]:

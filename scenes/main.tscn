@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://bqomx7y56dspf" path="res://scenes/otoczenie.tscn" id="5_otoczenie"]
 [ext_resource type="Texture2D" uid="uid://5i38vvyl85u2" path="res://assets/placeholders/ukulele.png.webp" id="7_o6xl0"]
 [ext_resource type="Script" uid="uid://0s55o74len87" path="res://scripts/obstacles/car.gd" id="8_tipki"]
+[ext_resource type="Script" path="res://scripts/ui/game_over.gd" id="9_gameover"]
 
 [node name="Main" type="Node2D" unique_id=596678821]
 
@@ -27,6 +28,19 @@ accelerator_path = NodePath("../Cabin/Interior/Acceleration/ArrowSprite/SpeedScr
 [node name="SpeedCameraFlashEffect" parent="." unique_id=1446824941 instance=ExtResource("4_flash_effect")]
 
 [node name="Cabin" parent="." unique_id=489044161 instance=ExtResource("1_o5qli")]
+
+[node name="GameOver" type="CanvasLayer" parent="." unique_id=1902334471]
+layer = 100
+script = ExtResource("9_gameover")
+
+[node name="Fade" type="ColorRect" parent="GameOver" unique_id=1902334472]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1530663839]
 visible = false
