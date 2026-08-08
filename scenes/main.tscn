@@ -6,10 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://ccy4j8qa3ceh0" path="res://scenes/components/game_state_signalist.tscn" id="3_signalist"]
 [ext_resource type="PackedScene" path="res://scenes/components/speed_camera_flash_effect.tscn" id="4_flash_effect"]
 [ext_resource type="PackedScene" path="res://scenes/otoczenie.tscn" id="5_otoczenie"]
+[ext_resource type="Texture2D" uid="uid://5i38vvyl85u2" path="res://assets/placeholders/ukulele.png.webp" id="7_o6xl0"]
+[ext_resource type="Script" uid="uid://0s55o74len87" path="res://scripts/obstacles/car.gd" id="8_tipki"]
 
 [node name="Main" type="Node2D" unique_id=596678821]
 
-[node name="Otoczenie" parent="." instance=ExtResource("5_otoczenie")]
+[node name="Otoczenie" parent="." unique_id=1630144360 instance=ExtResource("5_otoczenie")]
 
 [node name="ScrollManager2D" parent="." unique_id=1353085533 instance=ExtResource("1_sugp2")]
 z_index = -10
@@ -25,3 +27,10 @@ accelerator_path = NodePath("../Cabin/Interior/Acceleration/ArrowSprite/SpeedScr
 [node name="SpeedCameraFlashEffect" parent="." unique_id=1446824941 instance=ExtResource("4_flash_effect")]
 
 [node name="Cabin" parent="." unique_id=489044161 instance=ExtResource("1_o5qli")]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1530663839]
+z_index = -1
+position = Vector2(-530, 1429)
+scale = Vector2(0.65468746, 0.356362)
+texture = ExtResource("7_o6xl0")
+script = ExtResource("8_tipki")
