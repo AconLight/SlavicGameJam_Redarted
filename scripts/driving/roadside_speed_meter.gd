@@ -45,11 +45,36 @@ func _process(_delta: float) -> void:
 			_violation_pending = false
 			_flash_left = flash_duration
 			_afterglow_left = afterglow_duration
-			_flash_sound.play()
+			_play_flash_detached()
 			_signalist.report_speed_camera_photo_taken(camera_id, speed_limit_kmh)
 	_flash_left = maxf(0.0, _flash_left - _delta)
 	_afterglow_left = maxf(0.0, _afterglow_left - _delta)
 	queue_redraw()
+
+
+## Odtwarza błysk na osobnym, samousuwającym się odtwarzaczu podwieszonym
+## pod scenę, a nie na dziecku fotoradaru.
+##
+## Fotoradar jest elementem przewijanej drogi i zostaje usunięty przez
+## ScrollSpawnHandler, gdy jego road_distance przekroczy 1.0. Wyzwala się na
+## 0.86, więc do usunięcia zostaje mu ułamek sekundy — a próbka trwa ponad
+## cztery. Zagranie na własnym dziecku ucinało dźwięk razem z węzłem.
+func _play_flash_detached() -> void:
+	if _flash_sound.stream == null:
+		return
+
+	var host := get_tree().current_scene
+	if host == null:
+		_flash_sound.play()
+		return
+
+	var player := AudioStreamPlayer.new()
+	player.stream = _flash_sound.stream
+	player.volume_db = _flash_sound.volume_db
+	player.bus = _flash_sound.bus
+	host.add_child(player)
+	player.finished.connect(player.queue_free)
+	player.play()
 
 
 func _connect_signalist() -> void:

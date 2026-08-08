@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://b3up42hewrqga"]
+
+[ext_resource type="Script" uid="uid://bfvknpednp6e1" path="res://scripts/ui/start_screen.gd" id="1_start"]
+[ext_resource type="AudioStream" uid="uid://qvgh21axy1pr" path="res://assets/source/audio/sfx/KeyStart.mp3" id="2_key"]
+[ext_resource type="Texture2D" uid="uid://fpq0on2b3any" path="res://assets/source/art/aseprite/Cała scena.png" id="2_r2jwc"]
+[ext_resource type="AudioStream" uid="uid://d0oej5xcj06f3" path="res://assets/source/audio/music/music.wav" id="3_he1sj"]
+
+[node name="StartScreen" type="Control" unique_id=1104039428]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_start")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=144706175]
+position = Vector2(956, 540)
+texture = ExtResource("2_r2jwc")
+
+[node name="Background" type="ColorRect" parent="." unique_id=309316615]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.078431375, 0.05882353, 0.101960786, 0.8235294)
+
+[node name="Title" type="Label" parent="." unique_id=1591625149]
+layout_mode = 0
+offset_top = 90.0
+offset_right = 1920.0
+offset_bottom = 190.0
+theme_override_colors/font_color = Color(0.93, 0.86, 0.62, 1)
+theme_override_font_sizes/font_size = 150
+text = "BUSIARNIA"
+horizontal_alignment = 1
+
+[node name="Panel" type="VBoxContainer" parent="." unique_id=281415292]
+layout_mode = 0
+offset_left = 660.0
+offset_top = 260.0
+offset_right = 1260.0
+offset_bottom = 900.0
+theme_override_constants/separation = 28
+alignment = 1
+
+[node name="ScoresTitle" type="Label" parent="Panel" unique_id=17808585]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.72, 0.67, 0.78, 1)
+theme_override_font_sizes/font_size = 70
+text = "NAJLEPSZE WYNIKI"
+horizontal_alignment = 1
+
+[node name="Scores" type="Label" parent="Panel" unique_id=525459979]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.9, 0.95, 1)
+theme_override_font_sizes/font_size = 26
+text = "jeszcze nikt nie jechał"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="Panel" unique_id=2062327297]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "START"
+
+[node name="KeyStart" type="AudioStreamPlayer" parent="." unique_id=1238243417]
+stream = ExtResource("2_key")
+volume_db = 15.772
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1963391938]
+stream = ExtResource("3_he1sj")
+volume_db = -2.711
+autoplay = true
+
+[node name="Fade" type="ColorRect" parent="." unique_id=1777869680]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)

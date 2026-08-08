@@ -10,6 +10,10 @@ func _ready():
 	update_highscore_ui()
 
 func SetHighscore(current_score: int):
+	# Każdy przejazd trafia na listę dziesięciu najlepszych, nie tylko rekord.
+	# Lista jest w osobnym pliku, patrz scripts/score/leaderboard.gd.
+	Leaderboard.add_score(current_score)
+
 	# Replace saved score if current score is higher
 	if current_score > highscore:
 		highscore = current_score

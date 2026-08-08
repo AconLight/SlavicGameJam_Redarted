@@ -59,6 +59,17 @@ extends Node2D
 		marker_color = value
 		queue_redraw()
 
+@export_group("Zatrzymanie na czas czynności")
+
+@export_node_path("Node") var controller_path: NodePath
+
+## Przy których czynnościach kierownica staje. Wszystko, co pod nią wisi —
+## w tym ręka — staje razem z nią, bo dziedziczy jej obrót.
+@export var pause_activity_ids: Array[StringName] = [&"cb_radio", &"radio"]
+
+## Ile trwa wyhamowanie do bezruchu i powrót do kołysania.
+@export_range(0.05, 3.0, 0.05) var pause_seconds := 0.35
+
 @export_group("Kołysanie")
 
 ## Maksymalne wychylenie w stopniach. Ma być ledwo widoczne.
@@ -69,9 +80,41 @@ extends Node2D
 
 var _time := 0.0
 
+## 0 = kołysze się, 1 = stoi. Mieszanie, żeby zatrzymanie i powrót nie
+## szarpały kierownicą.
+var _pause_blend := 0.0
+var _paused := false
+
+
+func _ready() -> void:
+	if Engine.is_editor_hint():
+		return
+	var controller := get_node_or_null(controller_path) as CabinActivityController
+	if controller == null:
+		return
+	controller.activity_started.connect(_on_activity_started)
+	controller.activity_ended.connect(_on_activity_ended)
+
+
+func _on_activity_started(started_id: StringName) -> void:
+	if pause_activity_ids.has(started_id):
+		_paused = true
+
+
+func _on_activity_ended(ended_id: StringName, _held_seconds: float) -> void:
+	if pause_activity_ids.has(ended_id):
+		_paused = false
+
 
 func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
+		return
+
+	_pause_blend = move_toward(_pause_blend, 1.0 if _paused else 0.0, delta / maxf(pause_seconds, 0.01))
+
+	# W pełnym bezruchu nie liczymy dalej czasu, więc po puszczeniu czynności
+	# kołysanie wraca z tej samej fazy i nie przeskakuje.
+	if is_equal_approx(_pause_blend, 1.0):
 		return
 
 	_time += delta
@@ -79,7 +122,7 @@ func _process(delta: float) -> void:
 	# wybojach — pojedyncza sinusoida wygląda jak wahadło zegara.
 	var wave := sin(_time * TAU * sway_frequency)
 	wave += 0.4 * sin(_time * TAU * sway_frequency * 1.6 + 0.7)
-	rotation_degrees = wave * sway_degrees
+	rotation_degrees = wave * sway_degrees * (1.0 - _pause_blend)
 
 
 func _draw() -> void:
