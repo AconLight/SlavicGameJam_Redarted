@@ -14,6 +14,8 @@ var decay_timer: Timer
 @onready var highscore = $"../HighScore"
 
 func _ready():
+	
+	add_to_group("keep_score")
 	# Timer for chill activity (score + chill gain)
 	chill_timer = Timer.new()
 	chill_timer.wait_time = 1.0

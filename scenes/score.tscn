@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://cl5p7r1gp1ndn" path="res://scripts/score/KeepScore.gd" id="2_plgac"]
 [ext_resource type="Texture2D" uid="uid://m7h6t3txc0qb" path="res://assets/source/art/raster/DarkBrownBackground.png" id="3_lew60"]
 [ext_resource type="Texture2D" uid="uid://b8ue348dpmf7g" path="res://assets/source/art/AI/ProgressBar.png" id="3_plgac"]
+[ext_resource type="Script" uid="uid://lnnyxai80f50" path="res://scripts/ui/notifications.gd" id="5_68bkv"]
 
 [node name="score" type="Node2D" unique_id=333109457]
 
@@ -13,34 +14,39 @@
 script = ExtResource("1_bak1h")
 
 [node name="HighScoreLabel" type="Label" parent="CanvasLayer/HighScore" unique_id=416588683]
-offset_left = 8.0
-offset_top = 7.0
-offset_right = 48.0
-offset_bottom = 30.0
+offset_left = 1632.0
+offset_top = 195.0
+offset_right = 1672.0
+offset_bottom = 218.0
 
 [node name="KeepScore" type="Node2D" parent="CanvasLayer" unique_id=543794784]
 script = ExtResource("2_plgac")
 
 [node name="ScoreLabel" type="Label" parent="CanvasLayer/KeepScore" unique_id=1994952802]
-offset_left = 9.0
-offset_top = 31.0
-offset_right = 92.0
-offset_bottom = 54.0
+offset_left = 1623.0
+offset_top = 148.0
+offset_right = 1706.0
+offset_bottom = 171.0
 
 [node name="ChillLabel" type="Label" parent="CanvasLayer/KeepScore" unique_id=1360919054]
-offset_left = 7.0
-offset_top = 51.0
-offset_right = 47.0
-offset_bottom = 74.0
+offset_left = 1627.0
+offset_top = 105.0
+offset_right = 1667.0
+offset_bottom = 128.0
 
 [node name="ProgressBar" type="TextureProgressBar" parent="CanvasLayer/KeepScore" unique_id=1931093257]
-offset_left = 16.999996
-offset_top = 115.0
-offset_right = 89.0
-offset_bottom = 727.0
+offset_left = 1809.0
+offset_top = 31.999992
+offset_right = 1881.0
+offset_bottom = 644.0
 scale = Vector2(1.115, 1.115)
 fill_mode = 3
 texture_under = ExtResource("3_lew60")
 texture_progress = ExtResource("3_plgac")
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer/KeepScore/ProgressBar" unique_id=1040370969]
+
+[node name="Notifications" type="Label" parent="CanvasLayer/KeepScore" unique_id=769599410]
+offset_right = 40.0
+offset_bottom = 23.0
+script = ExtResource("5_68bkv")

@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://4yn2p83nnhm3" path="res://addons/actor_pipeline/domain/animation_event.gd" id="3_y5b1t"]
 [ext_resource type="Script" uid="uid://by4220bciqnf7" path="res://addons/actor_pipeline/domain/animation_event_set.gd" id="4_svxv6"]
 [ext_resource type="Script" uid="uid://dqu8t0i62f6nh" path="res://addons/actor_pipeline/domain/actor_generation_manifest.gd" id="5_2b2ya"]
-[ext_resource type="Resource" uid="uid://mrm7r6kupq4j" path="res://actors/boss/boss_rendering_profile.tres" id="6_vixa5"]
+[ext_resource type="Resource" uid="uid://b2ua4eh6wne33" path="res://actors/boss/boss_rendering_profile.tres" id="6_vixa5"]
 [ext_resource type="Script" uid="uid://m1ftk5hbu3tk" path="res://addons/actor_pipeline/domain/actor_definition.gd" id="7_vf6m5"]
 [ext_resource type="Script" uid="uid://bckakss6ivp8u" path="res://addons/actor_pipeline/domain/actor_sound_set.gd" id="8_1lai5"]
 [ext_resource type="Script" uid="uid://cni85anflbjle" path="res://addons/actor_pipeline/domain/actor_sound_entry.gd" id="9_02j0t"]
