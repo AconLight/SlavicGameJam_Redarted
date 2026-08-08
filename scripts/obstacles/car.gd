@@ -3,8 +3,18 @@ var keep_score
 var active = false
 
 func _ready():
+	call_deferred("_connect_signalist")
 	keep_score = get_tree().get_first_node_in_group("keep_score")
-	play_animation_sequence()
+		
+		
+		
+		
+func _connect_signalist() -> void:
+	# Score is created before GameStateSignalist in main.tscn, so this must be
+	# deferred until the signalist has joined its group.
+	var signalist = get_tree().get_first_node_in_group(&"game_state_signalist")
+	if signalist:
+		signalist.car_break_check.connect(play_animation_sequence)
 
 # Helper function called live by the Tween during the wiggle step
 func _update_active_from_chill():
@@ -32,7 +42,6 @@ func play_animation_sequence():
 	# ---------------------------------------------------------
 	# STEP 2: Stop (Wait)
 	# ---------------------------------------------------------
-	tween.tween_interval(0.5)
 	
 	
 	# ---------------------------------------------------------
@@ -55,6 +64,8 @@ func play_animation_sequence():
 			await tween.finished
 			if not active:
 				if target_location == Vector2(1000, 650):
+					var signalist = get_tree().get_first_node_in_group(&"game_state_signalist")
+					signalist._on_car_break_checked()
 					break
 			else:
 				var up_location1 = target_location + Vector2(0, 50)

@@ -1,11 +1,12 @@
 extends Label
 
-@export var chill_penalty: int = 15
+@export var chill_penalty: int = 35
 
 func _ready():
 	# 1. Hide the text by default by setting its alpha (opacity) to 0
 	modulate.a = 0.0
 	call_deferred("_connect_signalist")
+	
 
 
 func _connect_signalist() -> void:
@@ -17,11 +18,23 @@ func _connect_signalist() -> void:
 		return
 	if not signalist.speed_camera_photo_taken.is_connected(_on_photo_taken):
 		signalist.speed_camera_photo_taken.connect(_on_photo_taken)
+	if not signalist.car_break_checked.is_connected(_on_car_break_checked):
+		signalist.car_break_checked.connect(_on_car_break_checked)
+		
 
 
 func _on_photo_taken(_camera_id: StringName, speed_kmh: float, speed_limit_kmh: float):
 	# Format the text to show the penalty and the speeds
 	text = "-%d CHILL!\nSpeeding!" % [chill_penalty]
+	
+	var keep_score = get_tree().get_first_node_in_group("keep_score")
+	if keep_score: keep_score.AddChill(-chill_penalty)
+
+	play_flash_animation()
+	
+func _on_car_break_checked():
+	# Format the text to show the penalty and the speeds
+	text = "-%d CHILL!\nBreak Check!" % [chill_penalty]
 	
 	var keep_score = get_tree().get_first_node_in_group("keep_score")
 	if keep_score: keep_score.AddChill(-chill_penalty)

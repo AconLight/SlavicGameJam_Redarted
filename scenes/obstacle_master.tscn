@@ -1,3 +1,6 @@
 [gd_scene format=3 uid="uid://brmge3gip27pb"]
 
+[ext_resource type="Script" uid="uid://cse4jw6m5f6bu" path="res://scripts/obstacles/obstacleMaster.gd" id="1_rw5hg"]
+
 [node name="ObstacleMaster" type="Node2D" unique_id=417307942]
+script = ExtResource("1_rw5hg")

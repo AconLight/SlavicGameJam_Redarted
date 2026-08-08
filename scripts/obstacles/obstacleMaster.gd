@@ -8,7 +8,7 @@ enum ObstacleType {
 	FALL_OUT
 }
 
-var signalist = get_tree().get_first_node_in_group(&"game_state_signalist")
+var signalist = null
 var spawn_timer: Timer
 var is_obstacle_active: bool = false
 
@@ -18,6 +18,8 @@ const MIN_DELAY: float = 2.0
 const MAX_DELAY: float = 8.0
 
 func _ready():
+	signalist = get_tree().get_first_node_in_group(&"game_state_signalist")
+	
 	# randomize() ensures the random number generator is seeded differently every time you play
 	randomize() 
 
@@ -64,15 +66,15 @@ func trigger_speed_camera():
 	get_tree().create_timer(3.0).timeout.connect(resolve_obstacle)
 
 func trigger_side_vehicle():
-	signalist._on_trigger_side_vehicle()
+	signalist._on_car_break_check()
 	get_tree().create_timer(4.0).timeout.connect(resolve_obstacle)
 
 func trigger_speed_increase():
-	signalist._on_trigger_speed_increase()
+	#signalist._on_trigger_speed_increase()
 	get_tree().create_timer(2.0).timeout.connect(resolve_obstacle)
 
 func trigger_fall_out():
-	signalist._on_trigger_fall_out()
+	#signalist._on_trigger_fall_out()
 	get_tree().create_timer(2.0).timeout.connect(resolve_obstacle)
 # --- Resolution ---
 
