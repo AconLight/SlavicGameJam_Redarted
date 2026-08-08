@@ -22,6 +22,9 @@ const ScrollElementScript := preload("res://scripts/driving/scroll_element_2d.gd
 @export_range(0.05, 30.0, 0.01) var spawn_interval_seconds := 1.0
 @export var derive_interval_from_road_spacing := false
 @export_range(0.001, 1.0, 0.001) var road_spacing := 0.08
+## One multiplier is chosen for each upcoming timed spawn. Leave as [1] for
+## a fixed interval; use [1, 2, 3] to make each spawn 1–3 times rarer.
+@export var spawn_interval_multipliers := PackedInt32Array([1])
 @export_range(1, 120, 1) var max_active_elements := 12
 @export_range(0, 120, 1) var prewarm_count := 0
 @export_range(0.0, 1.0, 0.01) var prewarm_start_distance := 0.0
@@ -40,7 +43,7 @@ func _ready() -> void:
 	_random.randomize()
 	for index in prewarm_count:
 		_spawn(prewarm_start_distance + float(index) * prewarm_spacing)
-	_time_until_spawn = 0.0 if spawn_immediately else _spawn_interval()
+	_time_until_spawn = 0.0 if spawn_immediately else _next_spawn_interval()
 
 
 func _find_manager() -> ScrollManager2D:
@@ -62,7 +65,7 @@ func _process(delta: float) -> void:
 		return
 	if _active_count() < max_active_elements:
 		_spawn(0.0)
-		_time_until_spawn = _spawn_interval()
+		_time_until_spawn = _next_spawn_interval()
 
 
 func _spawn_by_road_distance(delta: float) -> void:
@@ -111,6 +114,13 @@ func _spawn_interval() -> float:
 	if not derive_interval_from_road_spacing:
 		return spawn_interval_seconds
 	return road_spacing / maxf(_manager.effective_world_scroll_speed(), 0.001)
+
+
+func _next_spawn_interval() -> float:
+	var multiplier := 1
+	if not spawn_interval_multipliers.is_empty():
+		multiplier = maxi(1, spawn_interval_multipliers[_random.randi_range(0, spawn_interval_multipliers.size() - 1)])
+	return _spawn_interval() * float(multiplier)
 
 
 func _active_count() -> int:

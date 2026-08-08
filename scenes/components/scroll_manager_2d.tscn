@@ -70,6 +70,7 @@ size_multiplier_min = 0.1475175
 size_multiplier_max = 0.1475175
 render_order_offset = 2
 spawn_interval_seconds = 7.0
+spawn_interval_multipliers = PackedInt32Array(1, 2, 3)
 max_active_elements = 1
 prewarm_count = 1
 prewarm_start_distance = 0.35
