@@ -7,7 +7,10 @@ extends Area2D
 ## Jest @tool, żeby prostokąt obszaru klikalnego był widoczny w edytorze
 ## i dało się go ustawić myszką. Logika działa tylko w grze.
 
-signal press_requested(activity: CabinActivity)
+## Ktoś chce zacząć tę czynność. `held_by_action` mówi, czym została chwycona:
+## klawiszem czy myszką. Puszcza się tym samym, czym się chwyciło — patrz
+## cabin_activity_controller.gd.
+signal press_requested(activity: CabinActivity, held_by_action: bool)
 
 const GROUP := &"cabin_activity"
 
@@ -44,6 +47,10 @@ const GROUP := &"cabin_activity"
 
 ## Od jakiego poziomu chillu ta aktywność jest widoczna. 0 = od początku.
 ## Poniżej progu przedmiot znika i nie da się go kliknąć.
+##
+## Progi mnożnika z KeepScore.get_chill_multiplier(), czyli poziomy z ikonki
+## na ekranie: 1 = 0, 2 = 20, 3 = 40, 4 = 60, 5 = 80. Gdy tamte progi się
+## zmienią, te liczby trzeba przeliczyć — nikt ich za nas nie pilnuje.
 @export_range(0, 100, 1) var min_chill := 0
 
 ## Węzeł, który znika razem z aktywnością. Puste = znika sama aktywność.
@@ -73,6 +80,22 @@ const GROUP := &"cabin_activity"
 
 ## Ile wahnięć na sekundę podczas czynności.
 @export_range(0.05, 6.0, 0.05) var sway_frequency := 1.2
+
+@export_group("Sterowanie")
+
+## Czy przedmiot reaguje na myszkę. Odznaczenie zostawia tylko klawisz z
+## `activation_action` — do grania na prawdziwej klawiaturce numerycznej,
+## kiedy klikanie myszką ma już nie działać.
+@export var mouse_enabled := true
+
+## Akcja z Mapy wejścia (Projekt → Ustawienia → Mapa wejścia), która chwyta tę
+## czynność zamiast myszki. Puste = tylko myszka.
+##
+## Czynność trwa tak długo, jak trzymany jest klawisz. `cabin_keypad` to
+## dowolna cyfra 1-9 na klawiaturce numerycznej — klawisze dodaje się i zmienia
+## w edytorze, bez ruszania kodu. Klawiaturka musi mieć włączony NumLock,
+## inaczej wysyła strzałki zamiast cyfr.
+@export var activation_action: StringName = &""
 
 @export_group("Tempo kamery")
 
@@ -122,6 +145,14 @@ func _ready() -> void:
 	_home_rotation = _mover.rotation
 	add_to_group(GROUP)
 	input_event.connect(_on_input_event)
+
+	var has_action := activation_action != &"" and InputMap.has_action(activation_action)
+	if activation_action != &"" and not has_action:
+		push_warning("[kabina] %s: brak akcji \"%s\" w Mapie wejścia" % [activity_id, activation_action])
+	# Klawisz łapiemy zdarzeniem, a nie odpytywaniem w _process, żeby jedno
+	# wciśnięcie było jednym zgłoszeniem — powtórki z autopowtarzania odpadają
+	# same. Bez akcji nasłuch jest wyłączony, żeby nie chodził na darmo.
+	set_process_input(has_action)
 
 
 func _process(delta: float) -> void:
@@ -228,8 +259,16 @@ func set_active(value: bool) -> void:
 		.set_trans(Tween.TRANS_CUBIC)
 
 
+func _input(event: InputEvent) -> void:
+	if not event.is_action_pressed(activation_action):
+		return
+	press_requested.emit(self, true)
+
+
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	if not mouse_enabled:
+		return
 	var mouse := event as InputEventMouseButton
 	if mouse == null or mouse.button_index != MOUSE_BUTTON_LEFT or not mouse.pressed:
 		return
-	press_requested.emit(self)
+	press_requested.emit(self, false)
