@@ -29,6 +29,14 @@ const GROUP := &"cabin_activity"
 		if is_node_ready():
 			_apply_size()
 
+## Grafika na czas, gdy przedmiot jest zamknięty — bez obwódki, żeby gracz
+## widział, że teraz nie ma po co klikać. Puste = grafika się nie zmienia.
+@export var locked_texture: Texture2D:
+	set(value):
+		locked_texture = value
+		if is_node_ready():
+			_refresh_art()
+
 ## Rozmiar obszaru klikalnego.
 @export var click_size := Vector2(200.0, 120.0):
 	set(value):
@@ -128,6 +136,15 @@ var _active_pose: Node2D
 ## Czy przedmiot jest odblokowany. Ustawia to kontroler, patrząc na chill.
 var available := true
 
+## Czy chill już kiedyś sięgnął progu tego przedmiotu. Raz zdobyte zostaje:
+## spadek chillu nie zabiera kierowcy rzeczy, do których już się dorobił.
+var chill_unlocked := false
+
+## Czy przedmiot jest chwilowo zajęty czym innym — radio grające po użyciu.
+## Zamknięty przedmiot zostaje widoczny, tylko nie da się go złapać: gracz
+## musi widzieć radio, które właśnie gra, inaczej zniknięcie wygląda na błąd.
+var locked := false
+
 var _visual_root: CanvasItem
 
 ## Węzeł, którym faktycznie ruszamy i który chowamy — sam przedmiot albo
@@ -203,9 +220,18 @@ func _apply_size() -> void:
 		Vector2(-half.x, half.y),
 	])
 
-	_art.texture = texture
-	_art.visible = texture != null
-	_visual.visible = show_placeholder and texture == null
+	_refresh_art()
+
+
+## Wybiera grafikę pod aktualny stan. Obie wersje mają ten sam rozmiar, więc
+## podmiana nie rusza ani obszaru klikalnego, ani ustawienia myszką.
+func _refresh_art() -> void:
+	if _art == null or _visual == null:
+		return
+	var shown := locked_texture if locked and locked_texture != null else texture
+	_art.texture = shown
+	_art.visible = shown != null
+	_visual.visible = show_placeholder and shown == null
 
 
 ## Pokazuje albo chowa przedmiot. Ukryty przestaje też łapać kliknięcia —
@@ -218,11 +244,24 @@ func _apply_size() -> void:
 ## widoczności nie poprawiał.
 func set_available(value: bool) -> void:
 	available = value
-	input_pickable = value
+	_apply_state()
+
+
+## Zamyka albo otwiera przedmiot na czas, gdy jest czym innym zajęty.
+func set_locked(value: bool) -> void:
+	locked = value
+	_apply_state()
+
+
+func _apply_state() -> void:
+	# Zamek zabiera tylko klikanie. Widoczność zależy od chillu, bo to on
+	# decyduje, czy kierowca w ogóle ma już do czego sięgać.
+	input_pickable = available and not locked
+	_refresh_art()
 	if _visual_root != null:
-		_visual_root.visible = value
+		_visual_root.visible = available
 		return
-	visible = value
+	visible = available
 
 
 ## Woła to kontroler przy rozpoczęciu i zakończeniu czynności. Przenosi

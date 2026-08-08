@@ -34,6 +34,27 @@ extends Node2D
 ## Ile trwa podniesienie i odłożenie.
 @export_range(0.05, 3.0, 0.05) var grab_seconds := 0.35
 
+@export_group("Zwijanie")
+
+## Czynność, której stan decyduje, czy gruszka zwisa. Zwykle własne dziecko
+## tego węzła. Puste = gruszka wisi zawsze.
+##
+## Zwinięta oznacza kabel długości zero: gruszka siedzi w punkcie zaczepienia,
+## jakby wciągnięta pod sufit. Rozwija się, gdy chill odblokuje CB, i wjeżdża
+## z powrotem na czas blokady po użyciu.
+@export_node_path("Node") var activity_path: NodePath
+
+## Ile trwa opadanie gruszki po odblokowaniu.
+@export_range(0.05, 5.0, 0.05) var unroll_seconds := 0.9
+
+## Ile trwa wciąganie gruszki, gdy CB się blokuje.
+@export_range(0.05, 5.0, 0.05) var roll_seconds := 0.55
+
+## Grafika gruszki na czas blokady — bez obwódki. Podmieniamy ją tutaj, a nie
+## na czynności, bo gruszkę rysuje ten węzeł; czynność jest samym obszarem
+## klikalnym bez własnej grafiki. Puste = grafika się nie zmienia.
+@export var locked_texture: Texture2D
+
 @export_group("Kształt")
 
 ## Ile razy powiększyć kabel. Osobno od gruszki, bo obie grafiki są
@@ -78,6 +99,13 @@ var _time := 0.0
 var _grab := 0.0
 var _held := false
 
+var _activity: CabinActivity
+var _base_texture: Texture2D
+
+## 0 = kabel wciągnięty do zera, 1 = pełna długość. Rozwijanie i zwijanie mają
+## własne czasy, bo opadanie ma być cięższe niż wciąganie.
+var _roll := 0.0
+
 @onready var _cable: Sprite2D = $Cable
 @onready var _body: Sprite2D = $Body
 
@@ -88,6 +116,11 @@ func _ready() -> void:
 		return
 
 	_camera = get_node_or_null(camera_path) as Node2D
+	_base_texture = _body.texture if _body != null else null
+	_activity = get_node_or_null(activity_path) as CabinActivity
+	# Bez wskazanej czynności gruszka po prostu zwisa — inaczej kabina odpalona
+	# osobno pokazywałaby ją na zawsze wciągniętą pod sufit.
+	_roll = 0.0 if _activity != null else 1.0
 
 	_held_pose = get_node_or_null(held_pose_path) as Node2D
 	if _held_pose != null:
@@ -107,6 +140,11 @@ func _process(delta: float) -> void:
 	_time += delta
 	_grab = move_toward(_grab, 1.0 if _held else 0.0, delta / maxf(grab_seconds, 0.01))
 
+	var wants_hanging := _hangs_now()
+	var roll_pace := unroll_seconds if wants_hanging else roll_seconds
+	_roll = move_toward(_roll, 1.0 if wants_hanging else 0.0, delta / maxf(roll_pace, 0.01))
+	_refresh_body_texture()
+
 	var intensity := 0.0
 	if _camera != null and _camera.has_method(&"shake_intensity"):
 		intensity = _camera.shake_intensity()
@@ -122,7 +160,9 @@ func _process(delta: float) -> void:
 	# Zero na skraju łuku, maksimum w dole — stąd podwojona częstotliwość
 	# i cosinus zamiast sinusa.
 	var stretch := 0.5 - 0.5 * cos(_time * TAU * swing_frequency * 2.0)
-	var hang_position := Vector2(0.0, cable_length + bounce_pixels * stretch * hanging)
+	# Zwinięcie skraca cały zwis, także sprężynę — inaczej wciągnięta gruszka
+	# dalej podskakiwałaby pod sufitem.
+	var hang_position := Vector2(0.0, (cable_length + bounce_pixels * stretch * hanging) * _roll)
 
 	var target := hang_position
 	var target_rotation := 0.0
@@ -133,6 +173,26 @@ func _process(delta: float) -> void:
 	_body.position = target
 	_body.rotation = target_rotation
 	_aim_cable_at(target)
+
+
+## Grafika gruszki pod aktualny stan zamka. Zapisujemy grafikę wyjściową przy
+## starcie, żeby nie trzeba jej było wpisywać drugi raz w polu obok.
+func _refresh_body_texture() -> void:
+	if _body == null or locked_texture == null:
+		return
+	var wanted := locked_texture if (_activity != null and _activity.locked) else _base_texture
+	if wanted != null and _body.texture != wanted:
+		_body.texture = wanted
+
+
+## Czy gruszka ma teraz zwisać. Trzymana w ręce zawsze, bo w trakcie rozmowy
+## nie wolno jej wciągnąć kierowcy z dłoni.
+func _hangs_now() -> bool:
+	if _held:
+		return true
+	if _activity == null:
+		return true
+	return _activity.available and not _activity.locked
 
 
 func _apply_shape() -> void:
