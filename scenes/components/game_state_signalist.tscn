@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene format=3 uid="uid://ccy4j8qa3ceh0"]
 
-[ext_resource type="Script" path="res://scripts/game/game_state_signalist.gd" id="1_signalist"]
+[ext_resource type="Script" uid="uid://lb6n13tpntx8" path="res://scripts/game/game_state_signalist.gd" id="1_signalist"]
 
-[node name="GameStateSignalist" type="Node"]
+[node name="GameStateSignalist" type="Node" unique_id=1216410239]
 script = ExtResource("1_signalist")

@@ -45,3 +45,17 @@ func _connect_accelerator() -> void:
 func _on_accelerator_speed_changed(speed_kmh: float) -> void:
 	current_speed_kmh = speed_kmh
 	driving_speed_changed.emit(current_speed_kmh)
+	
+	
+func _on_trigger_speed_camera():
+	pass
+func _on_trigger_side_vehicle():
+	pass
+func _on_trigger_speed_increase():
+	pass
+func _on_trigger_fall_out():
+	pass
+
+	
+	
+	

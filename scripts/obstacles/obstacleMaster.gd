@@ -8,6 +8,7 @@ enum ObstacleType {
 	FALL_OUT
 }
 
+var signalist = get_tree().get_first_node_in_group(&"game_state_signalist")
 var spawn_timer: Timer
 var is_obstacle_active: bool = false
 
@@ -59,27 +60,19 @@ func spawn_random_obstacle():
 # --- Obstacle Triggers ---
 
 func trigger_speed_camera():
-	# TODO: Instantiate your Speed Camera scene here or trigger its specific logic
-	
-	# PLACEHOLDER: Simulates the obstacle taking 3 seconds to clear
+	signalist._on_trigger_speed_camera()
 	get_tree().create_timer(3.0).timeout.connect(resolve_obstacle)
 
 func trigger_side_vehicle():
-	# TODO: Instantiate your Side Vehicle scene here or trigger its specific logic
-	
-	# PLACEHOLDER: Simulates the obstacle taking 4 seconds to clear
+	signalist._on_trigger_side_vehicle()
 	get_tree().create_timer(4.0).timeout.connect(resolve_obstacle)
 
 func trigger_speed_increase():
-	# TODO: Trigger the script that modifies your truck's speed
-	
-	# PLACEHOLDER: Simulates the obstacle taking 2 seconds to clear
+	signalist._on_trigger_speed_increase()
 	get_tree().create_timer(2.0).timeout.connect(resolve_obstacle)
 
 func trigger_fall_out():
-	# TODO: Trigger the script that modifies your truck's speed
-	
-	# PLACEHOLDER: Simulates the obstacle taking 2 seconds to clear
+	signalist._on_trigger_fall_out()
 	get_tree().create_timer(2.0).timeout.connect(resolve_obstacle)
 # --- Resolution ---
 
