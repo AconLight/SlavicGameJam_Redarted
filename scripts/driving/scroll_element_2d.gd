@@ -1,11 +1,13 @@
 class_name ScrollElement2D
 extends Node2D
 
-enum ProjectionMode { FLAT, VERTICAL, EXPAND_RIGHT }
+enum ProjectionMode { FLAT, VERTICAL, EXPAND_RIGHT, EXPAND_LEFT }
 enum DebugVisual { NONE, STRIPE, TREE, CAR }
 
 @export var projection_mode: ProjectionMode = ProjectionMode.FLAT
 @export var slot := 0
+var lane_offset := 0.0
+var visibility_start_distance := 0.0
 @export_range(-0.95, 3.0, 0.01) var relative_speed := 0.0
 @export_range(0.01, 8.0, 0.01) var size_multiplier := 1.0
 @export var content_scene: PackedScene
@@ -29,6 +31,8 @@ func _ready() -> void:
 	add_child(content)
 	if projection_mode == ProjectionMode.EXPAND_RIGHT:
 		_anchor_content_to_left_edge(content)
+	elif projection_mode == ProjectionMode.EXPAND_LEFT:
+		_anchor_content_to_right_edge(content)
 
 
 func apply_projection(screen_position: Vector2, screen_scale: Vector2, path_rotation: float, render_z_index: int, effective_lane_offset: float) -> void:
@@ -40,7 +44,7 @@ func apply_projection(screen_position: Vector2, screen_scale: Vector2, path_rota
 	# generated element above the cockpit/cabin artwork.
 	z_as_relative = false
 	z_index = render_z_index
-	visible = road_distance >= 0.0
+	visible = road_distance >= visibility_start_distance
 	queue_redraw()
 
 
@@ -55,15 +59,18 @@ func apply_flat_ground_projection(ground_quad: PackedVector2Array, render_z_inde
 	rotation = 0.0
 	z_as_relative = false
 	z_index = render_z_index
-	visible = road_distance >= 0.0
+	visible = road_distance >= visibility_start_distance
 	queue_redraw()
 
 
 func _draw() -> void:
 	if content_scene != null:
 		return
-	if flat_texture != null and _flat_ground_quad.size() == 4:
-		_draw_textured_flat_quad()
+	if flat_texture != null:
+		if projection_mode == ProjectionMode.FLAT and _flat_ground_quad.size() == 4:
+			_draw_textured_flat_quad()
+		else:
+			_draw_vertical_texture()
 		return
 	match debug_visual:
 		DebugVisual.STRIPE:
@@ -99,8 +106,8 @@ func _draw_textured_flat_quad() -> void:
 	draw_primitive(
 		PackedVector2Array([_flat_ground_quad[0], _flat_ground_quad[1], _flat_ground_quad[2]]),
 		PackedColorArray([Color.WHITE, Color.WHITE, Color.WHITE]),
-		# The noise art is a landscape strip. Its long axis crosses the road,
-		# keeping each mark perpendicular to the direction of travel.
+		# U runs across the road and V runs along it. The landscape source therefore
+		# spans each deliberately wide, short noise mark perpendicular to travel.
 		PackedVector2Array([Vector2(0, 0), Vector2(1, 0), Vector2(1, 1)]),
 		flat_texture,
 	)
@@ -112,6 +119,15 @@ func _draw_textured_flat_quad() -> void:
 	)
 
 
+func _draw_vertical_texture() -> void:
+	var texture_size := flat_texture.get_size()
+	draw_texture_rect(
+		flat_texture,
+		Rect2(-texture_size * 0.5, texture_size),
+		false,
+	)
+
+
 func _anchor_content_to_left_edge(node: Node) -> void:
 	for child in node.get_children():
 		if child is Sprite2D:
@@ -119,3 +135,15 @@ func _anchor_content_to_left_edge(node: Node) -> void:
 		elif child is AnimatedSprite2D:
 			(child as AnimatedSprite2D).centered = false
 		_anchor_content_to_left_edge(child)
+
+
+func _anchor_content_to_right_edge(node: Node) -> void:
+	for child in node.get_children():
+		if child is Sprite2D:
+			var sprite := child as Sprite2D
+			sprite.centered = false
+			if sprite.texture != null:
+				sprite.position.x -= sprite.texture.get_size().x
+		elif child is AnimatedSprite2D:
+			(child as AnimatedSprite2D).centered = false
+		_anchor_content_to_right_edge(child)
