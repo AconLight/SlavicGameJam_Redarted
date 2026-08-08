@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://xwim1vfpercc"]
+
+[ext_resource type="Texture2D" uid="uid://jgxkopohqhxs" path="res://assets/source/art/aseprite/Samochodzik od tyłu.png" id="1_qt2eu"]
+[ext_resource type="Script" uid="uid://0s55o74len87" path="res://scripts/obstacles/car.gd" id="2_50v30"]
+
+[node name="Car" type="Node2D" unique_id=1468817716]
+
+[node name="car" type="Sprite2D" parent="." unique_id=1085974107]
+z_index = -1
+position = Vector2(-305.8281, 1664.2273)
+scale = Vector2(2.2559152, 2.2381818)
+texture = ExtResource("1_qt2eu")
+script = ExtResource("2_50v30")

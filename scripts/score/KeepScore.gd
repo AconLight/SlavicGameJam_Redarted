@@ -8,7 +8,7 @@ signal game_over(final_score: int)
 @onready var chill_ProgressBar: TextureProgressBar = $ProgressBar
 
 var score: int = 0
-var chill: int = 50
+var chill: int = 38
 var chill_active: bool = false
 var game_is_over: bool = false
 
@@ -72,7 +72,7 @@ func _on_chill_decay():
 			highscore.SetHighscore(score)
 			EndChill()
 			GameOver()
-	print("Score: ", score, " | Chill: ", chill)
+	#print("Score: ", score, " | Chill: ", chill)
 
 
 # Chill na zerze kończy przejazd. Odmierzacze stają, żeby wynik nie zmieniał

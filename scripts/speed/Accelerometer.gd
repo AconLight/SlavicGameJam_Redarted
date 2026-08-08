@@ -182,5 +182,5 @@ func _input(event):
 
 
 func _on_speed_changed(current_speed: float):
-
-	print("Speed: %.1f km/h" % current_speed)
+	pass
+	#print("Speed: %.1f km/h" % current_speed)
