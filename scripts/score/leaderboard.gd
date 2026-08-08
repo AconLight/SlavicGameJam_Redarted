@@ -10,7 +10,13 @@ extends RefCounted
 ## Same funkcje statyczne — nie ma tu żadnego stanu, więc nie ma po co
 ## wstawiać tego jako węzeł do scen.
 
-const PATH := "user://leaderboard.json"
+## Plik siedzi w projekcie, nie w user:// — user:// wskazuje katalog danych
+## aplikacji w systemie, czyli poza folderem repozytorium. Tu wyniki jadą
+## razem z projektem i widać je w historii.
+##
+## Cena: res:// jest tylko do czytania w wyeksportowanej grze. Przy odpalaniu
+## z edytora zapis działa, a na jam tyle wystarcza.
+const PATH := "res://resources/data/leaderboard.json"
 const MAX_ENTRIES := 10
 
 
