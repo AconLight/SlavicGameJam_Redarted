@@ -12,14 +12,16 @@
 [node name="Main" type="Node2D" unique_id=596678821]
 
 [node name="Otoczenie" parent="." unique_id=630666765 instance=ExtResource("5_otoczenie")]
-
-[node name="ScrollManager2D" parent="." unique_id=1353085533 instance=ExtResource("1_sugp2")]
-z_index = -10
-perspective_point = Vector2(560, 180)
-curve_factor = 0.24
-near_scale = 6.0
+position = Vector2(-489.99994, 84.99999)
+scale = Vector2(1.27, 1)
+skew = -0.62831855
 
 [node name="score" parent="." unique_id=333109457 instance=ExtResource("2_0wfyh")]
+
+[node name="ScrollManager2D" parent="." unique_id=1353085533 instance=ExtResource("1_sugp2")]
+position = Vector2(-39.228607, 670.34186)
+max_angle_left = -88.7
+curve_factor = 0.0
 
 [node name="GameStateSignalist" parent="." unique_id=2026274012 instance=ExtResource("3_signalist")]
 accelerator_path = NodePath("../Cabin/Interior/Acceleration/ArrowSprite/SpeedScript")
