@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://5i38vvyl85u2" path="res://assets/placeholders/ukulele.png.webp" id="7_o6xl0"]
 [ext_resource type="Script" uid="uid://0s55o74len87" path="res://scripts/obstacles/car.gd" id="8_tipki"]
 [ext_resource type="Script" path="res://scripts/ui/game_over.gd" id="9_gameover"]
+[ext_resource type="Script" path="res://scripts/cabin/cabin_drift.gd" id="10_drift"]
 
 [node name="Main" type="Node2D" unique_id=596678821]
 
@@ -28,6 +29,14 @@ accelerator_path = NodePath("../Cabin/Interior/Acceleration/ArrowSprite/SpeedScr
 [node name="SpeedCameraFlashEffect" parent="." unique_id=1446824941 instance=ExtResource("4_flash_effect")]
 
 [node name="Cabin" parent="." unique_id=489044161 instance=ExtResource("1_o5qli")]
+
+[node name="Drift" type="Node" parent="." unique_id=1902334473]
+script = ExtResource("10_drift")
+controller_path = NodePath("../Cabin/ActivityController")
+score_source_path = NodePath("../score/CanvasLayer/KeepScore")
+road_paths = Array[NodePath]([NodePath("../Otoczenie/RoadBackground")])
+road_children_paths = Array[NodePath]([NodePath("../ScrollManager2D/ScrollableElements")])
+background_paths = Array[NodePath]([NodePath("../Otoczenie/pole"), NodePath("../Otoczenie/niebo")])
 
 [node name="GameOver" type="CanvasLayer" parent="." unique_id=1902334471]
 layer = 100

@@ -69,21 +69,23 @@ func _on_chill_decay():
 		update_ui()
 
 		if chill == 0:
-			highscore.SetHighscore(score)
 			EndChill()
 			GameOver()
 	print("Score: ", score, " | Chill: ", chill)
 
 
-# Chill na zerze kończy przejazd. Odmierzacze stają, żeby wynik nie zmieniał
-# się już po ogłoszeniu końca — inaczej rekord poszedłby na listę raz na
-# sekundę, a gracz mógłby dalej klikać aktywności na czarnym ekranie.
+# Koniec przejazdu — chill na zerze albo wypadnięcie z drogi. Odmierzacze
+# stają, żeby wynik nie zmieniał się już po ogłoszeniu końca: inaczej rekord
+# poszedłby na listę raz na sekundę, a gracz mógłby dalej klikać aktywności
+# na czarnym ekranie. Wynik zapisujemy tutaj, żeby każdy sposób zginięcia
+# trafiał na listę tą samą drogą.
 func GameOver():
 	if game_is_over:
 		return
 	game_is_over = true
 	decay_timer.stop()
 	chill_timer.stop()
+	highscore.SetHighscore(score)
 	print("Game over. Final score: ", score)
 	game_over.emit(score)
 

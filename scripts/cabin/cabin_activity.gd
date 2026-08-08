@@ -97,6 +97,21 @@ const GROUP := &"cabin_activity"
 ## inaczej wysyła strzałki zamiast cyfr.
 @export var activation_action: StringName = &""
 
+@export_group("Jazda")
+
+## Czy trzymanie tej czynności dodaje gazu, a puszczenie hamuje. Odznacz tam,
+## gdzie kierowca nie ma jak dociskać pedału — ukulele trzyma obiema rękami.
+@export var accelerates := true
+
+## O ile na sekundę ta czynność ściąga tira z pasa, gdy okres darmowy minie.
+## 0 = nie ściąga wcale. Obsługą zajmuje się CabinDrift w scenie rozgrywki.
+@export_range(0.0, 1.0, 0.01) var drift_per_second := 0.0
+
+## Ile sekund trzymania jest darmowe, zanim tir zacznie zjeżdżać. Musi być
+## dłuższe niż najazd kamery, inaczej gracz zjeżdża, zanim w ogóle zobaczy
+## przedmiot z bliska.
+@export_range(0.0, 30.0, 0.5) var drift_grace_seconds := 6.0
+
 @export_group("Tempo kamery")
 
 ## Ile sekund trwa najazd kamery na tę aktywność. Jazda jest jednostajna,
