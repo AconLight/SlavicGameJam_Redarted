@@ -70,7 +70,7 @@ func trigger_side_vehicle():
 	get_tree().create_timer(4.0).timeout.connect(resolve_obstacle)
 
 func trigger_speed_increase():
-	#signalist._on_trigger_speed_increase()
+	signalist._on_trigger_speed_increase()
 	get_tree().create_timer(2.0).timeout.connect(resolve_obstacle)
 
 func trigger_fall_out():

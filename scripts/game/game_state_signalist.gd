@@ -12,7 +12,7 @@ signal speed_camera_trigger
 # Obstacle & Event Signals
 signal car_break_check()
 signal car_break_checked()
-
+@export_node_path("Node") var speed_source_path: NodePath
 @export_group("Sources")
 @export_node_path("Node") var accelerator_path: NodePath
 
@@ -47,7 +47,14 @@ func report_car_brake_check() -> void:
 
 func report_car_brake_checked() -> void:
 	car_break_checked.emit()
-
+	
+func _notify(source: Node, method: StringName) -> void:
+	if source != null and source.has_method(method):
+		source.call(method)
+func _on_trigger_speed_increase():
+	var _speed_source: Node
+	_speed_source = get_node_or_null(speed_source_path)
+	_notify(_speed_source, &"HeavyFoot")
 
 # --- Accelerator Setup ---
 
