@@ -19,6 +19,44 @@
 [ext_resource type="Texture2D" uid="uid://dfnme22o5g567" path="res://assets/source/art/aseprite/CB radio - kabel.png" id="14_cable"]
 [ext_resource type="Texture2D" uid="uid://2noyk23id7gb" path="res://assets/source/art/aseprite/CB radio - gruszkaDOBRA WERSJA.png" id="15_body"]
 [ext_resource type="Texture2D" uid="uid://d2aidelrgo3i2" path="res://assets/source/art/aseprite/droga trójkat.png" id="16_road_background"]
+[ext_resource type="Script" uid="uid://bartn07dbbc2v" path="res://scripts/cabin/cabin_radio_audio.gd" id="16_radio_audio"]
+[ext_resource type="AudioStream" uid="uid://dcrmlfwk14e60" path="res://assets/source/audio/sfx/TUNING_RADIO.wav" id="17_tuning"]
+[ext_resource type="AudioStream" uid="uid://tudd3bj2q15p" path="res://assets/source/audio/sfx/DJ_1.wav" id="18_dj1"]
+[ext_resource type="AudioStream" uid="uid://s18fjdn5w2gg" path="res://assets/source/audio/sfx/DJ_2.wav" id="19_dj2"]
+[ext_resource type="AudioStream" uid="uid://d0oej5xcj06f3" path="res://assets/source/audio/music/music.wav" id="20_music"]
+[ext_resource type="AudioStream" uid="uid://b7e3csrrns80b" path="res://assets/source/audio/sfx/KIEROWCA_RADYJKO.wav" id="21_voice"]
+[ext_resource type="Script" uid="uid://d1a1gsct1huot" path="res://scripts/cabin/cabin_cb_audio.gd" id="22_cb_audio"]
+[ext_resource type="Script" uid="uid://cjofrk1s4c68k" path="res://scripts/cabin/cabin_activity_sound.gd" id="23_act_sound"]
+[ext_resource type="Script" uid="uid://br16cj3fsg6c4" path="res://scripts/cabin/cabin_engine_audio.gd" id="24_engine"]
+[ext_resource type="AudioStream" uid="uid://dgxw2hj34typo" path="res://assets/source/audio/sfx/EngineRunning.mp3" id="25_engine_mp3"]
+[ext_resource type="AudioStream" uid="uid://deo32mk7olydl" path="res://assets/source/audio/sfx/CB_1.wav" id="cb1"]
+[ext_resource type="AudioStream" uid="uid://cu3bkyu5kc32b" path="res://assets/source/audio/sfx/CB_2.wav" id="cb2"]
+[ext_resource type="AudioStream" uid="uid://d0egpeeqg58mk" path="res://assets/source/audio/sfx/CB_3.wav" id="cb3"]
+[ext_resource type="AudioStream" uid="uid://cwm3m3ocwvmp4" path="res://assets/source/audio/sfx/CB_4.wav" id="cb4"]
+[ext_resource type="AudioStream" uid="uid://c5xxnqrg1yruh" path="res://assets/source/audio/sfx/CB_5.wav" id="cb5"]
+[ext_resource type="AudioStream" uid="uid://737mp3jfqemd" path="res://assets/source/audio/sfx/CB_6.wav" id="cb6"]
+[ext_resource type="AudioStream" uid="uid://chst41mo7vqm2" path="res://assets/source/audio/sfx/CB_7.wav" id="cb7"]
+[ext_resource type="AudioStream" uid="uid://ecvnxglierlr" path="res://assets/source/audio/sfx/CB_8.wav" id="cb8"]
+[ext_resource type="AudioStream" uid="uid://dcajv3p5sgcru" path="res://assets/source/audio/sfx/CB_9.wav" id="cb9"]
+[ext_resource type="AudioStream" uid="uid://b4asn4i5i808m" path="res://assets/source/audio/sfx/CB_10.wav" id="cb10"]
+[ext_resource type="AudioStream" uid="uid://c8kym3pcretq5" path="res://assets/source/audio/sfx/CB_11.wav" id="cb11"]
+[ext_resource type="AudioStream" uid="uid://cknft18p6kvx2" path="res://assets/source/audio/sfx/CB_12.wav" id="cb12"]
+[ext_resource type="AudioStream" uid="uid://bcmf1hq3kq4ye" path="res://assets/source/audio/sfx/CB_13.wav" id="cb13"]
+[ext_resource type="AudioStream" uid="uid://drxmgqy3edpvx" path="res://assets/source/audio/sfx/CB_14.wav" id="cb14"]
+[ext_resource type="AudioStream" uid="uid://t3p0jle1x3va" path="res://assets/source/audio/sfx/CB_15.wav" id="cb15"]
+[ext_resource type="AudioStream" uid="uid://ch7wm4fu2g6nw" path="res://assets/source/audio/sfx/CB_16.wav" id="cb16"]
+[ext_resource type="AudioStream" uid="uid://bycehvjvqauam" path="res://assets/source/audio/sfx/CB_OFF.wav" id="cboff"]
+[ext_resource type="AudioStream" uid="uid://c2clycyc4dbgn" path="res://assets/source/audio/sfx/CB_ON.wav" id="cbon"]
+[ext_resource type="AudioStream" uid="uid://c3yjb8psa4466" path="res://assets/source/audio/sfx/KIEROWCA_1.wav" id="kier1"]
+[ext_resource type="AudioStream" uid="uid://cs10hal0ltcni" path="res://assets/source/audio/sfx/KIEROWCA_2.wav" id="kier2"]
+[ext_resource type="AudioStream" uid="uid://cmba1rkbtppkx" path="res://assets/source/audio/sfx/KIEROWCA_3.wav" id="kier3"]
+[ext_resource type="AudioStream" uid="uid://clv3cff017tpk" path="res://assets/source/audio/sfx/KIEROWCA_4.wav" id="kier4"]
+[ext_resource type="AudioStream" uid="uid://dbujjxt687040" path="res://assets/source/audio/sfx/KIEROWCA_5.wav" id="kier5"]
+[ext_resource type="AudioStream" uid="uid://dlwu8crvxci8m" path="res://assets/source/audio/sfx/KIEROWCA_6.wav" id="kier6"]
+[ext_resource type="AudioStream" uid="uid://vfk3l7d2tfgm" path="res://assets/source/audio/sfx/KIEROWCA_7.wav" id="kier7"]
+[ext_resource type="AudioStream" uid="uid://d1eflvm0gx60n" path="res://assets/source/audio/sfx/UKULELE_1.wav" id="uku1"]
+[ext_resource type="AudioStream" uid="uid://ccd2wk2gi6xo5" path="res://assets/source/audio/sfx/UKULELE_2.wav" id="uku2"]
+[ext_resource type="AudioStream" uid="uid://c5sambe0xe7on" path="res://assets/source/audio/sfx/UKULELE_odstaw.wav" id="ukuoff"]
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
 
@@ -160,6 +198,50 @@ script = ExtResource("3_controller")
 neutral_target_path = NodePath("../ZoomTargets/NeutralFocus")
 chill_source_path = NodePath("../../score/CanvasLayer/KeepScore")
 speed_source_path = NodePath("../Interior/Acceleration/ArrowSprite/SpeedScript")
+
+[node name="RadioAudio" type="Node" parent="." unique_id=574560888]
+script = ExtResource("16_radio_audio")
+controller_path = NodePath("../ActivityController")
+tuning_stream = ExtResource("17_tuning")
+dj_streams = Array[AudioStream]([ExtResource("18_dj1"), ExtResource("19_dj2")])
+music_stream = ExtResource("20_music")
+driver_line_stream = ExtResource("21_voice")
+
+[node name="Tuning" type="AudioStreamPlayer" parent="RadioAudio" unique_id=1786174730]
+
+[node name="Dj" type="AudioStreamPlayer" parent="RadioAudio" unique_id=1232958328]
+
+[node name="Music" type="AudioStreamPlayer" parent="RadioAudio" unique_id=428836309]
+volume_db = -14.54
+
+[node name="Voice" type="AudioStreamPlayer" parent="RadioAudio" unique_id=364637943]
+
+[node name="CbAudio" type="Node" parent="." unique_id=1232709589]
+script = ExtResource("22_cb_audio")
+controller_path = NodePath("../ActivityController")
+cb_lines = Array[AudioStream]([ExtResource("cb1"), ExtResource("cb2"), ExtResource("cb3"), ExtResource("cb4"), ExtResource("cb5"), ExtResource("cb6"), ExtResource("cb7"), ExtResource("cb8"), ExtResource("cb9"), ExtResource("cb10"), ExtResource("cb11"), ExtResource("cb12"), ExtResource("cb13"), ExtResource("cb14"), ExtResource("cb15"), ExtResource("cb16")])
+cb_on = ExtResource("cbon")
+cb_off = ExtResource("cboff")
+driver_lines = Array[AudioStream]([ExtResource("kier1"), ExtResource("kier2"), ExtResource("kier3"), ExtResource("kier4"), ExtResource("kier5"), ExtResource("kier6"), ExtResource("kier7")])
+
+[node name="Player" type="AudioStreamPlayer" parent="CbAudio" unique_id=869124938]
+
+[node name="UkuleleAudio" type="Node" parent="." unique_id=721925567]
+script = ExtResource("23_act_sound")
+controller_path = NodePath("../ActivityController")
+activity_id = &"ukulele"
+start_streams = Array[AudioStream]([ExtResource("uku1"), ExtResource("uku2")])
+end_streams = Array[AudioStream]([ExtResource("ukuoff")])
+
+[node name="Start" type="AudioStreamPlayer" parent="UkuleleAudio" unique_id=1039328578]
+volume_db = 3.204
+
+[node name="End" type="AudioStreamPlayer" parent="UkuleleAudio" unique_id=246725902]
+
+[node name="EngineAudio" type="AudioStreamPlayer" parent="." unique_id=1149034136]
+stream = ExtResource("25_engine_mp3")
+volume_db = -3.346
+script = ExtResource("24_engine")
 
 [node name="CabinCamera" type="Camera2D" parent="." unique_id=472975596]
 position = Vector2(960, 540)
