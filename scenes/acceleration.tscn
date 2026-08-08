@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bfvl5woe7412m"]
 
-[ext_resource type="Texture2D" uid="uid://c5j3wbwqim1ip" path="res://assets/placeholders/Arrow.png" id="1_6kied"]
+[ext_resource type="Texture2D" uid="uid://d0hntsdmd0f3o" path="res://assets/source/art/aseprite/wskazówka prędkościomierza.png" id="1_6kied"]
 [ext_resource type="Script" uid="uid://3qp42y5ics0m" path="res://scripts/speed/speed_arrow_rotator.gd" id="2_4u5qw"]
 [ext_resource type="Script" uid="uid://b0241c2akfghk" path="res://scripts/speed/Accelerometer.gd" id="3_s3slg"]
 
@@ -8,10 +8,9 @@
 
 [node name="ArrowSprite" type="Sprite2D" parent="." unique_id=1816043605 node_paths=PackedStringArray("speed_controller")]
 position = Vector2(452.99994, 279)
-scale = Vector2(0.267, 0.178)
 texture = ExtResource("1_6kied")
 centered = false
-offset = Vector2(-800, -17.73)
+offset = Vector2(-45, -45)
 script = ExtResource("2_4u5qw")
 speed_controller = NodePath("SpeedScript")
 max_speed = 160.0

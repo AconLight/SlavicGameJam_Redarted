@@ -1,21 +1,23 @@
 [gd_scene format=3 uid="uid://b0ufvxdpypoj8"]
 
+[ext_resource type="Texture2D" uid="uid://dehhkxb75ry48" path="res://assets/source/art/aseprite/ostateczny kokpit.png" id="1_2gupc"]
 [ext_resource type="PackedScene" path="res://scenes/cabin/cabin_zoom_target.tscn" id="1_zoom_target"]
 [ext_resource type="PackedScene" path="res://scenes/cabin/cabin_activity.tscn" id="2_activity"]
 [ext_resource type="PackedScene" uid="uid://bfvl5woe7412m" path="res://scenes/acceleration.tscn" id="2_on2ml"]
 [ext_resource type="Script" uid="uid://qhvrb7p4826d" path="res://scripts/cabin/cabin_activity_controller.gd" id="3_controller"]
 [ext_resource type="Script" uid="uid://by26rjje1tikn" path="res://scripts/cabin/cabin_camera.gd" id="4_camera"]
+[ext_resource type="Texture2D" uid="uid://b8gcd20qf7qct" path="res://assets/source/art/aseprite/ręka na kierownicy.png" id="4_rivfo"]
 [ext_resource type="Script" uid="uid://coddh63dgwhwv" path="res://scripts/cabin/cabin_debug_overlay.gd" id="5_debug"]
-[ext_resource type="Texture2D" uid="uid://che32a537dtp8" path="res://assets/source/art/aseprite/kabina vol 2.png" id="6_shell"]
 [ext_resource type="Script" uid="uid://dht3vbrw3blxm" path="res://scripts/cabin/cabin_steering_wheel.gd" id="7_wheel"]
 [ext_resource type="Script" uid="uid://cw4uw7w78sxmu" path="res://scripts/cabin/cabin_cb_handset.gd" id="8_handset"]
+[ext_resource type="Texture2D" uid="uid://b5p0m54sm8n7o" path="res://assets/source/art/aseprite/Ręka na oknie (zimny łokieć).png" id="9_52sum"]
 [ext_resource type="Texture2D" uid="uid://cpmfm4s0tb2ak" path="res://assets/source/art/aseprite/radio.png" id="9_radio"]
 [ext_resource type="Texture2D" uid="uid://dl3insxgnvsla" path="res://assets/source/art/aseprite/galka.png" id="10_galka"]
 [ext_resource type="Script" uid="uid://dpn1b5psi4q5h" path="res://scripts/cabin/cabin_knob.gd" id="11_knob"]
 [ext_resource type="Script" uid="uid://dccpa2gd15b82" path="res://scripts/cabin/cabin_tuning_slider.gd" id="12_slider"]
 [ext_resource type="Texture2D" uid="uid://5i38vvyl85u2" path="res://assets/placeholders/ukulele.png.webp" id="13_ukulele"]
-[ext_resource type="Texture2D" path="res://assets/source/art/aseprite/CB radio - kabel.png" id="14_cable"]
-[ext_resource type="Texture2D" path="res://assets/source/art/aseprite/CB radio - gruszkaDOBRA WERSJA.png" id="15_body"]
+[ext_resource type="Texture2D" uid="uid://dfnme22o5g567" path="res://assets/source/art/aseprite/CB radio - kabel.png" id="14_cable"]
+[ext_resource type="Texture2D" uid="uid://2noyk23id7gb" path="res://assets/source/art/aseprite/CB radio - gruszkaDOBRA WERSJA.png" id="15_body"]
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
 
@@ -24,10 +26,10 @@
 [node name="CabinShell" type="Sprite2D" parent="Interior" unique_id=1231148686]
 position = Vector2(960, 540)
 scale = Vector2(1.0222, 1.0222)
-texture = ExtResource("6_shell")
+texture = ExtResource("1_2gupc")
 
 [node name="Acceleration" parent="Interior" unique_id=501684751 instance=ExtResource("2_on2ml")]
-position = Vector2(477.91, 653.97)
+position = Vector2(465, 655)
 
 [node name="SteeringWheel" type="Node2D" parent="Interior" unique_id=1085417509]
 position = Vector2(925.66, 1000)
@@ -36,22 +38,33 @@ skew = 0.429351
 script = ExtResource("7_wheel")
 color = Color(0.7195724, 0.66633874, 0.775966, 1)
 
+[node name="Node2D" type="Node2D" parent="Interior/SteeringWheel" unique_id=1687659225]
+
+[node name="Sprite2D" type="Sprite2D" parent="Interior/SteeringWheel/Node2D" unique_id=490825795]
+position = Vector2(141.58003, -45.764477)
+rotation = 0.22165681
+scale = Vector2(0.5558606, 0.7680603)
+skew = -0.3874631
+texture = ExtResource("4_rivfo")
+
 [node name="CbHandset" type="Node2D" parent="Interior" unique_id=1660522973]
-position = Vector2(1200, 0)
+position = Vector2(1266, 53)
 script = ExtResource("8_handset")
 camera_path = NodePath("../../CabinCamera")
 
-[node name="Cable" type="Sprite2D" parent="Interior/CbHandset"]
+[node name="Cable" type="Sprite2D" parent="Interior/CbHandset" unique_id=128578787]
 texture_filter = 1
+scale = Vector2(8, 6.382979)
 texture = ExtResource("14_cable")
 centered = false
 offset = Vector2(-2, 0)
 
-[node name="Body" type="Sprite2D" parent="Interior/CbHandset"]
+[node name="Body" type="Sprite2D" parent="Interior/CbHandset" unique_id=827007459]
 texture_filter = 1
+position = Vector2(0, 300)
 texture = ExtResource("15_body")
 centered = false
-offset = Vector2(-4, 0)
+offset = Vector2(-40, 0)
 
 [node name="CbActivity" parent="Interior/CbHandset" unique_id=174301410 instance=ExtResource("2_activity")]
 position = Vector2(0, 380)
@@ -63,6 +76,10 @@ min_chill = 50
 visual_root_path = NodePath("..")
 approach_seconds = 10.0
 return_seconds = 0.45
+
+[node name="Sprite2D" type="Sprite2D" parent="Interior" unique_id=2139746717]
+position = Vector2(214, 951)
+texture = ExtResource("9_52sum")
 
 [node name="ZoomTargets" type="Node2D" parent="." unique_id=1760636923]
 
@@ -86,7 +103,7 @@ zoom = 2.0
 [node name="Activities" type="Node2D" parent="." unique_id=819683887]
 
 [node name="Radio" parent="Activities" unique_id=1224293936 instance=ExtResource("2_activity")]
-position = Vector2(1450, 871)
+position = Vector2(1439, 893)
 activity_id = &"radio"
 zoom_target_path = NodePath("../../ZoomTargets/RadioFocus")
 texture = ExtResource("9_radio")
