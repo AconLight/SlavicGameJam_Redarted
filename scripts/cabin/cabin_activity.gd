@@ -157,6 +157,11 @@ var available := true
 ## spadek chillu nie zabiera kierowcy rzeczy, do których już się dorobił.
 var chill_unlocked := false
 
+## Czy kierowca użył już tego przedmiotu choć raz. Mruganie ma pokazać nowość,
+## więc po pierwszym użyciu gaśnie na dobre — inaczej kabina migałaby przez
+## cały przejazd i przestałaby cokolwiek znaczyć.
+var used := false
+
 ## Czy przedmiot jest chwilowo zajęty czym innym — radio grające po użyciu.
 ## Zamknięty przedmiot zostaje widoczny, tylko nie da się go złapać: gracz
 ## musi widzieć radio, które właśnie gra, inaczej zniknięcie wygląda na błąd.
@@ -281,12 +286,14 @@ func _refresh_art() -> void:
 	_locked_art.texture = locked_texture
 
 	var has_both := locked_texture != null and texture != null
-	_locked_art.visible = has_both
 
-	# Mruga to, co da się kliknąć — mruganie ma przyciągać rękę do przedmiotu,
-	# a nie zawiadamiać, że nie ma po co klikać. Zamknięty przedmiot stoi na
-	# pełnej mocy, czyli wygląda dokładnie jak wersja bez obwódki.
-	var wants_pulse := has_both and available and not locked
+	# Mruga to, co da się kliknąć, i tylko dopóki gracz tego nie tknął —
+	# mruganie ma przyciągać rękę do nowego przedmiotu, a nie świecić bez końca.
+	var wants_pulse := has_both and available and not locked and not used
+
+	# Po pierwszym użyciu wracamy do zwykłego rozróżnienia: warstwa bez obwódki
+	# leży na przedmiocie tylko wtedy, gdy jest zamknięty, i stoi nieruchomo.
+	_locked_art.visible = has_both and (locked or wants_pulse)
 	if _pulsing == wants_pulse:
 		return
 
@@ -340,6 +347,9 @@ func _apply_state() -> void:
 func set_active(value: bool) -> void:
 	_is_active = value
 	_sway_time = 0.0
+	if value and not used:
+		used = true
+		_refresh_art()
 
 	# Własna poza ma pierwszeństwo nad pinezką kamery.
 	var destination: Node2D = _active_pose if _active_pose != null else zoom_target

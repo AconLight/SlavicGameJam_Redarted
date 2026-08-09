@@ -199,13 +199,16 @@ func _refresh_body_texture(delta: float) -> void:
 		_locked_art.visible = false
 		return
 
-	_locked_art.visible = true
 	_locked_art.texture = locked_texture
 
-	# Mruga gruszka gotowa do złapania. Zablokowana stoi na pełnej mocy, czyli
-	# wygląda jak wersja bez obwódki.
-	var ready_to_grab := _activity == null or (_activity.available and not _activity.locked)
-	if not ready_to_grab:
+	# Mruga gruszka gotowa do złapania, i tylko dopóki gracz jej nie tknął.
+	# Po pierwszym użyciu warstwa pokazuje się już tylko przy blokadzie i stoi
+	# nieruchomo, czyli wracamy do zwykłego rozróżnienia.
+	var locked := _activity != null and _activity.locked
+	var invites := _activity == null or (_activity.available and not locked and not _activity.used)
+	_locked_art.visible = locked or invites
+
+	if not invites:
 		_pulse_time = 0.0
 		_locked_art.modulate.a = 1.0
 		return

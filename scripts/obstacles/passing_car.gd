@@ -24,6 +24,11 @@ signal pass_finished()
 ## razu, mimo że przejazd normalnie chodzi.
 @export var approach_position := Vector2(1000.0, 500.0)
 
+## Czy autko jedzie prosto swoim pasem, bez ściągania w bok. Domyślnie nie:
+## ukośna trasa wygląda lepiej, a zbieganie się z autkiem Adasia rozwiązuje
+## ustępowanie mu pierwszeństwa (patrz niżej), nie zmiana toru.
+@export var keep_lane := false
+
 ## Wielkość po dojechaniu. Do tej chwili autko jest duże i właśnie tak ma
 ## wyglądać wyprzedzanie — kurczy się dopiero przy oddalaniu.
 @export var approach_scale := Vector2(0.4, 0.4)
@@ -70,6 +75,16 @@ signal pass_finished()
 ## Zmierzone: przy domyślnych czasach autko przecina dolną krawędź w 1,7 s.
 @export_range(0.0, 30.0, 0.1) var honk_pass_by_in_run := 1.7
 
+@export_group("Ustępowanie")
+
+## Na ile sekund wstrzymujemy się, gdy ruszy autko-przeszkoda Adasia. Obie
+## trasy zbiegają się w tym samym miejscu kadru, więc jadąc razem wjeżdżają
+## w siebie — my ustępujemy, bo nasze autko jest tylko ozdobą.
+##
+## Liczone na czas, a nie do sygnału końca: tamten leci tylko w części przebiegów,
+## więc czekanie na niego mogłoby uziemić nasze autko na resztę przejazdu.
+@export_range(0.0, 60.0, 0.5) var yield_seconds := 22.0
+
 @export var debug_log := false
 
 var _home_position := Vector2.ZERO
@@ -78,6 +93,9 @@ var _to_next := 0.0
 var _passing := false
 var _honk: AudioStreamPlayer
 var _to_honk := -1.0
+
+## Ile jeszcze sekund ustępujemy autku-przeszkodzie.
+var _yield_left := 0.0
 
 
 func _ready() -> void:
@@ -89,6 +107,29 @@ func _ready() -> void:
 	if _honk != null:
 		_honk.stream = honk_stream
 		_honk.volume_db = honk_volume_db
+
+	_connect_signalist.call_deferred()
+
+
+## Sygnalista dołącza do swojej grupy dopiero po ułożeniu drzewa, stąd odroczenie.
+func _connect_signalist() -> void:
+	var signalist := get_tree().get_first_node_in_group(&"game_state_signalist")
+	if signalist == null:
+		return
+	if signalist.has_signal(&"car_break_check"):
+		signalist.car_break_check.connect(_on_obstacle_car_started)
+	if signalist.has_signal(&"car_break_checked"):
+		signalist.car_break_checked.connect(_on_obstacle_car_finished)
+
+
+func _on_obstacle_car_started() -> void:
+	_yield_left = yield_seconds
+	if debug_log:
+		print("[wyprzedzanie] ustępuję autku-przeszkodzie na %.0f s" % yield_seconds)
+
+
+func _on_obstacle_car_finished() -> void:
+	_yield_left = 0.0
 	# Między przejazdami autka nie ma na drodze, żeby nie stało w miejscu
 	# w środku kadru.
 	visible = false
@@ -103,6 +144,12 @@ func _process(delta: float) -> void:
 			if _to_honk <= 0.0:
 				_to_honk = -1.0
 				_play_honk()
+		return
+
+	if _yield_left > 0.0:
+		_yield_left -= delta
+		# Zegar do następnego przejazdu stoi na czas ustępowania, więc po
+		# przejechaniu tamtego autka nie ruszamy w tej samej chwili.
 		return
 
 	_to_next -= delta
@@ -130,17 +177,27 @@ func _start_pass() -> void:
 	# drogi przelatuje przez kadr jak szczur. Duże ma być do końca dojazdu,
 	# a maleć dopiero, gdy się oddala.
 	var tween := create_tween()
-	# X liniowo, Y wyhamowujące: samo Y na sinusie daje wrażenie wjeżdżania
-	# w perspektywę, a nie jazdy po prostej.
-	tween.tween_property(self, ^"position:x", approach_position.x, approach_seconds) \
-		.set_trans(Tween.TRANS_LINEAR)
-	tween.parallel().tween_property(self, ^"position:y", approach_position.y, approach_seconds) \
+	if keep_lane:
+		# Wskok na pas od razu, żeby dalej jechać samym Y. Przy jeździe prosto
+		# nie ma czego animować w poprzek.
+		position.x = approach_position.x
+	else:
+		# X liniowo, Y wyhamowujące: samo Y na sinusie daje wrażenie wjeżdżania
+		# w perspektywę, a nie jazdy po prostej.
+		tween.tween_property(self, ^"position:x", approach_position.x, approach_seconds) \
+			.set_trans(Tween.TRANS_LINEAR)
+		tween.parallel()
+
+	tween.tween_property(self, ^"position:y", approach_position.y, approach_seconds) \
 		.set_trans(Tween.TRANS_SINE) \
 		.set_ease(Tween.EASE_OUT)
 	tween.parallel().tween_property(self, ^"scale", approach_scale, approach_seconds) \
 		.set_trans(Tween.TRANS_LINEAR)
 
-	tween.chain().tween_property(self, ^"position", depart_position, depart_seconds) \
+	var depart_target := depart_position
+	if keep_lane:
+		depart_target.x = approach_position.x
+	tween.chain().tween_property(self, ^"position", depart_target, depart_seconds) \
 		.set_trans(Tween.TRANS_LINEAR)
 	tween.parallel().tween_property(self, ^"scale", depart_scale, depart_seconds) \
 		.set_trans(Tween.TRANS_LINEAR)
