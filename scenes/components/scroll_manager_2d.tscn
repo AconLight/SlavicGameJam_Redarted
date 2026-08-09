@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://scenes/components/roadside_grass_right.tscn" id="17_grass_right"]
 [ext_resource type="PackedScene" path="res://scenes/components/roadside_small_grass_left.tscn" id="18_small_grass_left"]
 [ext_resource type="PackedScene" path="res://scenes/components/roadside_small_grass_right.tscn" id="19_small_grass_right"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_speed_camera_warning_sign.tscn" id="20_speed_camera_warning"]
 
 [node name="ScrollManager2D" type="Node2D" unique_id=1353085533]
 z_index = -10
@@ -794,6 +795,8 @@ spawn_immediately = false
 [node name="RoadsideSpeedMeters" type="Node2D" parent="ScrollableElements" unique_id=426771069]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("4_speed_meter")
+warning_content_scene = ExtResource("20_speed_camera_warning")
+warning_delay_seconds = 4.0
 spawn_chance = 1.0
 projection_mode = 1
 slot_choices = PackedInt32Array(8)

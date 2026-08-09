@@ -4,6 +4,9 @@ extends Node2D
 const ScrollElementScript := preload("res://scripts/driving/scroll_element_2d.gd")
 
 @export var content_scene: PackedScene
+## Optional scene shown before the main scene is spawned.
+@export var warning_content_scene: PackedScene
+@export_range(0.0, 30.0, 0.1) var warning_delay_seconds := 0.0
 @export_enum("Flat", "Vertical", "Expand Right", "Expand Left") var projection_mode := 0
 @export_enum("None", "Stripe", "Tree", "Car") var debug_visual := 0
 @export var slot_choices := PackedInt32Array([0])
@@ -154,10 +157,24 @@ func refresh_active_elements() -> void:
 func _spawn(road_distance: float) -> ScrollElement2D:
 	if _random.randf() > spawn_chance:
 		return null
+	if warning_content_scene != null:
+		var warning_element := _spawn_element(road_distance, warning_content_scene)
+		if warning_element != null and warning_delay_seconds > 0.0:
+			get_tree().create_timer(warning_delay_seconds).timeout.connect(_spawn_after_warning.bind(road_distance), CONNECT_ONE_SHOT)
+		return warning_element
+	return _spawn_element(road_distance, content_scene)
+
+
+func _spawn_after_warning(road_distance: float) -> void:
+	if is_inside_tree():
+		_spawn_element(road_distance, content_scene)
+
+
+func _spawn_element(road_distance: float, scene_to_spawn: PackedScene) -> ScrollElement2D:
 	var element := ScrollElementScript.new()
 	element.projection_mode = projection_mode
 	element.debug_visual = debug_visual
-	element.content_scene = content_scene
+	element.content_scene = scene_to_spawn
 	element.slot = slot_choices[_random.randi_range(0, slot_choices.size() - 1)] if not slot_choices.is_empty() else 0
 	var lane_jitter := _random.randf_range(-0.5, 0.5) * randomizer_factor
 	element.lane_offset = float(element.slot) + lane_offset + lane_jitter
