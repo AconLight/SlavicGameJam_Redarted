@@ -24,6 +24,10 @@ const DESIGN_SIZE := Vector2(1152, 648)
 @export_range(0.05, 0.5, 0.01) var slot_lateral_spacing := 0.22
 @export var slot_origin := 0
 
+@export_group("Road Steering")
+## Multiplies the triangle-road rotation driven by RoadLaneSteering.
+@export_range(0.0, 4.0, 0.01) var road_rotation_multiplier := 1.2
+
 @export_group("Render")
 ## Absolute canvas depth used by generated elements. Keep this below cabin art.
 @export var element_z_index := -10
@@ -126,6 +130,18 @@ func apply_projection(element: ScrollElement2D) -> void:
 		element_z_index + element.render_order_offset,
 		lateral_offset,
 	)
+
+
+## Updates the shared lane origin and immediately reprojects every already
+## spawned element. New spawns use the same origin automatically.
+func set_live_lane_origin(value: float) -> void:
+	slot_origin = value
+	var container := get_node_or_null("ScrollableElements")
+	if container == null:
+		return
+	for handler in container.get_children():
+		if handler.has_method(&"refresh_active_elements"):
+			handler.refresh_active_elements()
 
 
 func project_position(lateral_offset: float, visual_progress: float) -> Vector2:

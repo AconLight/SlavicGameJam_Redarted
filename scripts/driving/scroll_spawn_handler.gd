@@ -124,6 +124,12 @@ func _update_active_elements(delta: float) -> void:
 		_manager.apply_projection(element)
 
 
+## Reprojects existing elements after a live perspective/lane configuration edit.
+## Zero delta deliberately preserves every element's current road distance.
+func refresh_active_elements() -> void:
+	_update_active_elements(0.0)
+
+
 func _spawn(road_distance: float) -> void:
 	var element := ScrollElementScript.new()
 	element.projection_mode = projection_mode
