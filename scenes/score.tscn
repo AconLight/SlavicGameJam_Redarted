@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://wpgautwnqh0u" path="res://assets/source/art/aseprite/mnożnik 2.png" id="10_7wwd1"]
 [ext_resource type="Texture2D" uid="uid://b4fs60763l4db" path="res://assets/source/art/aseprite/mnożnik 4.png" id="11_vl7ir"]
 [ext_resource type="Texture2D" uid="uid://c2n6fhh0a3nq7" path="res://assets/source/art/aseprite/mnożnik 5.png" id="12_ejv83"]
-[ext_resource type="AudioStream" uid="uid://bq4w82embrbxm" path="res://assets/source/audio/sfx/237375__squareal__car-crash.wav" id="13_crash"]
+[ext_resource type="AudioStream" uid="uid://cpb725u0yql3a" path="res://assets/source/audio/sfx/tires_squeaking.wav" id="13_crash"]
 
 [node name="score" type="Node2D" unique_id=333109457]
 

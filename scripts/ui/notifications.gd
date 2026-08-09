@@ -2,7 +2,7 @@ extends Label
 
 @export var chill_penalty: int = 50
 
-## Stuknięcie przy brake checku. Wymaga węzła AudioStreamPlayer o nazwie Crash.
+## Pisk opon przy brake checku. Wymaga węzła AudioStreamPlayer o nazwie Crash.
 ## Fotoradar go nie odpala — tam gra już błysk migawki.
 @export var crash_stream: AudioStream
 
