@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://c1bkvpsrc0yis" path="res://assets/source/art/aseprite/Pole - tło.png" id="1_ioik6"]
 [ext_resource type="Texture2D" uid="uid://d2aidelrgo3i2" path="res://assets/source/art/aseprite/droga trójkat.png" id="1_road"]
 [ext_resource type="Texture2D" uid="uid://grd3p0s383x3" path="res://assets/source/art/aseprite/niebo (dobre).png" id="3_d4hm1"]
+[ext_resource type="Texture2D" uid="uid://d18n5g24xrhcp" path="res://assets/source/art/aseprite/Zboże.png" id="4_d4hm1"]
 
 [node name="Otoczenie" type="Node2D" unique_id=1893183989]
 
@@ -26,4 +27,10 @@ centered = false
 
 [node name="niebo" type="Sprite2D" parent="." unique_id=1539525695]
 texture = ExtResource("3_d4hm1")
+centered = false
+
+[node name="zboze" type="Sprite2D" parent="." unique_id=1201050384]
+modulate = Color(0.38732323, 0.5455436, 0.6857245, 1)
+position = Vector2(-2, 427)
+texture = ExtResource("4_d4hm1")
 centered = false
