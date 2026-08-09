@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://bmopiacy1k5x8" path="res://assets/source/art/aseprite/pasek trasy.png" id="11_eb6dy"]
 [ext_resource type="Texture2D" uid="uid://c011wdhagym5h" path="res://assets/source/art/aseprite/znacznik paska trasy.png" id="12_trceg"]
 [ext_resource type="Script" uid="uid://b58707crkillx" path="res://scripts/ui/route_bar.gd" id="13_routebar"]
+[ext_resource type="PackedScene" uid="uid://b1pxk8wvqrf0n" path="res://scenes/passing_car.tscn" id="15_passing"]
 
 [node name="Main" type="Node2D" unique_id=596678821]
 
@@ -85,4 +86,7 @@ position = Vector2(983, 157)
 position = Vector2(-39.228607, 670.34186)
 
 [node name="Car" parent="DriftCarContainter" unique_id=1468817716 instance=ExtResource("10_choun")]
+position = Vector2(39.228607, -670.34186)
+
+[node name="PassingCar" parent="DriftCarContainter" unique_id=1468817717 instance=ExtResource("15_passing")]
 position = Vector2(39.228607, -670.34186)

@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://b1pxk8wvqrf0n"]
+
+[ext_resource type="Texture2D" uid="uid://jgxkopohqhxs" path="res://assets/source/art/aseprite/Samochodzik od tyłu.png" id="1_qt2eu"]
+[ext_resource type="Script" path="res://scripts/obstacles/passing_car.gd" id="2_passing"]
+[ext_resource type="AudioStream" uid="uid://c43p7mgx8i8d1" path="res://assets/source/audio/sfx/honk_dopler.wav" id="3_honk"]
+
+[node name="PassingCar" type="Node2D"]
+
+[node name="car" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(-305.8281, 1664.2273)
+scale = Vector2(2.2559152, 2.2381818)
+texture = ExtResource("1_qt2eu")
+script = ExtResource("2_passing")
+honk_stream = ExtResource("3_honk")
+
+[node name="Honk" type="AudioStreamPlayer" parent="car"]
