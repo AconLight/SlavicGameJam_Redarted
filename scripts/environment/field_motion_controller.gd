@@ -7,6 +7,9 @@ extends Node
 
 @export var layer_paths: Array[NodePath] = []
 @export var layer_travel_multipliers := PackedFloat32Array([1.0])
+## Phase position for each layer. A two-plate loop uses [0.0, 0.5], the
+## greatest possible separation on a repeating cycle.
+@export var layer_cycle_offsets := PackedFloat32Array([0.0])
 @export_range(1.0, 300.0, 1.0) var reference_speed_kmh := 80.0
 @export_range(0.01, 2.0, 0.01) var travel_units_per_second := 0.18
 @export var vanishing_point := Vector2(0.5, 0.0)
@@ -32,8 +35,9 @@ func _process(delta: float) -> void:
 	_travel += delta * travel_units_per_second * speed_ratio
 	for index in _materials.size():
 		var multiplier := layer_travel_multipliers[index] if index < layer_travel_multipliers.size() else 1.0
+		var cycle_offset := layer_cycle_offsets[index] if index < layer_cycle_offsets.size() else 0.0
 		var material := _materials[index]
-		material.set_shader_parameter("travel", _travel * multiplier)
+		material.set_shader_parameter("travel", _travel * multiplier + cycle_offset)
 		material.set_shader_parameter("vanishing_point", vanishing_point)
 
 
