@@ -31,11 +31,22 @@ const GROUP := &"cabin_activity"
 
 ## Grafika na czas, gdy przedmiot jest zamknięty — bez obwódki, żeby gracz
 ## widział, że teraz nie ma po co klikać. Puste = grafika się nie zmienia.
+##
+## Nie zastępuje zwykłej, a leży na niej i pulsuje przezroczystością. Zwykła
+## zostaje pod spodem, więc przedmiot mruga między dwoma kolorami, zamiast
+## po prostu zmienić wygląd.
 @export var locked_texture: Texture2D:
 	set(value):
 		locked_texture = value
 		if is_node_ready():
 			_refresh_art()
+
+## Ile mrugnięć na sekundę.
+@export_range(0.1, 8.0, 0.1) var locked_pulse_frequency := 0.8
+
+## Jak bardzo grafika zamknięcia przygasa w dołku pulsu. 0 = gaśnie do zera,
+## 1 = stoi na pełnej mocy i nic nie mruga.
+@export_range(0.0, 1.0, 0.05) var locked_pulse_floor := 0.0
 
 ## Rozmiar obszaru klikalnego.
 @export var click_size := Vector2(200.0, 120.0):
@@ -170,8 +181,12 @@ var _is_active := false
 var _active_rotation := 0.0
 var _sway_time := 0.0
 
+var _pulse_time := 0.0
+var _pulsing := false
+
 @onready var _visual: Polygon2D = $Visual
 @onready var _art: Sprite2D = $Art
+@onready var _locked_art: Sprite2D = $Art/LockedArt
 @onready var _click_area: CollisionShape2D = $ClickArea
 
 
@@ -201,7 +216,12 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if Engine.is_editor_hint() or not _is_active or _mover == null:
+	if Engine.is_editor_hint():
+		return
+
+	_pulse_locked_art(delta)
+
+	if not _is_active or _mover == null:
 		return
 	if sway_degrees_while_active <= 0.0:
 		return
@@ -214,6 +234,17 @@ func _process(delta: float) -> void:
 	var wave := sin(_sway_time * TAU * sway_frequency)
 	wave += 0.3 * sin(_sway_time * TAU * sway_frequency * 1.6 + 0.8)
 	_mover.rotation = _active_rotation + deg_to_rad(wave * sway_degrees_while_active)
+
+
+## Mruganie warstwy na przedmiocie gotowym do kliknięcia. Cosinus zaczyna od
+## jedynki, więc pierwsza klatka wygląda jak wersja bez obwódki i dopiero potem
+## przeziera spod niej zwykła.
+func _pulse_locked_art(delta: float) -> void:
+	if _locked_art == null or not _pulsing:
+		return
+	_pulse_time += delta
+	var wave := 0.5 + 0.5 * cos(_pulse_time * TAU * locked_pulse_frequency)
+	_locked_art.modulate.a = lerpf(locked_pulse_floor, 1.0, wave)
 
 
 func _apply_size() -> void:
@@ -241,10 +272,30 @@ func _apply_size() -> void:
 func _refresh_art() -> void:
 	if _art == null or _visual == null:
 		return
-	var shown := locked_texture if locked and locked_texture != null else texture
-	_art.texture = shown
-	_art.visible = shown != null
-	_visual.visible = show_placeholder and shown == null
+	_art.texture = texture
+	_art.visible = texture != null
+	_visual.visible = show_placeholder and texture == null
+
+	if _locked_art == null:
+		return
+	_locked_art.texture = locked_texture
+
+	var has_both := locked_texture != null and texture != null
+	_locked_art.visible = has_both
+
+	# Mruga to, co da się kliknąć — mruganie ma przyciągać rękę do przedmiotu,
+	# a nie zawiadamiać, że nie ma po co klikać. Zamknięty przedmiot stoi na
+	# pełnej mocy, czyli wygląda dokładnie jak wersja bez obwódki.
+	var wants_pulse := has_both and available and not locked
+	if _pulsing == wants_pulse:
+		return
+
+	# Zegar pulsu zerujemy tylko przy zmianie stanu, nie przy każdym odświeżeniu.
+	# Kontroler przelicza dostępność w każdej klatce i wołał to samo co klatkę,
+	# więc puls startował od nowa bez przerwy i grafika stała na pełnej mocy.
+	_pulsing = wants_pulse
+	_pulse_time = 0.0
+	_locked_art.modulate.a = 1.0
 
 
 ## Pokazuje albo chowa przedmiot. Ukryty przestaje też łapać kliknięcia —

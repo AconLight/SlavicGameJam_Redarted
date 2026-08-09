@@ -15,5 +15,8 @@ polygon = PackedVector2Array(-100, -60, 100, -60, 100, 60, -100, 60)
 
 [node name="Art" type="Sprite2D" parent="."]
 
+[node name="LockedArt" type="Sprite2D" parent="Art"]
+visible = false
+
 [node name="ClickArea" type="CollisionShape2D" parent="."]
 shape = SubResource("ClickShape")

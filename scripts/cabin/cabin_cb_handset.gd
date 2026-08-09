@@ -50,10 +50,20 @@ extends Node2D
 ## Ile trwa wciąganie gruszki, gdy CB się blokuje.
 @export_range(0.05, 5.0, 0.05) var roll_seconds := 0.55
 
-## Grafika gruszki na czas blokady — bez obwódki. Podmieniamy ją tutaj, a nie
-## na czynności, bo gruszkę rysuje ten węzeł; czynność jest samym obszarem
+## Grafika gruszki na czas blokady — bez obwódki. Ustawiana tutaj, a nie na
+## czynności, bo gruszkę rysuje ten węzeł; czynność jest samym obszarem
 ## klikalnym bez własnej grafiki. Puste = grafika się nie zmienia.
+##
+## Leży na zwykłej i pulsuje przezroczystością, tak samo jak przy pozostałych
+## czynnościach — pod spodem zostaje normalna gruszka, więc widać mruganie
+## między dwoma kolorami. Wymaga węzła Sprite2D o nazwie LockedArt pod Body.
 @export var locked_texture: Texture2D
+
+## Ile mrugnięć na sekundę.
+@export_range(0.1, 8.0, 0.1) var locked_pulse_frequency := 0.8
+
+## Jak bardzo grafika blokady przygasa w dołku pulsu.
+@export_range(0.0, 1.0, 0.05) var locked_pulse_floor := 0.0
 
 @export_group("Kształt")
 
@@ -100,7 +110,8 @@ var _grab := 0.0
 var _held := false
 
 var _activity: CabinActivity
-var _base_texture: Texture2D
+var _locked_art: Sprite2D
+var _pulse_time := 0.0
 
 ## 0 = kabel wciągnięty do zera, 1 = pełna długość. Rozwijanie i zwijanie mają
 ## własne czasy, bo opadanie ma być cięższe niż wciąganie.
@@ -116,7 +127,9 @@ func _ready() -> void:
 		return
 
 	_camera = get_node_or_null(camera_path) as Node2D
-	_base_texture = _body.texture if _body != null else null
+	_locked_art = get_node_or_null(^"Body/LockedArt") as Sprite2D
+	if _locked_art != null:
+		_locked_art.visible = false
 	_activity = get_node_or_null(activity_path) as CabinActivity
 	# Bez wskazanej czynności gruszka po prostu zwisa — inaczej kabina odpalona
 	# osobno pokazywałaby ją na zawsze wciągniętą pod sufit.
@@ -143,7 +156,7 @@ func _process(delta: float) -> void:
 	var wants_hanging := _hangs_now()
 	var roll_pace := unroll_seconds if wants_hanging else roll_seconds
 	_roll = move_toward(_roll, 1.0 if wants_hanging else 0.0, delta / maxf(roll_pace, 0.01))
-	_refresh_body_texture()
+	_refresh_body_texture(delta)
 
 	var intensity := 0.0
 	if _camera != null and _camera.has_method(&"shake_intensity"):
@@ -175,14 +188,31 @@ func _process(delta: float) -> void:
 	_aim_cable_at(target)
 
 
-## Grafika gruszki pod aktualny stan zamka. Zapisujemy grafikę wyjściową przy
-## starcie, żeby nie trzeba jej było wpisywać drugi raz w polu obok.
-func _refresh_body_texture() -> void:
-	if _body == null or locked_texture == null:
+## Mrugająca warstwa na gruszce. Zwykła grafika zostaje pod spodem, a ta gaśnie
+## i wraca cosinusem, więc gruszka gotowa do złapania miga między dwoma
+## kolorami. Zablokowana nie mruga — stoi na wersji bez obwódki.
+func _refresh_body_texture(delta: float) -> void:
+	if _locked_art == null:
 		return
-	var wanted := locked_texture if (_activity != null and _activity.locked) else _base_texture
-	if wanted != null and _body.texture != wanted:
-		_body.texture = wanted
+
+	if locked_texture == null:
+		_locked_art.visible = false
+		return
+
+	_locked_art.visible = true
+	_locked_art.texture = locked_texture
+
+	# Mruga gruszka gotowa do złapania. Zablokowana stoi na pełnej mocy, czyli
+	# wygląda jak wersja bez obwódki.
+	var ready_to_grab := _activity == null or (_activity.available and not _activity.locked)
+	if not ready_to_grab:
+		_pulse_time = 0.0
+		_locked_art.modulate.a = 1.0
+		return
+
+	_pulse_time += delta
+	var wave := 0.5 + 0.5 * cos(_pulse_time * TAU * locked_pulse_frequency)
+	_locked_art.modulate.a = lerpf(locked_pulse_floor, 1.0, wave)
 
 
 ## Czy gruszka ma teraz zwisać. Trzymana w ręce zawsze, bo w trakcie rozmowy

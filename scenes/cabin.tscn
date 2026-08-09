@@ -127,6 +127,13 @@ texture = ExtResource("15_body")
 centered = false
 offset = Vector2(-40, 0)
 
+[node name="LockedArt" type="Sprite2D" parent="Interior/CbHandset/Body" unique_id=827007460]
+visible = false
+texture_filter = 1
+texture = ExtResource("31_cb_locked")
+centered = false
+offset = Vector2(-40, 0)
+
 [node name="CbActivity" parent="Interior/CbHandset" unique_id=174301410 instance=ExtResource("2_activity")]
 position = Vector2(0, 380)
 activity_id = &"cb_radio"
