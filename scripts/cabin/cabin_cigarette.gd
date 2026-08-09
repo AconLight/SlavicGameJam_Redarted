@@ -21,10 +21,12 @@ signal puff_taken()
 
 @export_group("Odblokowanie")
 
-## Od jakiego chillu papierośnica jest w kabinie. Raz odblokowana zostaje,
-## tak samo jak pozostałe czynności. Progi mnożnika: 1 = 0, 2 = 20, 3 = 40,
-## 4 = 60, 5 = 80.
-@export_range(0, 100, 1) var min_chill := 60
+## Od jakiego poziomu chillu papierośnica jest w kabinie. Raz odblokowana
+## zostaje, tak samo jak pozostałe czynności.
+##
+## Poziom to mnożnik z KeepScore.get_chill_multiplier() — ten sam, po którym
+## odblokowują się czynności trzymane.
+@export_range(1, 5, 1) var min_chill_level := 4
 
 ## Węzeł z polem `chill` — w grze KeepScore ze sceny score. Puste = widoczna
 ## od początku, żeby dało się testować samą kabinę.
@@ -190,7 +192,7 @@ func _process(delta: float) -> void:
 	if Engine.is_editor_hint():
 		return
 
-	if not _unlocked and _current_chill() >= min_chill:
+	if not _unlocked and _current_chill_level() >= min_chill_level:
 		_unlocked = true
 		_show_case(true)
 		if debug_log:
@@ -244,11 +246,12 @@ func is_puffing() -> bool:
 	return _puff.playing
 
 
-func _current_chill() -> int:
-	if _chill_source == null:
-		return 100
-	var value: Variant = _chill_source.get(&"chill")
-	return 100 if value == null else int(value)
+## Poziom chillu, czyli mnożnik punktów. Bez podpiętego licznika zwracamy
+## maksimum, żeby sama kabina dała się odpalić i przeklikać bez reszty gry.
+func _current_chill_level() -> int:
+	if _chill_source == null or not _chill_source.has_method(&"get_chill_multiplier"):
+		return 5
+	return int(_chill_source.call(&"get_chill_multiplier"))
 
 
 ## Buduje kształty i rozkłada grafiki. Nowy kształt za każdym razem, bo zasób

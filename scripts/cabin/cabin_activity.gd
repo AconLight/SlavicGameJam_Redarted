@@ -53,13 +53,13 @@ const GROUP := &"cabin_activity"
 		if is_node_ready():
 			_apply_size()
 
-## Od jakiego poziomu chillu ta aktywność jest widoczna. 0 = od początku.
+## Od jakiego poziomu chillu ta czynność jest w kabinie. 1 = od początku.
 ## Poniżej progu przedmiot znika i nie da się go kliknąć.
 ##
-## Progi mnożnika z KeepScore.get_chill_multiplier(), czyli poziomy z ikonki
-## na ekranie: 1 = 0, 2 = 20, 3 = 40, 4 = 60, 5 = 80. Gdy tamte progi się
-## zmienią, te liczby trzeba przeliczyć — nikt ich za nas nie pilnuje.
-@export_range(0, 100, 1) var min_chill := 0
+## Poziom to mnożnik z KeepScore.get_chill_multiplier(), ten sam, który pokazuje
+## ikonka na ekranie. Trzymamy poziom, a nie surową liczbę chillu, żeby zmiana
+## progów mnożnika u Adasia nie wymagała przeliczania niczego tutaj.
+@export_range(1, 5, 1) var min_chill_level := 1
 
 ## Węzeł, który znika razem z aktywnością. Puste = znika sama aktywność.
 ##

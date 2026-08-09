@@ -116,11 +116,19 @@ func accepts_input() -> bool:
 ## nic nie jest zablokowane.
 func current_chill() -> int:
 	if _chill_source == null:
-		return 100
+		return 200
 	var value: Variant = _chill_source.get(&"chill")
 	if value == null:
-		return 100
+		return 200
 	return int(value)
+
+
+## Poziom chillu, czyli mnożnik punktów: od 1 do 5. To po nim odblokowują się
+## czynności — progi mnożnika żyją w KeepScore i tam mają zostać.
+func current_chill_level() -> int:
+	if _chill_source == null or not _chill_source.has_method(&"get_chill_multiplier"):
+		return 5
+	return int(_chill_source.call(&"get_chill_multiplier"))
 
 
 ## Zawołanie metody na cudzym węźle, jeśli ten węzeł i metoda istnieją.
@@ -143,7 +151,7 @@ func _connect_activities() -> void:
 
 
 func _refresh_availability() -> void:
-	var chill := current_chill()
+	var level := current_chill_level()
 	for activity in _activities:
 		# Trwającej aktywności nie chowamy w połowie trzymania, nawet gdyby
 		# chill zdążył spaść poniżej jej progu.
@@ -153,7 +161,7 @@ func _refresh_availability() -> void:
 		# w kabinie na resztę przejazdu — mrugające co chwilę ukulele wyglądało
 		# jak błąd, a gracz nie ma jak zaplanować czynności, która znika mu
 		# z ekranu w połowie zjazdu chillu.
-		if not activity.chill_unlocked and chill >= activity.min_chill:
+		if not activity.chill_unlocked and level >= activity.min_chill_level:
 			activity.chill_unlocked = true
 		activity.set_available(activity.chill_unlocked)
 

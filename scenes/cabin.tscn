@@ -47,7 +47,8 @@
 [ext_resource type="Script" uid="uid://cpp63mbc56sxd" path="res://scripts/cabin/cabin_smoke.gd" id="40_smoke"]
 [ext_resource type="Texture2D" uid="uid://3hrtjwvpr1p5" path="res://assets/source/art/aseprite/Papierośnica.png" id="41_case"]
 [ext_resource type="Texture2D" uid="uid://b7rn7sxqeks7n" path="res://assets/source/art/aseprite/Papierośnica bez obwódki.png" id="42_case_busy"]
-[ext_resource type="Script" path="res://scripts/cabin/cabin_chill_popups.gd" id="43_popups"]
+[ext_resource type="Script" uid="uid://bctri88fkhnk7" path="res://scripts/cabin/cabin_chill_popups.gd" id="43_popups"]
+[ext_resource type="FontFile" uid="uid://nsi0jovaqs78" path="res://assets/source/fonts/VCR_OSD_MONO_1.001.ttf" id="44_font"]
 [ext_resource type="AudioStream" uid="uid://deo32mk7olydl" path="res://assets/source/audio/sfx/CB_1.wav" id="cb1"]
 [ext_resource type="AudioStream" uid="uid://cu3bkyu5kc32b" path="res://assets/source/audio/sfx/CB_2.wav" id="cb2"]
 [ext_resource type="AudioStream" uid="uid://d0egpeeqg58mk" path="res://assets/source/audio/sfx/CB_3.wav" id="cb3"]
@@ -77,10 +78,10 @@
 [ext_resource type="AudioStream" uid="uid://ccd2wk2gi6xo5" path="res://assets/source/audio/sfx/UKULELE_2.wav" id="uku2"]
 [ext_resource type="AudioStream" uid="uid://c5sambe0xe7on" path="res://assets/source/audio/sfx/UKULELE_odstaw.wav" id="ukuoff"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pc8nf"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wkk3s"]
 size = Vector2(120, 80)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xiyev"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b02bo"]
 size = Vector2(90, 160)
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
@@ -132,7 +133,7 @@ activity_id = &"cb_radio"
 zoom_target_path = NodePath("../../../ZoomTargets/CbFocus")
 click_size = Vector2(110, 180)
 show_placeholder = false
-min_chill = 20
+min_chill_level = 2
 visual_root_path = NodePath("..")
 activation_action = &"cabin_keypad"
 approach_seconds = 10.0
@@ -299,7 +300,7 @@ zoom_target_path = NodePath("../../ZoomTargets/UkuleleFocus")
 texture = ExtResource("13_2gupc")
 locked_texture = ExtResource("32_uku_locked")
 click_size = Vector2(290, 450)
-min_chill = 40
+min_chill_level = 3
 move_to_focus_while_active = true
 active_pose_path = NodePath("../ukulele-schowane")
 focus_travel_seconds = 0.5
@@ -313,13 +314,13 @@ return_seconds = 0.45
 position = Vector2(700, 900)
 script = ExtResource("35_cigarette")
 chill_source_path = NodePath("../../../score/CanvasLayer/KeepScore")
-popups_path = NodePath("../../ChillPopups")
-puff_popup_anchor_path = NodePath("../PuffPopupSpot")
 case_texture = ExtResource("41_case")
 case_busy_texture = ExtResource("42_case_busy")
 cigarette_texture = ExtResource("36_cig_idle")
 puff_node_path = NodePath("Sprite2D")
 puff_texture = ExtResource("37_cig_puff")
+popups_path = NodePath("../../ChillPopups")
+puff_popup_anchor_path = NodePath("../PuffPopupSpot")
 blocked_activity_paths = Array[NodePath]([NodePath("../Ukulele")])
 hidden_while_puffing = Array[NodePath]([NodePath("../../Interior/Sprite2D"), NodePath("Cigarette/Art"), NodePath("Cigarette/Smoke")])
 lighter_stream = ExtResource("38_lighter")
@@ -340,7 +341,7 @@ polygon = PackedVector2Array(-60, -40, 60, -40, 60, 40, -60, 40)
 
 [node name="Shape" type="CollisionShape2D" parent="Activities/Papieros/Case/Area" unique_id=1779206425]
 position = Vector2(1.5, 1)
-shape = SubResource("RectangleShape2D_pc8nf")
+shape = SubResource("RectangleShape2D_wkk3s")
 
 [node name="Cigarette" type="Node2D" parent="Activities/Papieros" unique_id=1779206426]
 position = Vector2(-222, -54)
@@ -363,7 +364,7 @@ polygon = PackedVector2Array(-45, -80, 45, -80, 45, 80, -45, 80)
 [node name="Shape" type="CollisionShape2D" parent="Activities/Papieros/Cigarette/Area" unique_id=1779206430]
 position = Vector2(8, -6)
 rotation = -1.9914206
-shape = SubResource("RectangleShape2D_xiyev")
+shape = SubResource("RectangleShape2D_b02bo")
 
 [node name="Lighter" type="AudioStreamPlayer" parent="Activities/Papieros" unique_id=1779206431]
 volume_db = 24.0
@@ -455,6 +456,7 @@ controller_path = NodePath("../ActivityController")
 bumped_paths = Array[NodePath]([NodePath("../Interior"), NodePath("../Activities")])
 drift_source_path = NodePath("../../Drift")
 drift_tilt_degrees = -20.0
+drift_zoom_boost = 0.2
 
 [node name="ChillPopups" type="Node2D" parent="." unique_id=259505103]
 z_index = 40
@@ -464,6 +466,7 @@ camera_path = NodePath("../CabinCamera")
 anchors = {
 &"ukulele": NodePath("../ZoomTargets/UkuleleFocus")
 }
+font = ExtResource("44_font")
 
 [node name="DebugOverlay" type="CanvasLayer" parent="." unique_id=259505102]
 visible = false

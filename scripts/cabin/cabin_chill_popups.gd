@@ -43,7 +43,19 @@ extends Node2D
 
 @export_group("Wygląd")
 
+## Czcionka cyferek. Puste = wbudowana czcionka silnika, czyli inna niż reszta
+## napisów w grze.
+@export var font: Font
+
 @export_range(8, 200, 1) var font_size := 44
+
+## Słowo dopisywane za liczbą, żeby było widać, czego dotyczy przypływ.
+@export var unit_label := "chill"
+
+## Ile razy mniejsze są cyferki podlatujące same — z grającego radia i z
+## papierosa. Liczba trzymania i pożegnalna suma zostają w pełnym rozmiarze,
+## bo to one są nagrodą, a te drobne tylko informują, że coś kapie.
+@export_range(0.2, 2.0, 0.05) var pop_scale := 0.6
 
 @export var color := Color(0.53, 0.94, 0.62, 1.0)
 
@@ -84,7 +96,7 @@ var _to_next_tick := 0.0
 
 
 func _ready() -> void:
-	_font = ThemeDB.fallback_font
+	_font = font if font != null else ThemeDB.fallback_font
 	_camera = get_node_or_null(camera_path) as Camera2D
 	_controller = get_node_or_null(controller_path) as CabinActivityController
 	if _controller == null:
@@ -216,6 +228,9 @@ func _draw() -> void:
 			scale = (1.0 + 0.6 * t) if farewell else (1.0 + pulse_strength * (1.0 - minf(t * 4.0, 1.0)))
 			alpha = 1.0 - t * t
 
+		if not farewell:
+			scale *= pop_scale
+
 		var origin := to_local(anchor.global_position) + Vector2(pop_data["offset"], -lift)
 		_draw_number(pop_data["value"], origin, scale / zoom, alpha)
 
@@ -233,7 +248,7 @@ func _draw() -> void:
 
 
 func _draw_number(value: int, origin: Vector2, scale: float, alpha: float) -> void:
-	var text := "+%d" % value
+	var text := "+%d %s" % [value, unit_label]
 	var size := _font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size)
 	# Skalujemy przez przekształcenie, nie przez rozmiar czcionki — inaczej
 	# każdy skok kazałby silnikowi przerysować atlas czcionki od nowa.
