@@ -82,7 +82,17 @@ signal puff_taken()
 @export_group("Skutki")
 
 ## Ile chillu daje jedno zaciągnięcie.
-@export_range(0, 50, 1) var puff_chill := 5
+@export_range(0, 50, 1) var puff_chill := 10
+
+## Ile chillu na sekundę daje sam żarzący się papieros, bez zaciągania.
+@export_range(0, 20, 1) var lit_chill_per_second := 1
+
+## Węzeł z metodą pop(int, Node2D) — cyferki chillu. Puste = bez cyferek.
+@export_node_path("Node") var popups_path: NodePath
+
+## Gdzie staje cyferka za zaciągnięcie. Puste = na grafice zaciągnięcia.
+## Osobna pinezka, bo miejsce dobre dla oka nie musi wypadać na środku grafiki.
+@export_node_path("Node2D") var puff_popup_anchor_path: NodePath
 
 ## Czynności zamknięte na czas, gdy papieros jest wyjęty. Kierowca ma jedne
 ## ręce: z papierosem w palcach nie weźmie ukulele.
@@ -110,6 +120,8 @@ signal puff_taken()
 @export var debug_log := true
 
 var _chill_source: Node
+var _popups: Node
+var _puff_popup_anchor: Node2D
 var _puff_node: CanvasItem
 var _blocked: Array[CabinActivity] = []
 var _hidden: Array[CanvasItem] = []
@@ -119,6 +131,7 @@ var _hidden_was_visible: Array[bool] = []
 var _unlocked := false
 
 var _cigarette_left := 0.0
+var _to_next_chill := 0.0
 
 @onready var _case: Node2D = $Case
 @onready var _case_art: Sprite2D = $Case/Art
@@ -140,6 +153,8 @@ func _ready() -> void:
 		return
 
 	_chill_source = get_node_or_null(chill_source_path)
+	_popups = get_node_or_null(popups_path)
+	_puff_popup_anchor = get_node_or_null(puff_popup_anchor_path) as Node2D
 	_puff_node = get_node_or_null(puff_node_path) as CanvasItem
 	if _puff_node != null:
 		_puff_node.visible = false
@@ -184,6 +199,13 @@ func _process(delta: float) -> void:
 	if _cigarette_left <= 0.0:
 		return
 
+	# Sam żarzący się papieros dolewa chillu co sekundę, bez klikania.
+	if lit_chill_per_second > 0:
+		_to_next_chill -= delta
+		if _to_next_chill <= 0.0:
+			_to_next_chill += 1.0
+			_add_chill(lit_chill_per_second)
+
 	_cigarette_left -= delta
 	if _cigarette_left > 0.0:
 		return
@@ -198,6 +220,18 @@ func _process(delta: float) -> void:
 	_set_case_busy(false)
 	if debug_log:
 		print("[papieros] papieros dopalony")
+
+
+## Dolewa chillu i wypuszcza cyferkę nad papierosem. Jedno miejsce dla obu
+## dróg — żarzenia i zaciągnięcia — żeby liczba na ekranie nie mogła się
+## rozjechać z tym, co faktycznie trafiło do licznika.
+func _add_chill(amount: int, anchor: Node2D = null, seconds := 0.0, grow := false) -> void:
+	if amount <= 0:
+		return
+	if _chill_source != null and _chill_source.has_method(&"AddChill"):
+		_chill_source.call(&"AddChill", amount)
+	if _popups != null and _popups.has_method(&"pop"):
+		_popups.call(&"pop", amount, anchor if anchor != null else _cigarette, seconds, grow)
 
 
 ## Czy papieros jest wyjęty i się żarzy. Tym karmi się dym.
@@ -308,6 +342,7 @@ func _on_case_input(_viewport: Node, event: InputEvent, _shape: int) -> void:
 		return
 
 	_cigarette_left = cigarette_seconds
+	_to_next_chill = 1.0
 	_cigarette.visible = true
 	_cigarette_area.input_pickable = true
 	_set_case_busy(true)
@@ -332,8 +367,14 @@ func _on_cigarette_input(_viewport: Node, event: InputEvent, _shape: int) -> voi
 
 	# Chill dostaje się od razu, nie po dopaleniu dźwięku — gracz ma widzieć
 	# skutek kliknięcia w tej samej chwili, w której klika.
-	if puff_chill > 0 and _chill_source != null and _chill_source.has_method(&"AddChill"):
-		_chill_source.call(&"AddChill", puff_chill)
+	#
+	# Cyferka stoi na środku grafiki zaciągnięcia i rośnie tyle, ile trwa
+	# dźwięk, więc gaśnie razem z nim, a nie w losowym momencie.
+	var puff_seconds := 0.0
+	if _puff.stream != null:
+		puff_seconds = _puff.stream.get_length()
+	var puff_anchor := _puff_popup_anchor if _puff_popup_anchor != null else (_puff_node as Node2D)
+	_add_chill(puff_chill, puff_anchor, puff_seconds, true)
 
 	puff_taken.emit()
 	if debug_log:

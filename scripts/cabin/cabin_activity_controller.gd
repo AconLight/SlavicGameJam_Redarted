@@ -174,6 +174,10 @@ func _on_press_requested(activity: CabinActivity, held_by_action: bool) -> void:
 	_hold_action = activity.activation_action if held_by_action else &""
 	_held = 0.0
 	activity.set_active(true)
+	# Stawka za sekundę zależy od czynności, więc podajemy ją licznikowi przed
+	# uruchomieniem naliczania.
+	if _chill_source != null and _chill_source.has_method(&"SetChillGain"):
+		_chill_source.call(&"SetChillGain", activity.hold_chill_per_second)
 	_notify(_chill_source, &"ChillActivity")
 	# Gaz i hamowanie chodzą parą: czego kierowca nie dodaje, tego nie zdejmuje.
 	if activity.accelerates:

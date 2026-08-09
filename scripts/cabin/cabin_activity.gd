@@ -111,6 +111,12 @@ const GROUP := &"cabin_activity"
 ## gdzie kierowca nie ma jak dociskać pedału — ukulele trzyma obiema rękami.
 @export var accelerates := true
 
+## Ile chillu na sekundę daje trzymanie tej czynności. Kontroler wstawia tę
+## wartość do licznika na czas trzymania, a cyferki nad przedmiotem pokazują
+## dokładnie ją — jedno źródło prawdy, więc napis nie może się rozjechać
+## z tym, co faktycznie wpada.
+@export_range(0, 50, 1) var hold_chill_per_second := 5
+
 ## O ile na sekundę ta czynność ściąga tira z pasa, gdy okres darmowy minie.
 ## 0 = nie ściąga wcale. Obsługą zajmuje się CabinDrift w scenie rozgrywki.
 @export_range(0.0, 1.0, 0.01) var drift_per_second := 0.0

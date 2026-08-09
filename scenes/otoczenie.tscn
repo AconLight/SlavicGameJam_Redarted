@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://d18n5g24xrhcp" path="res://assets/source/art/aseprite/Zboże.png" id="4_d4hm1"]
 [ext_resource type="Shader" path="res://shaders/field_perspective_motion.gdshader" id="5_zboze_shader"]
 [ext_resource type="Script" path="res://scripts/environment/field_motion_controller.gd" id="6_zboze_controller"]
+[ext_resource type="Script" uid="uid://dlcpyecy34hif" path="res://scripts/environment/screen_pinned.gd" id="7_pinned"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_zboze_a"]
 shader = ExtResource("5_zboze_shader")
@@ -78,6 +79,7 @@ modulate = Color(0.38732323, 0.5455436, 0.6857245, 1)
 position = Vector2(-2, 427)
 texture = ExtResource("4_d4hm1")
 centered = false
+script = ExtResource("7_pinned")
 
 [node name="zboze_delayed" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_zboze_b")
@@ -85,6 +87,7 @@ modulate = Color(0.38732323, 0.5455436, 0.6857245, 1)
 position = Vector2(-2, 427)
 texture = ExtResource("4_d4hm1")
 centered = false
+script = ExtResource("7_pinned")
 
 [node name="ZbozeMotionController" type="Node" parent="."]
 script = ExtResource("6_zboze_controller")

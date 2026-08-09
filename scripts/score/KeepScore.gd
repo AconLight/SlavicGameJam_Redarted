@@ -43,6 +43,14 @@ func _ready():
 # Wcześniej stała tu atrapa reagująca na spację — spacja obsługuje dziś gaz,
 # więc chill rósłby od dodawania gazu zamiast od czynności kierowcy.
 
+# Ile chillu daje jedno tyknięcie trzymanej czynności. Kabina wstawia tu swoją
+# wartość przez SetChillGain(), bo każda czynność jest warta co innego —
+# kręcenie radiem mniej niż branie ukulele do ręki.
+var chill_gain: int = 5
+
+func SetChillGain(amount: int):
+	chill_gain = max(amount, 0)
+
 # Start ChillActivity
 func ChillActivity():
 	if game_is_over or chill_active:
@@ -53,7 +61,7 @@ func ChillActivity():
 # Runs every second while Space is held
 func _on_chill_tick():
 	score += 100 * get_chill_multiplier()
-	chill += 5
+	chill += chill_gain
 	chill = clamp(chill, 0, 200)
 	# NEW: Update screen when variables increase
 	update_ui() 

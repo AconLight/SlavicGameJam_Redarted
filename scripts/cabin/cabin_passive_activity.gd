@@ -22,6 +22,9 @@ signal playback_finished()
 ## Węzeł z metodą AddChill(int) — w grze KeepScore ze sceny score.
 @export_node_path("Node") var chill_source_path: NodePath
 
+## Węzeł z metodą pop(int, Node2D) — cyferki chillu. Puste = bez cyferek.
+@export_node_path("Node") var popups_path: NodePath
+
 @export_group("Tempo")
 
 ## Jak długo czynność pracuje po puszczeniu.
@@ -51,6 +54,7 @@ signal playback_finished()
 
 var _activity: CabinActivity
 var _chill_source: Node
+var _popups: Node
 var _finish_player: AudioStreamPlayer
 
 var _chill_per_second := 0
@@ -61,6 +65,7 @@ var _to_next_tick := 0.0
 func _ready() -> void:
 	_activity = get_node_or_null(activity_path) as CabinActivity
 	_chill_source = get_node_or_null(chill_source_path)
+	_popups = get_node_or_null(popups_path)
 	_finish_player = get_node_or_null(^"Finish") as AudioStreamPlayer
 	if _finish_player != null:
 		_finish_player.stream = finish_stream
@@ -83,6 +88,8 @@ func _process(delta: float) -> void:
 		_to_next_tick += tick_seconds
 		if _chill_source != null and _chill_source.has_method(&"AddChill"):
 			_chill_source.call(&"AddChill", _chill_per_second)
+		if _popups != null and _popups.has_method(&"pop"):
+			_popups.call(&"pop", _chill_per_second, _activity)
 
 	if _seconds_left <= 0.0:
 		_stop()

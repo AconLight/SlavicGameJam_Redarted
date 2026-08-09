@@ -47,6 +47,7 @@
 [ext_resource type="Script" uid="uid://cpp63mbc56sxd" path="res://scripts/cabin/cabin_smoke.gd" id="40_smoke"]
 [ext_resource type="Texture2D" uid="uid://3hrtjwvpr1p5" path="res://assets/source/art/aseprite/Papierośnica.png" id="41_case"]
 [ext_resource type="Texture2D" uid="uid://b7rn7sxqeks7n" path="res://assets/source/art/aseprite/Papierośnica bez obwódki.png" id="42_case_busy"]
+[ext_resource type="Script" path="res://scripts/cabin/cabin_chill_popups.gd" id="43_popups"]
 [ext_resource type="AudioStream" uid="uid://deo32mk7olydl" path="res://assets/source/audio/sfx/CB_1.wav" id="cb1"]
 [ext_resource type="AudioStream" uid="uid://cu3bkyu5kc32b" path="res://assets/source/audio/sfx/CB_2.wav" id="cb2"]
 [ext_resource type="AudioStream" uid="uid://d0egpeeqg58mk" path="res://assets/source/audio/sfx/CB_3.wav" id="cb3"]
@@ -77,7 +78,7 @@
 [ext_resource type="AudioStream" uid="uid://c5sambe0xe7on" path="res://assets/source/audio/sfx/UKULELE_odstaw.wav" id="ukuoff"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pc8nf"]
-size = Vector2(151, 128)
+size = Vector2(120, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xiyev"]
 size = Vector2(90, 160)
@@ -243,6 +244,9 @@ zoom = 1.5
 
 [node name="Activities" type="Node2D" parent="." unique_id=819683887]
 
+[node name="PuffPopupSpot" type="Marker2D" parent="Activities" unique_id=819683888]
+position = Vector2(925, 797)
+
 [node name="Radio" parent="Activities" unique_id=1224293936 instance=ExtResource("2_activity")]
 position = Vector2(1445, 876)
 activity_id = &"radio"
@@ -250,6 +254,7 @@ zoom_target_path = NodePath("../../ZoomTargets/RadioFocus")
 texture = ExtResource("9_radio")
 locked_texture = ExtResource("30_radio_locked")
 click_size = Vector2(220, 170)
+hold_chill_per_second = 1
 approach_seconds = 10.0
 return_seconds = 0.45
 
@@ -308,6 +313,8 @@ return_seconds = 0.45
 position = Vector2(700, 900)
 script = ExtResource("35_cigarette")
 chill_source_path = NodePath("../../../score/CanvasLayer/KeepScore")
+popups_path = NodePath("../../ChillPopups")
+puff_popup_anchor_path = NodePath("../PuffPopupSpot")
 case_texture = ExtResource("41_case")
 case_busy_texture = ExtResource("42_case_busy")
 cigarette_texture = ExtResource("36_cig_idle")
@@ -391,6 +398,7 @@ script = ExtResource("27_passive")
 activity_path = NodePath("../Activities/Radio")
 controller_path = NodePath("../ActivityController")
 chill_source_path = NodePath("../../score/CanvasLayer/KeepScore")
+popups_path = NodePath("../ChillPopups")
 finish_stream = ExtResource("34_static")
 
 [node name="Finish" type="AudioStreamPlayer" parent="RadioPassive" unique_id=574560892]
@@ -448,7 +456,17 @@ bumped_paths = Array[NodePath]([NodePath("../Interior"), NodePath("../Activities
 drift_source_path = NodePath("../../Drift")
 drift_tilt_degrees = -20.0
 
+[node name="ChillPopups" type="Node2D" parent="." unique_id=259505103]
+z_index = 40
+script = ExtResource("43_popups")
+controller_path = NodePath("../ActivityController")
+camera_path = NodePath("../CabinCamera")
+anchors = {
+&"ukulele": NodePath("../ZoomTargets/UkuleleFocus")
+}
+
 [node name="DebugOverlay" type="CanvasLayer" parent="." unique_id=259505102]
+visible = false
 script = ExtResource("5_debug")
 controller_path = NodePath("../ActivityController")
 
