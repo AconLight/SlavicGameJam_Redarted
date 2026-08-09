@@ -14,8 +14,6 @@ const DESIGN_SIZE := Vector2(1152, 648)
 @export_range(0.0, 89.0, 0.1) var max_angle_right := 56.0
 ## Extends every horizon-to-near trajectory. 1.0 keeps the original length.
 @export_range(0.5, 4.0, 0.05) var trajectory_length_multiplier := 1.0
-@export_range(0.0, 1.0, 0.01) var curve_factor := 0.18
-@export_range(0.0, 1.0, 0.01) var curve_smoothness := 0.75
 @export_range(0.01, 2.0, 0.01) var world_scroll_speed := 0.07
 @export_range(1.01, 100.0, 0.01) var far_to_near_distance_ratio := 8.0
 @export_range(0.01, 1.0, 0.01) var far_scale := 0.08
@@ -147,32 +145,15 @@ func set_live_lane_origin(value: float) -> void:
 func project_position(lateral_offset: float, visual_progress: float) -> Vector2:
 	var t := clampf(visual_progress, 0.0, 1.0)
 	var endpoint := _near_endpoint(lateral_offset)
-	var side := signf(lateral_offset)
-	var side_strength := absf(lateral_offset)
-	var outward_bend := Vector2(
-		side * scroll_window.size.x * curve_factor * 0.38 * side_strength,
-		-scroll_window.size.y * curve_factor * 0.18 * side_strength,
-	)
-	# Separating the Bézier handles creates a continuous circular-feeling sweep.
-	# At 0 both handles meet in the middle (the old sharp turn); at 1 they spread
-	# along the route, preserving the entry and exit tangents.
-	var first_handle := perspective_point.lerp(endpoint, lerpf(0.5, 0.28, curve_smoothness))
-	var second_handle := perspective_point.lerp(endpoint, lerpf(0.5, 0.72, curve_smoothness))
-	var bend_scale := lerpf(1.0, 0.65, curve_smoothness)
-	first_handle += outward_bend * bend_scale
-	second_handle += outward_bend * bend_scale
-	return perspective_point.bezier_interpolate(first_handle, second_handle, endpoint, t) * layout_scale()
+	return perspective_point.lerp(endpoint, t) * layout_scale()
 
 
 func project_scale(visual_progress: float) -> float:
 	return lerpf(far_scale, near_scale, pow(clampf(visual_progress, 0.0, 1.0), scale_easing))
 
 
-func project_rotation(lateral_offset: float, visual_progress: float) -> float:
-	var t := clampf(visual_progress, 0.0, 1.0)
-	var before := project_position(lateral_offset, maxf(0.0, t - 0.01))
-	var after := project_position(lateral_offset, minf(1.0, t + 0.01))
-	return (after - before).angle() - PI * 0.5
+func project_rotation(lateral_offset: float, _visual_progress: float) -> float:
+	return (_near_endpoint(lateral_offset) - perspective_point).angle() - PI * 0.5
 
 
 func _near_endpoint(lateral_offset: float) -> Vector2:
