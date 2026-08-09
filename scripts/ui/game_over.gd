@@ -9,7 +9,7 @@ extends CanvasLayer
 ## Warstwa jest wysoko, żeby czerń szła po wszystkim: kabina, HUD i droga
 ## mają własne CanvasLayery.
 
-@export_file("*.tscn") var result_scene := "res://scenes/start_screen.tscn"
+@export_file("*.tscn") var result_scene := "res://scenes/start_screen_consequent.tscn"
 
 ## Ile trwa gaśnięcie obrazu i dźwięku, zanim wejdzie ekran z wynikiem.
 @export_range(0.0, 10.0, 0.1) var fade_seconds := 1.6
