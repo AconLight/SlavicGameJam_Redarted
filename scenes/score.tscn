@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" uid="uid://svjds2r8vbdy" path="res://scripts/score/HighScore.gd" id="1_bak1h"]
 [ext_resource type="Script" uid="uid://cl5p7r1gp1ndn" path="res://scripts/score/KeepScore.gd" id="2_plgac"]
+[ext_resource type="FontFile" uid="uid://nsi0jovaqs78" path="res://assets/source/fonts/VCR_OSD_MONO_1.001.ttf" id="3_7wwd1"]
 [ext_resource type="Texture2D" uid="uid://b4ve1x447g5k1" path="res://assets/source/art/aseprite/chill meter empty.png" id="3_68bkv"]
 [ext_resource type="Texture2D" uid="uid://cus0u6tub5mqe" path="res://assets/source/art/aseprite/chill meter FULL , BEZ GŁOWY.png" id="4_68bkv"]
+[ext_resource type="Texture2D" uid="uid://w3ff2s4u0t6m" path="res://assets/source/art/aseprite/chill meter - panel.png" id="4_vl7ir"]
 [ext_resource type="Texture2D" uid="uid://dc2e06bpek5sv" path="res://assets/source/art/aseprite/chill meter.png" id="4_xcjqx"]
 [ext_resource type="Script" uid="uid://lnnyxai80f50" path="res://scripts/ui/notifications.gd" id="5_68bkv"]
 [ext_resource type="Texture2D" uid="uid://cn84viqw5ni6s" path="res://assets/source/art/aseprite/mnożnik 3.png" id="7_3eqfp"]
@@ -31,10 +33,13 @@ offset_bottom = 218.0
 script = ExtResource("2_plgac")
 
 [node name="ScoreLabel" type="Label" parent="CanvasLayer/KeepScore" unique_id=1994952802]
-offset_left = 115.0
-offset_top = 193.0
-offset_right = 198.0
-offset_bottom = 216.0
+offset_left = 1556.0
+offset_top = 46.165
+offset_right = 1639.0
+offset_bottom = 99.1651
+theme_override_colors/font_color = Color(0.9607843, 0.5019608, 0.08627451, 1)
+theme_override_fonts/font = ExtResource("3_7wwd1")
+theme_override_font_sizes/font_size = 45
 
 [node name="ChillLabel" type="Label" parent="CanvasLayer/KeepScore" unique_id=1360919054]
 visible = false
@@ -81,3 +86,8 @@ texture_x2 = ExtResource("10_7wwd1")
 texture_x3 = ExtResource("7_3eqfp")
 texture_x4 = ExtResource("11_vl7ir")
 texture_x5 = ExtResource("12_ejv83")
+
+[node name="scorepanel" type="Sprite2D" parent="CanvasLayer/KeepScore" unique_id=1885441633]
+z_index = -1
+position = Vector2(1720, 70)
+texture = ExtResource("4_vl7ir")
