@@ -455,8 +455,8 @@ script = ExtResource("4_camera")
 controller_path = NodePath("../ActivityController")
 bumped_paths = Array[NodePath]([NodePath("../Interior"), NodePath("../Activities")])
 drift_source_path = NodePath("../../Drift")
-drift_tilt_degrees = -20.0
-drift_zoom_boost = 0.2
+drift_tilt_degrees = 20.0
+drift_zoom_boost = 0.45
 
 [node name="ChillPopups" type="Node2D" parent="." unique_id=259505103]
 z_index = 40

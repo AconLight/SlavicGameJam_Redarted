@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://c1bkvpsrc0yis" path="res://assets/source/art/aseprite/Pole - tło.png" id="1_ioik6"]
 [ext_resource type="Texture2D" uid="uid://d2aidelrgo3i2" path="res://assets/source/art/aseprite/droga trójkat.png" id="1_road"]
 [ext_resource type="Texture2D" uid="uid://grd3p0s383x3" path="res://assets/source/art/aseprite/niebo (dobre).png" id="3_d4hm1"]
+
 [node name="Otoczenie" type="Node2D" unique_id=1893183989]
 
 [node name="Marker2D" type="Marker2D" parent="." unique_id=398191038]
@@ -15,7 +16,7 @@ scale = Vector2(1.0739583, 1.284375)
 texture = ExtResource("1_ioik6")
 centered = false
 
-[node name="RoadPivot" type="Node2D" parent="."]
+[node name="RoadPivot" type="Node2D" parent="." unique_id=542937785]
 position = Vector2(916.35004, 441)
 
 [node name="RoadBackground" type="Sprite2D" parent="RoadPivot" unique_id=741804549]
