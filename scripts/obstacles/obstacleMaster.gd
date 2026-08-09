@@ -63,11 +63,11 @@ func spawn_random_obstacle():
 
 func trigger_speed_camera():
 	signalist._on_trigger_speed_camera()
-	get_tree().create_timer(7.0).timeout.connect(resolve_obstacle)
+	get_tree().create_timer(17).timeout.connect(resolve_obstacle)
 
 func trigger_side_vehicle():
 	signalist._on_car_break_check()
-	get_tree().create_timer(10.0).timeout.connect(resolve_obstacle)
+	get_tree().create_timer(11).timeout.connect(resolve_obstacle)
 
 func trigger_speed_increase():
 	signalist._on_trigger_speed_increase()
@@ -75,7 +75,7 @@ func trigger_speed_increase():
 
 func trigger_fall_out():
 	#signalist._on_trigger_fall_out()
-	get_tree().create_timer(16.0).timeout.connect(resolve_obstacle)
+	get_tree().create_timer(18.0).timeout.connect(resolve_obstacle)
 # --- Resolution ---
 
 # This function MUST be called whenever an obstacle leaves the screen or ends.
