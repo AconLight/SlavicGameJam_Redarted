@@ -2,7 +2,6 @@ extends Sprite2D
 @export var car_textures: Array[Texture2D] = []
 var keep_score
 var active = false
-static var _spawn_order_counter := 0
 func _ready():
 	keep_score = get_tree().get_first_node_in_group("keep_score")
 	call_deferred("_connect_signalist")
@@ -22,11 +21,6 @@ func _pick_random_texture() -> void:
 	if car_textures.size() > 0:
 		texture = car_textures.pick_random()
 func play_animation_sequence():
-	# Later-triggered cars get a lower z_index, so they draw behind
-	# cars that started their sequence earlier.
-	_spawn_order_counter += 1
-	z_index = -_spawn_order_counter
-
 	var tween = create_tween()
 # ------------------------- --------------------------------
 # STEP 1: Move on a curve and change size
