@@ -4,6 +4,7 @@
 [ext_resource type="AudioStream" uid="uid://qvgh21axy1pr" path="res://assets/source/audio/sfx/KeyStart.mp3" id="2_key"]
 [ext_resource type="Texture2D" uid="uid://fpq0on2b3any" path="res://assets/source/art/aseprite/Cała scena.png" id="2_r2jwc"]
 [ext_resource type="AudioStream" uid="uid://d0oej5xcj06f3" path="res://assets/source/audio/music/music.wav" id="3_he1sj"]
+[ext_resource type="PackedScene" uid="uid://cwx88nnnym822" path="res://scenes/redArted.tscn" id="5_hm208"]
 
 [node name="StartScreen" type="Control" unique_id=1104039428]
 layout_mode = 3
@@ -93,3 +94,8 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0)
+
+[node name="LogoLayer" type="CanvasLayer" parent="." unique_id=2147220020]
+layer = 5
+
+[node name="RedArted" parent="LogoLayer" unique_id=1956394152 instance=ExtResource("5_hm208")]

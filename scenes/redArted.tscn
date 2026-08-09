@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://cwx88nnnym822"]
+
+[ext_resource type="Texture2D" uid="uid://cga7yw5frgp3n" path="res://assets/source/art/vector/RedArtedLogo.jpeg" id="1_yb2t7"]
+[ext_resource type="Script" uid="uid://eyfvcojdnfn8" path="res://scripts/ui/intrologo.gd" id="2_jsyww"]
+
+[node name="RedArted" type="Node2D" unique_id=1956394152]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1086565670]
+position = Vector2(966, 543)
+scale = Vector2(1.53, 1.53)
+texture = ExtResource("1_yb2t7")
+script = ExtResource("2_jsyww")
