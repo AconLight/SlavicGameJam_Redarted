@@ -1,23 +1,25 @@
 extends Sprite2D
-
+@export var car_textures: Array[Texture2D] = []
 var keep_score
 var active = false
-
 func _ready():
 	keep_score = get_tree().get_first_node_in_group("keep_score")
 	call_deferred("_connect_signalist")
-
+	# Pick the starting skin now, while the car is sitting off-screen
+	# at its initial placed position.
+	_pick_random_texture()
 func _connect_signalist() -> void:
 	var signalist = get_tree().get_first_node_in_group(&"game_state_signalist")
 	if signalist:
 		signalist.car_break_check.connect(play_animation_sequence)
-
 func _update_active_from_chill():
 	if keep_score:
 		# Update 'active' to match 'chill_active' in real time
 		active = keep_score.chill_active
 		print(active)
-
+func _pick_random_texture() -> void:
+	if car_textures.size() > 0:
+		texture = car_textures.pick_random()
 func play_animation_sequence():
 	var tween = create_tween()
 # ------------------------- --------------------------------
@@ -47,7 +49,6 @@ func play_animation_sequence():
 		tween.tween_property(self, "rotation_degrees", 2.0, wiggle_speed)
 		tween.tween_property(self, "rotation_degrees", -2.0, wiggle_speed)
 		await tween.finished
-
 		if will_brake_check:
 			print("will_brake_check")
 			tween = create_tween()
@@ -93,3 +94,7 @@ func play_animation_sequence():
 	tween.tween_property(self, "position", new_teleport_location, 0.0)
 	tween.parallel().tween_property(self, "scale", Vector2(1.0, 1.0), 0.0)
 	await tween.finished
+
+	# Now that the car is safely off-screen (just teleported away),
+	# pick the texture it'll wear on its NEXT appearance.
+	_pick_random_texture()

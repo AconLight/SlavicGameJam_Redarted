@@ -2,6 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://jgxkopohqhxs" path="res://assets/source/art/aseprite/Samochodzik od tyłu.png" id="1_qt2eu"]
 [ext_resource type="Script" uid="uid://0s55o74len87" path="res://scripts/obstacles/car.gd" id="2_50v30"]
+[ext_resource type="Texture2D" uid="uid://4bfhbl4xle" path="res://assets/source/art/aseprite/Samochodzik od tyłuCZERWONY .png" id="3_3mrxu"]
+[ext_resource type="Texture2D" uid="uid://465kf66lobi8" path="res://assets/source/art/aseprite/Samochodzik od tyłuNIEBIESKI.png" id="4_cp117"]
+[ext_resource type="Texture2D" uid="uid://cu3oq77oe74dg" path="res://assets/source/art/aseprite/Samochodzik od tyłuZIELONY.png" id="5_4clw4"]
 
 [node name="Car" type="Node2D" unique_id=1468817716]
 
@@ -11,3 +14,4 @@ position = Vector2(-305.8281, 1664.2273)
 scale = Vector2(2.2559152, 2.2381818)
 texture = ExtResource("1_qt2eu")
 script = ExtResource("2_50v30")
+car_textures = Array[Texture2D]([ExtResource("3_3mrxu"), ExtResource("4_cp117"), ExtResource("5_4clw4"), ExtResource("1_qt2eu")])
