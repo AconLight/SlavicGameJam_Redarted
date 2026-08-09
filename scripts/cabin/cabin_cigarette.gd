@@ -77,7 +77,7 @@ signal puff_taken()
 @export_group("Tempo")
 
 ## Jak długo papieros leży wyjęty i da się w niego klikać.
-@export_range(1.0, 60.0, 0.5) var cigarette_seconds := 10.0
+@export_range(1.0, 60.0, 0.5) var cigarette_seconds := 20.0
 
 @export_group("Skutki")
 

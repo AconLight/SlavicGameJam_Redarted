@@ -45,6 +45,8 @@
 [ext_resource type="AudioStream" uid="uid://b08t52v5ya8xw" path="res://assets/source/audio/sfx/824425__kalinkamalinka__lighter_9.wav" id="38_lighter"]
 [ext_resource type="AudioStream" uid="uid://40boilpatonc" path="res://assets/source/audio/sfx/393049__sbaneat__fumar.wav" id="39_fumar"]
 [ext_resource type="Script" uid="uid://cpp63mbc56sxd" path="res://scripts/cabin/cabin_smoke.gd" id="40_smoke"]
+[ext_resource type="Texture2D" uid="uid://3hrtjwvpr1p5" path="res://assets/source/art/aseprite/Papierośnica.png" id="41_case"]
+[ext_resource type="Texture2D" uid="uid://b7rn7sxqeks7n" path="res://assets/source/art/aseprite/Papierośnica bez obwódki.png" id="42_case_busy"]
 [ext_resource type="AudioStream" uid="uid://deo32mk7olydl" path="res://assets/source/audio/sfx/CB_1.wav" id="cb1"]
 [ext_resource type="AudioStream" uid="uid://cu3bkyu5kc32b" path="res://assets/source/audio/sfx/CB_2.wav" id="cb2"]
 [ext_resource type="AudioStream" uid="uid://d0egpeeqg58mk" path="res://assets/source/audio/sfx/CB_3.wav" id="cb3"]
@@ -74,10 +76,10 @@
 [ext_resource type="AudioStream" uid="uid://ccd2wk2gi6xo5" path="res://assets/source/audio/sfx/UKULELE_2.wav" id="uku2"]
 [ext_resource type="AudioStream" uid="uid://c5sambe0xe7on" path="res://assets/source/audio/sfx/UKULELE_odstaw.wav" id="ukuoff"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3oxjx"]
-size = Vector2(120, 80)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pc8nf"]
+size = Vector2(151, 128)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_q4j56"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xiyev"]
 size = Vector2(90, 160)
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
@@ -306,6 +308,8 @@ return_seconds = 0.45
 position = Vector2(700, 900)
 script = ExtResource("35_cigarette")
 chill_source_path = NodePath("../../../score/CanvasLayer/KeepScore")
+case_texture = ExtResource("41_case")
+case_busy_texture = ExtResource("42_case_busy")
 cigarette_texture = ExtResource("36_cig_idle")
 puff_node_path = NodePath("Sprite2D")
 puff_texture = ExtResource("37_cig_puff")
@@ -318,16 +322,18 @@ puff_stream = ExtResource("39_fumar")
 position = Vector2(546, -127)
 
 [node name="Art" type="Sprite2D" parent="Activities/Papieros/Case" unique_id=1779206422]
-visible = false
+texture = ExtResource("41_case")
 
 [node name="Placeholder" type="Polygon2D" parent="Activities/Papieros/Case" unique_id=1779206423]
+visible = false
 color = Color(0.16, 0.13, 0.19, 1)
 polygon = PackedVector2Array(-60, -40, 60, -40, 60, 40, -60, 40)
 
 [node name="Area" type="Area2D" parent="Activities/Papieros/Case" unique_id=1779206424]
 
 [node name="Shape" type="CollisionShape2D" parent="Activities/Papieros/Case/Area" unique_id=1779206425]
-shape = SubResource("RectangleShape2D_3oxjx")
+position = Vector2(1.5, 1)
+shape = SubResource("RectangleShape2D_pc8nf")
 
 [node name="Cigarette" type="Node2D" parent="Activities/Papieros" unique_id=1779206426]
 position = Vector2(-222, -54)
@@ -350,7 +356,7 @@ polygon = PackedVector2Array(-45, -80, 45, -80, 45, 80, -45, 80)
 [node name="Shape" type="CollisionShape2D" parent="Activities/Papieros/Cigarette/Area" unique_id=1779206430]
 position = Vector2(8, -6)
 rotation = -1.9914206
-shape = SubResource("RectangleShape2D_q4j56")
+shape = SubResource("RectangleShape2D_xiyev")
 
 [node name="Lighter" type="AudioStreamPlayer" parent="Activities/Papieros" unique_id=1779206431]
 volume_db = 24.0
