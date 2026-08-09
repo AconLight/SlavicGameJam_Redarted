@@ -6,6 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://c1bkvpsrc0yis" path="res://assets/source/art/aseprite/Pole - tło.png" id="8_field_background"]
 [ext_resource type="PackedScene" path="res://scenes/components/roadside_tree_left.tscn" id="12_tree_left"]
 [ext_resource type="PackedScene" path="res://scenes/components/roadside_tree_right.tscn" id="13_tree_right"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_bush_left.tscn" id="14_bush_left"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_bush_right.tscn" id="15_bush_right"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_grass_left.tscn" id="16_grass_left"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_grass_right.tscn" id="17_grass_right"]
 
 [node name="ScrollManager2D" type="Node2D" unique_id=1353085533]
 z_index = -10
@@ -48,14 +52,14 @@ content_scene = ExtResource("12_tree_left")
 projection_mode = 1
 slot_choices = PackedInt32Array(-5)
 lane_offset = -0.5
-visibility_start_distance = 0.1
+visibility_start_distance = 0.2
 size_multiplier_min = 0.2
 size_multiplier_max = 0.2
 derive_interval_from_road_spacing = true
-road_spacing = 0.065
+road_spacing = 0.13
 max_active_elements = 16
-prewarm_count = 16
-prewarm_spacing = 0.065
+prewarm_count = 8
+prewarm_spacing = 0.13
 spawn_immediately = false
 
 [node name="RightRoadsideTrees" type="Node2D" parent="ScrollableElements" unique_id=1809849607]
@@ -63,14 +67,400 @@ script = ExtResource("2_spawner")
 content_scene = ExtResource("13_tree_right")
 projection_mode = 1
 slot_choices = PackedInt32Array(9)
-visibility_start_distance = 0.1
+visibility_start_distance = 0.2
 size_multiplier_min = 0.2
 size_multiplier_max = 0.2
 derive_interval_from_road_spacing = true
-road_spacing = 0.065
+road_spacing = 0.13
 max_active_elements = 16
-prewarm_count = 16
-prewarm_spacing = 0.065
+prewarm_count = 8
+prewarm_spacing = 0.13
+spawn_immediately = false
+
+[node name="LeftRoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=1046369003]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("14_bush_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-5)
+lane_offset = -0.5
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 1.0
+render_order_offset = 1
+derive_interval_from_road_spacing = true
+road_spacing = 0.0325
+max_active_elements = 32
+prewarm_count = 32
+prewarm_spacing = 0.0325
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightRoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=1537345542]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("15_bush_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(9)
+lane_offset = 0.5
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 1.0
+render_order_offset = 1
+derive_interval_from_road_spacing = true
+road_spacing = 0.0325
+max_active_elements = 32
+prewarm_count = 32
+prewarm_spacing = 0.0325
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftOuterRoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=877645753]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("14_bush_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-6)
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.5
+render_order_offset = -1
+derive_interval_from_road_spacing = true
+road_spacing = 0.0325
+max_active_elements = 32
+prewarm_count = 32
+prewarm_spacing = 0.0325
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightOuterRoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=1467753481]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("15_bush_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(10)
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.5
+render_order_offset = -1
+derive_interval_from_road_spacing = true
+road_spacing = 0.0325
+max_active_elements = 32
+prewarm_count = 32
+prewarm_spacing = 0.0325
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftOuterRoadsideGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("16_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-6)
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.5
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightOuterRoadsideGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("17_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(10)
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.5
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftOuter2RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("14_bush_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-7)
+lane_offset = 0.6
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.4
+render_order_offset = -1
+derive_interval_from_road_spacing = true
+road_spacing = 0.0325
+max_active_elements = 32
+prewarm_count = 32
+prewarm_spacing = 0.0325
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightOuter2RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("15_bush_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(11)
+lane_offset = -0.6
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.4
+render_order_offset = -1
+derive_interval_from_road_spacing = true
+road_spacing = 0.0325
+max_active_elements = 32
+prewarm_count = 32
+prewarm_spacing = 0.0325
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftOuter2RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("16_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-7)
+lane_offset = 0.6
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.4
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightOuter2RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("17_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(11)
+lane_offset = -0.6
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.4
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftOuter3RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("14_bush_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-7)
+lane_offset = 0.3
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.3
+render_order_offset = -1
+derive_interval_from_road_spacing = true
+road_spacing = 0.0325
+max_active_elements = 32
+prewarm_count = 32
+prewarm_spacing = 0.0325
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightOuter3RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("15_bush_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(11)
+lane_offset = -0.3
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.3
+render_order_offset = -1
+derive_interval_from_road_spacing = true
+road_spacing = 0.0325
+max_active_elements = 32
+prewarm_count = 32
+prewarm_spacing = 0.0325
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftOuter3RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("16_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-7)
+lane_offset = 0.3
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.3
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightOuter3RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("17_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(11)
+lane_offset = -0.3
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.3
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftOuter4RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("14_bush_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-7)
+lane_offset = 0.1
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.2
+render_order_offset = -1
+derive_interval_from_road_spacing = true
+road_spacing = 0.0325
+max_active_elements = 32
+prewarm_count = 32
+prewarm_spacing = 0.0325
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightOuter4RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("15_bush_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(11)
+lane_offset = -0.1
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.2
+render_order_offset = -1
+derive_interval_from_road_spacing = true
+road_spacing = 0.0325
+max_active_elements = 32
+prewarm_count = 32
+prewarm_spacing = 0.0325
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftOuter4RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("16_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-7)
+lane_offset = 0.1
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.2
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightOuter4RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("17_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(11)
+lane_offset = -0.1
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.2
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftRoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=232343966]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("16_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-5)
+lane_offset = -0.5
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.666667
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightRoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=1664910271]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("17_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(9)
+lane_offset = 0.5
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.666667
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
 spawn_immediately = false
 
 [node name="RoadsideSpeedMeters" type="Node2D" parent="ScrollableElements" unique_id=426771069]

@@ -123,7 +123,7 @@ func apply_projection(element: ScrollElement2D) -> void:
 	var scale_visual_progress := road_to_visual_progress(scale_road_distance)
 	element.apply_projection(
 		project_position(lateral_offset, visual_progress),
-		layout_scale() * project_scale(scale_visual_progress),
+		layout_scale() * project_scale(scale_visual_progress, element.growth_factor),
 		project_rotation(lateral_offset, visual_progress),
 		element_z_index + element.render_order_offset,
 		lateral_offset,
@@ -148,8 +148,10 @@ func project_position(lateral_offset: float, visual_progress: float) -> Vector2:
 	return perspective_point.lerp(endpoint, t) * layout_scale()
 
 
-func project_scale(visual_progress: float) -> float:
-	return lerpf(far_scale, near_scale, pow(clampf(visual_progress, 0.0, 1.0), scale_easing))
+func project_scale(visual_progress: float, growth_factor := 1.0) -> float:
+	var eased_progress := pow(clampf(visual_progress, 0.0, 1.0), scale_easing)
+	var adjusted_near_scale := lerpf(far_scale, near_scale, maxf(0.0, growth_factor))
+	return lerpf(far_scale, adjusted_near_scale, eased_progress)
 
 
 func project_rotation(lateral_offset: float, _visual_progress: float) -> float:

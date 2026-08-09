@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/source/art/aseprite/Trawa duza 1 prawa.png" id="1_grass"]
+
+[node name="RoadsideGrassRight" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-240, -100)
+texture = ExtResource("1_grass")
+centered = false
