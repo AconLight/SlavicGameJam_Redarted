@@ -57,9 +57,12 @@ scale = Vector2(1.0739583, 1.284375)
 texture = ExtResource("1_ioik6")
 centered = false
 
-[node name="RoadBackground" type="Sprite2D" parent="." unique_id=741804549]
+[node name="RoadPivot" type="Node2D" parent="."]
+position = Vector2(916.35004, 441)
+
+[node name="RoadBackground" type="Sprite2D" parent="RoadPivot" unique_id=741804549]
 z_index = -20
-position = Vector2(-274, 441)
+position = Vector2(-1190.3501, 0)
 scale = Vector2(1.2952666, 1.1305838)
 skew = -0.3874631
 texture = ExtResource("1_road")

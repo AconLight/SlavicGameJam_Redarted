@@ -22,6 +22,7 @@ far_scale = 0.12
 near_scale = 7.26
 slot_lateral_spacing = 0.1
 slot_origin = -2
+road_rotation_multiplier = 1.52
 draw_debug_guides = false
 
 [node name="FieldBackground" type="Sprite2D" parent="." unique_id=1270815360]
@@ -40,6 +41,8 @@ render_order_offset = 1
 derive_interval_from_road_spacing = true
 road_spacing = 0.044
 max_active_elements = 24
+prewarm_count = 24
+prewarm_spacing = 0.04347826
 
 [node name="LeftRoadsideTrees" type="Node2D" parent="ScrollableElements" unique_id=673420513]
 script = ExtResource("2_spawner")
