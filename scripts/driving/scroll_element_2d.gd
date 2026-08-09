@@ -24,6 +24,7 @@ var flat_texture: Texture2D
 
 # Physical distance along the road. The manager converts this to visual progress.
 var road_distance := 0.0
+var motion_frozen := false
 @export_range(0.0, 0.95, 0.01) var near_offset := 0.0
 var _flat_ground_quad := PackedVector2Array()
 
