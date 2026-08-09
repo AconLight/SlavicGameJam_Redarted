@@ -15,6 +15,13 @@ const ScrollElementScript := preload("res://scripts/driving/scroll_element_2d.gd
 @export_range(-0.95, 3.0, 0.01) var relative_speed_max := 0.0
 @export_range(0.01, 8.0, 0.01) var size_multiplier_min := 1.0
 @export_range(0.01, 8.0, 0.01) var size_multiplier_max := 1.0
+## Per-element perspective growth, independent of base size/randomization.
+@export_range(0.0, 4.0, 0.01) var growth_factor := 1.0
+## Absolute post-projection placement adjustment for spawned vertical elements.
+@export var screen_offset_pixels := Vector2.ZERO
+## 0 keeps a perfectly regular line. Higher values randomize the initial road
+## progress and lateral placement of each spawned element.
+@export_range(0.0, 1.0, 0.01) var randomizer_factor := 0.0
 ## Freezes vertical-element growth before the final near-camera perspective slice.
 @export_range(0.0, 0.95, 0.01) var near_offset := 0.0
 @export_group("Render Order")
@@ -136,17 +143,21 @@ func _spawn(road_distance: float) -> void:
 	element.debug_visual = debug_visual
 	element.content_scene = content_scene
 	element.slot = slot_choices[_random.randi_range(0, slot_choices.size() - 1)] if not slot_choices.is_empty() else 0
-	element.lane_offset = float(element.slot) + lane_offset
+	var lane_jitter := _random.randf_range(-0.5, 0.5) * randomizer_factor
+	element.lane_offset = float(element.slot) + lane_offset + lane_jitter
 	element.visibility_start_distance = visibility_start_distance
 	element.relative_speed = _random.randf_range(relative_speed_min, relative_speed_max)
 	element.size_multiplier = _random.randf_range(size_multiplier_min, size_multiplier_max)
+	element.growth_factor = growth_factor
+	element.screen_offset_pixels = screen_offset_pixels
 	element.near_offset = near_offset
 	element.render_order_offset = render_order_offset
 	element.flat_road_length = flat_road_length
 	element.flat_half_width_in_slots = flat_half_width_in_slots
 	if not flat_texture_choices.is_empty():
 		element.flat_texture = flat_texture_choices[_random.randi_range(0, flat_texture_choices.size() - 1)]
-	element.road_distance = road_distance
+	var distance_jitter := _random.randf_range(-road_spacing, road_spacing) * 0.5 * randomizer_factor
+	element.road_distance = clampf(road_distance + distance_jitter, 0.0, 1.0)
 	add_child(element)
 	_manager.apply_projection(element)
 
@@ -161,7 +172,8 @@ func _next_spawn_interval() -> float:
 	var multiplier := 1
 	if not spawn_interval_multipliers.is_empty():
 		multiplier = maxi(1, spawn_interval_multipliers[_random.randi_range(0, spawn_interval_multipliers.size() - 1)])
-	return _spawn_interval() * float(multiplier)
+	var timing_jitter := _random.randf_range(0.65, 1.35)
+	return _spawn_interval() * float(multiplier) * lerpf(1.0, timing_jitter, randomizer_factor)
 
 
 func _active_count() -> int:

@@ -10,6 +10,11 @@ var lane_offset := 0.0
 var visibility_start_distance := 0.0
 @export_range(-0.95, 3.0, 0.01) var relative_speed := 0.0
 @export_range(0.01, 8.0, 0.01) var size_multiplier := 1.0
+## Controls only far-to-near perspective growth. 1.0 is standard growth;
+## 0.0 keeps this element at its far scale.
+@export_range(0.0, 4.0, 0.01) var growth_factor := 1.0
+## Absolute post-projection placement adjustment in screen pixels.
+@export var screen_offset_pixels := Vector2.ZERO
 @export var content_scene: PackedScene
 @export var debug_visual: DebugVisual = DebugVisual.NONE
 @export_range(-100, 100, 1) var render_order_offset := 0
@@ -37,7 +42,7 @@ func _ready() -> void:
 
 func apply_projection(screen_position: Vector2, screen_scale: Vector2, path_rotation: float, render_z_index: int, effective_lane_offset: float) -> void:
 	_flat_ground_quad.clear()
-	position = screen_position
+	position = screen_position + screen_offset_pixels
 	scale = screen_scale * size_multiplier
 	rotation = 0.0 if projection_mode != ProjectionMode.FLAT else path_rotation
 	# This is absolute so nested spawn-handler nodes cannot accidentally put the

@@ -3,49 +3,6 @@
 [ext_resource type="Texture2D" uid="uid://c1bkvpsrc0yis" path="res://assets/source/art/aseprite/Pole - tło.png" id="1_ioik6"]
 [ext_resource type="Texture2D" uid="uid://d2aidelrgo3i2" path="res://assets/source/art/aseprite/droga trójkat.png" id="1_road"]
 [ext_resource type="Texture2D" uid="uid://grd3p0s383x3" path="res://assets/source/art/aseprite/niebo (dobre).png" id="3_d4hm1"]
-[ext_resource type="Texture2D" uid="uid://d18n5g24xrhcp" path="res://assets/source/art/aseprite/Zboże.png" id="4_d4hm1"]
-[ext_resource type="Shader" path="res://shaders/field_perspective_motion.gdshader" id="5_zboze_shader"]
-[ext_resource type="Script" path="res://scripts/environment/field_motion_controller.gd" id="6_zboze_controller"]
-[ext_resource type="Script" uid="uid://dlcpyecy34hif" path="res://scripts/environment/screen_pinned.gd" id="7_pinned"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_zboze_a"]
-shader = ExtResource("5_zboze_shader")
-shader_parameter/vanishing_point = Vector2(0.5, 0)
-shader_parameter/travel = 0.0
-shader_parameter/motion_strength = 0.09
-shader_parameter/depth_exponent = 2.7
-shader_parameter/lateral_expansion = 0.18
-shader_parameter/horizon_fade = 0.035
-shader_parameter/texture_uv_offset = Vector2(0, 0)
-shader_parameter/lateral_sway = 0.0
-shader_parameter/pixel_snap_uv = Vector2(0, 0)
-shader_parameter/radial_blur = 0.022
-shader_parameter/heat_haze = 0.0
-shader_parameter/grain_jitter = 0.0
-shader_parameter/peripheral_blur = 0.8
-shader_parameter/row_warp = 0.0
-shader_parameter/radial_ripple = 0.006
-shader_parameter/chromatic_split = 0.35
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_zboze_b"]
-shader = ExtResource("5_zboze_shader")
-shader_parameter/vanishing_point = Vector2(0.5, 0)
-shader_parameter/travel = 0.5
-shader_parameter/motion_strength = 0.09
-shader_parameter/depth_exponent = 2.7
-shader_parameter/lateral_expansion = 0.18
-shader_parameter/horizon_fade = 0.035
-shader_parameter/texture_uv_offset = Vector2(0, 0)
-shader_parameter/lateral_sway = 0.0
-shader_parameter/pixel_snap_uv = Vector2(0, 0)
-shader_parameter/radial_blur = 0.022
-shader_parameter/heat_haze = 0.0
-shader_parameter/grain_jitter = 0.0
-shader_parameter/peripheral_blur = 0.8
-shader_parameter/row_warp = 0.0
-shader_parameter/radial_ripple = 0.006
-shader_parameter/chromatic_split = 0.35
-
 [node name="Otoczenie" type="Node2D" unique_id=1893183989]
 
 [node name="Marker2D" type="Marker2D" parent="." unique_id=398191038]
@@ -72,27 +29,3 @@ centered = false
 [node name="niebo" type="Sprite2D" parent="." unique_id=1539525695]
 texture = ExtResource("3_d4hm1")
 centered = false
-
-[node name="zboze" type="Sprite2D" parent="." unique_id=1201050384]
-material = SubResource("ShaderMaterial_zboze_a")
-modulate = Color(0.38732323, 0.5455436, 0.6857245, 1)
-position = Vector2(-2, 427)
-texture = ExtResource("4_d4hm1")
-centered = false
-script = ExtResource("7_pinned")
-
-[node name="zboze_delayed" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_zboze_b")
-modulate = Color(0.38732323, 0.5455436, 0.6857245, 1)
-position = Vector2(-2, 427)
-texture = ExtResource("4_d4hm1")
-centered = false
-script = ExtResource("7_pinned")
-
-[node name="ZbozeMotionController" type="Node" parent="."]
-script = ExtResource("6_zboze_controller")
-layer_paths = Array[NodePath]([NodePath("../zboze"), NodePath("../zboze_delayed")])
-layer_travel_multipliers = PackedFloat32Array(1, 1)
-layer_cycle_offsets = PackedFloat32Array(0, 0.5)
-reference_speed_kmh = 177.0
-travel_units_per_second = 1.3
