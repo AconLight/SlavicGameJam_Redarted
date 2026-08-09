@@ -40,7 +40,6 @@ centered = false
 
 [node name="RoadStripes" type="Node2D" parent="ScrollableElements" unique_id=402844257]
 script = ExtResource("2_spawner")
-spawn_chance = 1.0
 debug_visual = 1
 slot_choices = PackedInt32Array(0)
 render_order_offset = 1
@@ -49,45 +48,73 @@ road_spacing = 0.044
 max_active_elements = 24
 prewarm_count = 24
 prewarm_spacing = 0.04347826
+spawn_chance = 1.0
 
 [node name="LeftRoadsideTrees" type="Node2D" parent="ScrollableElements" unique_id=673420513]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("12_tree_left")
-spawn_chance = 1.0
 projection_mode = 1
 slot_choices = PackedInt32Array(-5)
 lane_offset = -0.5
 visibility_start_distance = 0.4
 size_multiplier_min = 0.2
 size_multiplier_max = 0.2
-spawn_frozen_first_element = true
-frozen_first_spawn_distance = 0.45
 derive_interval_from_road_spacing = true
 road_spacing = 0.13
 max_active_elements = 16
 prewarm_count = 8
-prewarm_start_distance = 0.6
+prewarm_start_distance = 0.4
 prewarm_spacing = 0.13
 spawn_immediately = false
+spawn_chance = 1.0
 
 [node name="RightRoadsideTrees" type="Node2D" parent="ScrollableElements" unique_id=1809849607]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("13_tree_right")
-spawn_chance = 1.0
 projection_mode = 1
 slot_choices = PackedInt32Array(9)
 visibility_start_distance = 0.4
 size_multiplier_min = 0.2
 size_multiplier_max = 0.2
-spawn_frozen_first_element = true
-frozen_first_spawn_distance = 0.45
 derive_interval_from_road_spacing = true
 road_spacing = 0.13
 max_active_elements = 16
 prewarm_count = 8
-prewarm_start_distance = 0.6
+prewarm_start_distance = 0.4
 prewarm_spacing = 0.13
 spawn_immediately = false
+spawn_chance = 1.0
+
+[node name="LeftFrozenTreeAnchor" type="Node2D" parent="ScrollableElements" unique_id=502945435]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("12_tree_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-5)
+lane_offset = -0.5
+visibility_start_distance = 0.4
+size_multiplier_min = 0.2
+size_multiplier_max = 0.2
+max_active_elements = 1
+spawn_immediately = false
+spawn_chance = 1.0
+freeze_spawned_elements = true
+spawn_frozen_first_element = true
+frozen_first_spawn_distance = 0.45
+
+[node name="RightFrozenTreeAnchor" type="Node2D" parent="ScrollableElements" unique_id=1043425354]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("13_tree_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(9)
+visibility_start_distance = 0.4
+size_multiplier_min = 0.2
+size_multiplier_max = 0.2
+max_active_elements = 1
+spawn_immediately = false
+spawn_chance = 1.0
+freeze_spawned_elements = true
+spawn_frozen_first_element = true
+frozen_first_spawn_distance = 0.45
 
 [node name="LeftRoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=1046369003]
 script = ExtResource("2_spawner")
@@ -98,14 +125,13 @@ lane_offset = -0.5
 visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
-growth_factor = 1.0
+randomizer_factor = 0.3
 render_order_offset = 1
 derive_interval_from_road_spacing = true
 road_spacing = 0.0325
 max_active_elements = 32
 prewarm_count = 32
 prewarm_spacing = 0.0325
-randomizer_factor = 0.3
 spawn_immediately = false
 
 [node name="RightRoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=1537345542]
@@ -117,14 +143,13 @@ lane_offset = 0.5
 visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
-growth_factor = 1.0
+randomizer_factor = 0.3
 render_order_offset = 1
 derive_interval_from_road_spacing = true
 road_spacing = 0.0325
 max_active_elements = 32
 prewarm_count = 32
 prewarm_spacing = 0.0325
-randomizer_factor = 0.3
 spawn_immediately = false
 
 [node name="LeftOuterRoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=877645753]
@@ -136,13 +161,13 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.5
+randomizer_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
 road_spacing = 0.026
 max_active_elements = 40
 prewarm_count = 40
 prewarm_spacing = 0.026
-randomizer_factor = 0.3
 spawn_immediately = false
 
 [node name="RightOuterRoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=1467753481]
@@ -154,16 +179,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.5
+randomizer_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
 road_spacing = 0.026
 max_active_elements = 40
 prewarm_count = 40
 prewarm_spacing = 0.026
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftOuterRoadsideGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftOuterRoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=30772575]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("16_grass_left")
 projection_mode = 1
@@ -172,17 +197,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.5
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.013
 max_active_elements = 80
 prewarm_count = 80
 prewarm_spacing = 0.013
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightOuterRoadsideGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightOuterRoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=131767329]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("17_grass_right")
 projection_mode = 1
@@ -191,17 +215,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.5
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.013
 max_active_elements = 80
 prewarm_count = 80
 prewarm_spacing = 0.013
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftOuter2RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+[node name="LeftOuter2RoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=869880534]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("14_bush_left")
 projection_mode = 1
@@ -211,16 +234,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.4
+randomizer_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
 road_spacing = 0.021667
 max_active_elements = 48
 prewarm_count = 48
 prewarm_spacing = 0.021667
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightOuter2RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+[node name="RightOuter2RoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=2118959969]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("15_bush_right")
 projection_mode = 1
@@ -230,16 +253,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.4
+randomizer_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
 road_spacing = 0.021667
 max_active_elements = 48
 prewarm_count = 48
 prewarm_spacing = 0.021667
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftOuter2RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftOuter2RoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=907564320]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("16_grass_left")
 projection_mode = 1
@@ -249,17 +272,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.4
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.010833
 max_active_elements = 96
 prewarm_count = 96
 prewarm_spacing = 0.010833
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightOuter2RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightOuter2RoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=1969338958]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("17_grass_right")
 projection_mode = 1
@@ -269,17 +291,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.4
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.010833
 max_active_elements = 96
 prewarm_count = 96
 prewarm_spacing = 0.010833
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftOuter3RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+[node name="LeftOuter3RoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=2106572476]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("14_bush_left")
 projection_mode = 1
@@ -289,16 +310,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.3
+randomizer_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
 road_spacing = 0.01625
 max_active_elements = 64
 prewarm_count = 64
 prewarm_spacing = 0.01625
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightOuter3RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+[node name="RightOuter3RoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=1143422857]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("15_bush_right")
 projection_mode = 1
@@ -308,16 +329,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.3
+randomizer_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
 road_spacing = 0.01625
 max_active_elements = 64
 prewarm_count = 64
 prewarm_spacing = 0.01625
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftOuter3RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftOuter3RoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=785059747]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("16_grass_left")
 projection_mode = 1
@@ -327,17 +348,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.3
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.008125
 max_active_elements = 128
 prewarm_count = 128
 prewarm_spacing = 0.008125
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightOuter3RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightOuter3RoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=5037147]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("17_grass_right")
 projection_mode = 1
@@ -347,17 +367,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.3
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.008125
 max_active_elements = 128
 prewarm_count = 128
 prewarm_spacing = 0.008125
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftOuter4RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+[node name="LeftOuter4RoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=2072113570]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("14_bush_left")
 projection_mode = 1
@@ -367,16 +386,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.2
+randomizer_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
 road_spacing = 0.013
 max_active_elements = 80
 prewarm_count = 80
 prewarm_spacing = 0.013
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightOuter4RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+[node name="RightOuter4RoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=71019049]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("15_bush_right")
 projection_mode = 1
@@ -386,16 +405,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.2
+randomizer_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
 road_spacing = 0.013
 max_active_elements = 80
 prewarm_count = 80
 prewarm_spacing = 0.013
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftOuter4RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftOuter4RoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=327910637]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("16_grass_left")
 projection_mode = 1
@@ -405,17 +424,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.2
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.0065
 max_active_elements = 160
 prewarm_count = 160
 prewarm_spacing = 0.0065
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightOuter4RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightOuter4RoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=1075006289]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("17_grass_right")
 projection_mode = 1
@@ -425,17 +443,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.2
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.0065
 max_active_elements = 160
 prewarm_count = 160
 prewarm_spacing = 0.0065
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftOuter5RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+[node name="LeftOuter5RoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=1631669320]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("14_bush_left")
 projection_mode = 1
@@ -445,16 +462,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.1
+randomizer_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
 road_spacing = 0.010833
 max_active_elements = 96
 prewarm_count = 96
 prewarm_spacing = 0.010833
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightOuter5RoadsideBushes" type="Node2D" parent="ScrollableElements"]
+[node name="RightOuter5RoadsideBushes" type="Node2D" parent="ScrollableElements" unique_id=431968822]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("15_bush_right")
 projection_mode = 1
@@ -464,16 +481,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.1
+randomizer_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
 road_spacing = 0.010833
 max_active_elements = 96
 prewarm_count = 96
 prewarm_spacing = 0.010833
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftOuter5RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftOuter5RoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=941905117]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("16_grass_left")
 projection_mode = 1
@@ -483,17 +500,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.1
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.005417
 max_active_elements = 192
 prewarm_count = 192
 prewarm_spacing = 0.005417
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightOuter5RoadsideGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightOuter5RoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=69362586]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("17_grass_right")
 projection_mode = 1
@@ -503,17 +519,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.1
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.005417
 max_active_elements = 192
 prewarm_count = 192
 prewarm_spacing = 0.005417
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftRoadsideSmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftRoadsideSmallGrass" type="Node2D" parent="ScrollableElements" unique_id=471487866]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("18_small_grass_left")
 projection_mode = 1
@@ -523,17 +538,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.666667
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.01625
 max_active_elements = 64
 prewarm_count = 64
 prewarm_spacing = 0.01625
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightRoadsideSmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightRoadsideSmallGrass" type="Node2D" parent="ScrollableElements" unique_id=683445510]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("19_small_grass_right")
 projection_mode = 1
@@ -543,17 +557,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.666667
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.01625
 max_active_elements = 64
 prewarm_count = 64
 prewarm_spacing = 0.01625
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftRoadsideOuterSmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftRoadsideOuterSmallGrass" type="Node2D" parent="ScrollableElements" unique_id=132905472]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("18_small_grass_left")
 projection_mode = 1
@@ -562,17 +575,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.5
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.013
 max_active_elements = 80
 prewarm_count = 80
 prewarm_spacing = 0.013
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightRoadsideOuterSmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightRoadsideOuterSmallGrass" type="Node2D" parent="ScrollableElements" unique_id=1072398532]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("19_small_grass_right")
 projection_mode = 1
@@ -581,17 +593,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.5
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.013
 max_active_elements = 80
 prewarm_count = 80
 prewarm_spacing = 0.013
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftRoadsideOuter2SmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftRoadsideOuter2SmallGrass" type="Node2D" parent="ScrollableElements" unique_id=166756286]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("18_small_grass_left")
 projection_mode = 1
@@ -601,17 +612,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.4
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.010833
 max_active_elements = 96
 prewarm_count = 96
 prewarm_spacing = 0.010833
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightRoadsideOuter2SmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightRoadsideOuter2SmallGrass" type="Node2D" parent="ScrollableElements" unique_id=1533153902]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("19_small_grass_right")
 projection_mode = 1
@@ -621,17 +631,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.4
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.010833
 max_active_elements = 96
 prewarm_count = 96
 prewarm_spacing = 0.010833
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftRoadsideOuter3SmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftRoadsideOuter3SmallGrass" type="Node2D" parent="ScrollableElements" unique_id=1757077799]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("18_small_grass_left")
 projection_mode = 1
@@ -641,17 +650,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.3
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.008125
 max_active_elements = 128
 prewarm_count = 128
 prewarm_spacing = 0.008125
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightRoadsideOuter3SmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightRoadsideOuter3SmallGrass" type="Node2D" parent="ScrollableElements" unique_id=1606502179]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("19_small_grass_right")
 projection_mode = 1
@@ -661,17 +669,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.3
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.008125
 max_active_elements = 128
 prewarm_count = 128
 prewarm_spacing = 0.008125
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftRoadsideOuter4SmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftRoadsideOuter4SmallGrass" type="Node2D" parent="ScrollableElements" unique_id=3411796]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("18_small_grass_left")
 projection_mode = 1
@@ -681,17 +688,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.2
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.0065
 max_active_elements = 160
 prewarm_count = 160
 prewarm_spacing = 0.0065
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightRoadsideOuter4SmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightRoadsideOuter4SmallGrass" type="Node2D" parent="ScrollableElements" unique_id=1253074251]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("19_small_grass_right")
 projection_mode = 1
@@ -701,17 +707,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.2
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.0065
 max_active_elements = 160
 prewarm_count = 160
 prewarm_spacing = 0.0065
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="LeftRoadsideOuter5SmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="LeftRoadsideOuter5SmallGrass" type="Node2D" parent="ScrollableElements" unique_id=736298339]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("18_small_grass_left")
 projection_mode = 1
@@ -721,17 +726,16 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.1
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.005417
 max_active_elements = 192
 prewarm_count = 192
 prewarm_spacing = 0.005417
-randomizer_factor = 0.3
 spawn_immediately = false
 
-[node name="RightRoadsideOuter5SmallGrass" type="Node2D" parent="ScrollableElements"]
+[node name="RightRoadsideOuter5SmallGrass" type="Node2D" parent="ScrollableElements" unique_id=21876063]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("19_small_grass_right")
 projection_mode = 1
@@ -741,16 +745,14 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.1
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.005417
 max_active_elements = 192
 prewarm_count = 192
 prewarm_spacing = 0.005417
-randomizer_factor = 0.3
 spawn_immediately = false
-
 
 [node name="LeftRoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=232343966]
 script = ExtResource("2_spawner")
@@ -762,14 +764,13 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.666667
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.01625
 max_active_elements = 64
 prewarm_count = 64
 prewarm_spacing = 0.01625
-randomizer_factor = 0.3
 spawn_immediately = false
 
 [node name="RightRoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=1664910271]
@@ -782,14 +783,13 @@ visibility_start_distance = 0.1
 size_multiplier_min = 0.12
 size_multiplier_max = 0.12
 growth_factor = 0.666667
-screen_offset_pixels = Vector2(0, 0)
+randomizer_factor = 0.3
 render_order_offset = -2
 derive_interval_from_road_spacing = true
 road_spacing = 0.01625
 max_active_elements = 64
 prewarm_count = 64
 prewarm_spacing = 0.01625
-randomizer_factor = 0.3
 spawn_immediately = false
 
 [node name="RoadsideSpeedMeters" type="Node2D" parent="ScrollableElements" unique_id=426771069]
@@ -797,7 +797,6 @@ script = ExtResource("2_spawner")
 content_scene = ExtResource("4_speed_meter")
 warning_content_scene = ExtResource("20_speed_camera_warning")
 warning_delay_seconds = 4.0
-spawn_chance = 1.0
 projection_mode = 1
 slot_choices = PackedInt32Array(8)
 size_multiplier_min = 0.1475175
@@ -810,3 +809,4 @@ prewarm_count = 1
 prewarm_start_distance = 0.35
 prewarm_spacing = 0.1
 spawn_immediately = false
+spawn_chance = 1.0
