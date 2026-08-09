@@ -42,7 +42,7 @@ score_source_path = NodePath("../score/CanvasLayer/KeepScore")
 script = ExtResource("10_drift")
 controller_path = NodePath("../Cabin/ActivityController")
 score_source_path = NodePath("../score/CanvasLayer/KeepScore")
-road_paths = Array[NodePath]([NodePath("../Otoczenie/RoadBackground")])
+road_paths = Array[NodePath]([NodePath("../Otoczenie/RoadBackground"), NodePath("../DriftCarContainter")])
 road_children_paths = Array[NodePath]([NodePath("../ScrollManager2D/ScrollableElements")])
 background_paths = Array[NodePath]([NodePath("../Otoczenie/pole"), NodePath("../Otoczenie/niebo")])
 
@@ -58,8 +58,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0)
-
-[node name="Car" parent="." unique_id=1468817716 instance=ExtResource("10_choun")]
 
 [node name="ObstacleMaster" parent="." unique_id=417307942 instance=ExtResource("10_ya4ey")]
 
@@ -83,3 +81,9 @@ position = Vector2(45, 156)
 
 [node name="end" type="Marker2D" parent="RouteBar" unique_id=1739058847]
 position = Vector2(983, 157)
+
+[node name="DriftCarContainter" type="Node2D" parent="." unique_id=965827913]
+position = Vector2(-39.228607, 670.34186)
+
+[node name="Car" parent="DriftCarContainter" unique_id=1468817716 instance=ExtResource("10_choun")]
+position = Vector2(39.228607, -670.34186)

@@ -21,6 +21,7 @@
 script = ExtResource("1_bak1h")
 
 [node name="HighScoreLabel" type="Label" parent="CanvasLayer/HighScore" unique_id=416588683]
+visible = false
 offset_left = 1632.0
 offset_top = 195.0
 offset_right = 1672.0
@@ -36,6 +37,7 @@ offset_right = 198.0
 offset_bottom = 216.0
 
 [node name="ChillLabel" type="Label" parent="CanvasLayer/KeepScore" unique_id=1360919054]
+visible = false
 offset_left = 1627.0
 offset_top = 105.0
 offset_right = 1667.0
