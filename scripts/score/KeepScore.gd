@@ -8,7 +8,7 @@ signal game_over(final_score: int)
 @onready var chill_ProgressBar: TextureProgressBar = $ProgressBar
 
 var score: int = 0
-var chill: int = 38
+var chill: int = 69
 var chill_active: bool = false
 var game_is_over: bool = false
 
@@ -54,7 +54,7 @@ func ChillActivity():
 func _on_chill_tick():
 	score += 100 * get_chill_multiplier()
 	chill += 5
-	chill = clamp(chill, 0, 100)
+	chill = clamp(chill, 0, 200)
 	# NEW: Update screen when variables increase
 	update_ui() 
 
@@ -64,7 +64,7 @@ func _on_chill_decay():
 		return
 	if not chill_active:
 		chill -= 2
-		chill = clamp(chill, 0, 100)
+		chill = clamp(chill, 0, 200)
 		# NEW: Update screen when variables decay
 		update_ui()
 	# Chill na zerze nie kończy już przejazdu — leży sobie na zerze, mnożnik
@@ -97,13 +97,13 @@ func EndChill():
 
 # Determines score multiplier from chill amount
 func get_chill_multiplier() -> int:
-	if chill <= 19:
+	if chill < 40:
 		return 1
-	elif chill <= 39:
+	elif chill < 80:
 		return 2
-	elif chill <= 59:
+	elif chill < 120:
 		return 3
-	elif chill <= 79:
+	elif chill <= 160:
 		return 4
 	else:
 		return 5
@@ -113,7 +113,7 @@ func AddChill(amount: int):
 	if game_is_over:
 		return
 	chill += amount
-	chill = clamp(chill, 0, 100)
+	chill = clamp(chill, 0, 200)
 	# NEW: Update screen when outside sources change chill
 	update_ui()
 

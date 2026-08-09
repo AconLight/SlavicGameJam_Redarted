@@ -54,6 +54,7 @@ offset_top = 10.0
 offset_right = 887.8206
 offset_bottom = 130.0
 scale = Vector2(1.115, 1.115)
+max_value = 200.0
 step = -1.0
 texture_under = ExtResource("3_68bkv")
 texture_progress = ExtResource("4_68bkv")
@@ -79,7 +80,7 @@ script = ExtResource("5_68bkv")
 
 [node name="multiscore" type="Sprite2D" parent="CanvasLayer/KeepScore" unique_id=871051010]
 position = Vector2(1068, 68)
-texture = ExtResource("7_3eqfp")
+texture = ExtResource("10_7wwd1")
 script = ExtResource("8_x4ir2")
 texture_x1 = ExtResource("9_y1470")
 texture_x2 = ExtResource("10_7wwd1")
