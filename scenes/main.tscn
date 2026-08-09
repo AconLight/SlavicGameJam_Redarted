@@ -41,7 +41,7 @@ score_source_path = NodePath("../score/CanvasLayer/KeepScore")
 script = ExtResource("10_drift")
 controller_path = NodePath("../Cabin/ActivityController")
 score_source_path = NodePath("../score/CanvasLayer/KeepScore")
-road_paths = Array[NodePath]([NodePath("../Otoczenie/RoadBackground"), NodePath("../DriftCarContainter")])
+road_paths = Array[NodePath]([NodePath("../Otoczenie/RoadPivot/RoadBackground"), NodePath("../DriftCarContainter")])
 road_children_paths = Array[NodePath]([NodePath("../ScrollManager2D/ScrollableElements")])
 background_paths = Array[NodePath]([NodePath("../Otoczenie/pole"), NodePath("../Otoczenie/niebo")])
 

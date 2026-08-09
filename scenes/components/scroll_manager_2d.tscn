@@ -10,6 +10,9 @@
 [ext_resource type="PackedScene" path="res://scenes/components/roadside_bush_right.tscn" id="15_bush_right"]
 [ext_resource type="PackedScene" path="res://scenes/components/roadside_grass_left.tscn" id="16_grass_left"]
 [ext_resource type="PackedScene" path="res://scenes/components/roadside_grass_right.tscn" id="17_grass_right"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_small_grass_left.tscn" id="18_small_grass_left"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_small_grass_right.tscn" id="19_small_grass_right"]
+[ext_resource type="PackedScene" path="res://scenes/components/roadside_speed_camera_warning_sign.tscn" id="20_speed_camera_warning"]
 
 [node name="ScrollManager2D" type="Node2D" unique_id=1353085533]
 z_index = -10
@@ -37,6 +40,7 @@ centered = false
 
 [node name="RoadStripes" type="Node2D" parent="ScrollableElements" unique_id=402844257]
 script = ExtResource("2_spawner")
+spawn_chance = 1.0
 debug_visual = 1
 slot_choices = PackedInt32Array(0)
 render_order_offset = 1
@@ -49,31 +53,39 @@ prewarm_spacing = 0.04347826
 [node name="LeftRoadsideTrees" type="Node2D" parent="ScrollableElements" unique_id=673420513]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("12_tree_left")
+spawn_chance = 1.0
 projection_mode = 1
 slot_choices = PackedInt32Array(-5)
 lane_offset = -0.5
-visibility_start_distance = 0.2
+visibility_start_distance = 0.4
 size_multiplier_min = 0.2
 size_multiplier_max = 0.2
+spawn_frozen_first_element = true
+frozen_first_spawn_distance = 0.45
 derive_interval_from_road_spacing = true
 road_spacing = 0.13
 max_active_elements = 16
 prewarm_count = 8
+prewarm_start_distance = 0.6
 prewarm_spacing = 0.13
 spawn_immediately = false
 
 [node name="RightRoadsideTrees" type="Node2D" parent="ScrollableElements" unique_id=1809849607]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("13_tree_right")
+spawn_chance = 1.0
 projection_mode = 1
 slot_choices = PackedInt32Array(9)
-visibility_start_distance = 0.2
+visibility_start_distance = 0.4
 size_multiplier_min = 0.2
 size_multiplier_max = 0.2
+spawn_frozen_first_element = true
+frozen_first_spawn_distance = 0.45
 derive_interval_from_road_spacing = true
 road_spacing = 0.13
 max_active_elements = 16
 prewarm_count = 8
+prewarm_start_distance = 0.6
 prewarm_spacing = 0.13
 spawn_immediately = false
 
@@ -126,10 +138,10 @@ size_multiplier_max = 0.12
 growth_factor = 0.5
 render_order_offset = -1
 derive_interval_from_road_spacing = true
-road_spacing = 0.0325
-max_active_elements = 32
-prewarm_count = 32
-prewarm_spacing = 0.0325
+road_spacing = 0.026
+max_active_elements = 40
+prewarm_count = 40
+prewarm_spacing = 0.026
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -144,10 +156,10 @@ size_multiplier_max = 0.12
 growth_factor = 0.5
 render_order_offset = -1
 derive_interval_from_road_spacing = true
-road_spacing = 0.0325
-max_active_elements = 32
-prewarm_count = 32
-prewarm_spacing = 0.0325
+road_spacing = 0.026
+max_active_elements = 40
+prewarm_count = 40
+prewarm_spacing = 0.026
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -163,10 +175,10 @@ growth_factor = 0.5
 screen_offset_pixels = Vector2(0, 0)
 render_order_offset = -2
 derive_interval_from_road_spacing = true
-road_spacing = 0.01625
-max_active_elements = 64
-prewarm_count = 64
-prewarm_spacing = 0.01625
+road_spacing = 0.013
+max_active_elements = 80
+prewarm_count = 80
+prewarm_spacing = 0.013
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -182,10 +194,10 @@ growth_factor = 0.5
 screen_offset_pixels = Vector2(0, 0)
 render_order_offset = -2
 derive_interval_from_road_spacing = true
-road_spacing = 0.01625
-max_active_elements = 64
-prewarm_count = 64
-prewarm_spacing = 0.01625
+road_spacing = 0.013
+max_active_elements = 80
+prewarm_count = 80
+prewarm_spacing = 0.013
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -201,10 +213,10 @@ size_multiplier_max = 0.12
 growth_factor = 0.4
 render_order_offset = -1
 derive_interval_from_road_spacing = true
-road_spacing = 0.0325
-max_active_elements = 32
-prewarm_count = 32
-prewarm_spacing = 0.0325
+road_spacing = 0.021667
+max_active_elements = 48
+prewarm_count = 48
+prewarm_spacing = 0.021667
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -220,10 +232,10 @@ size_multiplier_max = 0.12
 growth_factor = 0.4
 render_order_offset = -1
 derive_interval_from_road_spacing = true
-road_spacing = 0.0325
-max_active_elements = 32
-prewarm_count = 32
-prewarm_spacing = 0.0325
+road_spacing = 0.021667
+max_active_elements = 48
+prewarm_count = 48
+prewarm_spacing = 0.021667
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -240,10 +252,10 @@ growth_factor = 0.4
 screen_offset_pixels = Vector2(0, 0)
 render_order_offset = -2
 derive_interval_from_road_spacing = true
-road_spacing = 0.01625
-max_active_elements = 64
-prewarm_count = 64
-prewarm_spacing = 0.01625
+road_spacing = 0.010833
+max_active_elements = 96
+prewarm_count = 96
+prewarm_spacing = 0.010833
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -260,10 +272,10 @@ growth_factor = 0.4
 screen_offset_pixels = Vector2(0, 0)
 render_order_offset = -2
 derive_interval_from_road_spacing = true
-road_spacing = 0.01625
-max_active_elements = 64
-prewarm_count = 64
-prewarm_spacing = 0.01625
+road_spacing = 0.010833
+max_active_elements = 96
+prewarm_count = 96
+prewarm_spacing = 0.010833
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -279,10 +291,10 @@ size_multiplier_max = 0.12
 growth_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
-road_spacing = 0.0325
-max_active_elements = 32
-prewarm_count = 32
-prewarm_spacing = 0.0325
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -298,10 +310,10 @@ size_multiplier_max = 0.12
 growth_factor = 0.3
 render_order_offset = -1
 derive_interval_from_road_spacing = true
-road_spacing = 0.0325
-max_active_elements = 32
-prewarm_count = 32
-prewarm_spacing = 0.0325
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -318,10 +330,10 @@ growth_factor = 0.3
 screen_offset_pixels = Vector2(0, 0)
 render_order_offset = -2
 derive_interval_from_road_spacing = true
-road_spacing = 0.01625
-max_active_elements = 64
-prewarm_count = 64
-prewarm_spacing = 0.01625
+road_spacing = 0.008125
+max_active_elements = 128
+prewarm_count = 128
+prewarm_spacing = 0.008125
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -338,10 +350,10 @@ growth_factor = 0.3
 screen_offset_pixels = Vector2(0, 0)
 render_order_offset = -2
 derive_interval_from_road_spacing = true
-road_spacing = 0.01625
-max_active_elements = 64
-prewarm_count = 64
-prewarm_spacing = 0.01625
+road_spacing = 0.008125
+max_active_elements = 128
+prewarm_count = 128
+prewarm_spacing = 0.008125
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -357,10 +369,10 @@ size_multiplier_max = 0.12
 growth_factor = 0.2
 render_order_offset = -1
 derive_interval_from_road_spacing = true
-road_spacing = 0.0325
-max_active_elements = 32
-prewarm_count = 32
-prewarm_spacing = 0.0325
+road_spacing = 0.013
+max_active_elements = 80
+prewarm_count = 80
+prewarm_spacing = 0.013
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -376,10 +388,10 @@ size_multiplier_max = 0.12
 growth_factor = 0.2
 render_order_offset = -1
 derive_interval_from_road_spacing = true
-road_spacing = 0.0325
-max_active_elements = 32
-prewarm_count = 32
-prewarm_spacing = 0.0325
+road_spacing = 0.013
+max_active_elements = 80
+prewarm_count = 80
+prewarm_spacing = 0.013
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -396,10 +408,10 @@ growth_factor = 0.2
 screen_offset_pixels = Vector2(0, 0)
 render_order_offset = -2
 derive_interval_from_road_spacing = true
-road_spacing = 0.01625
-max_active_elements = 64
-prewarm_count = 64
-prewarm_spacing = 0.01625
+road_spacing = 0.0065
+max_active_elements = 160
+prewarm_count = 160
+prewarm_spacing = 0.0065
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -416,10 +428,10 @@ growth_factor = 0.2
 screen_offset_pixels = Vector2(0, 0)
 render_order_offset = -2
 derive_interval_from_road_spacing = true
-road_spacing = 0.01625
-max_active_elements = 64
-prewarm_count = 64
-prewarm_spacing = 0.01625
+road_spacing = 0.0065
+max_active_elements = 160
+prewarm_count = 160
+prewarm_spacing = 0.0065
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -435,10 +447,10 @@ size_multiplier_max = 0.12
 growth_factor = 0.1
 render_order_offset = -1
 derive_interval_from_road_spacing = true
-road_spacing = 0.0325
-max_active_elements = 32
-prewarm_count = 32
-prewarm_spacing = 0.0325
+road_spacing = 0.010833
+max_active_elements = 96
+prewarm_count = 96
+prewarm_spacing = 0.010833
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -454,10 +466,10 @@ size_multiplier_max = 0.12
 growth_factor = 0.1
 render_order_offset = -1
 derive_interval_from_road_spacing = true
-road_spacing = 0.0325
-max_active_elements = 32
-prewarm_count = 32
-prewarm_spacing = 0.0325
+road_spacing = 0.010833
+max_active_elements = 96
+prewarm_count = 96
+prewarm_spacing = 0.010833
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -474,10 +486,10 @@ growth_factor = 0.1
 screen_offset_pixels = Vector2(0, 0)
 render_order_offset = -2
 derive_interval_from_road_spacing = true
-road_spacing = 0.01625
-max_active_elements = 64
-prewarm_count = 64
-prewarm_spacing = 0.01625
+road_spacing = 0.005417
+max_active_elements = 192
+prewarm_count = 192
+prewarm_spacing = 0.005417
 randomizer_factor = 0.3
 spawn_immediately = false
 
@@ -494,12 +506,251 @@ growth_factor = 0.1
 screen_offset_pixels = Vector2(0, 0)
 render_order_offset = -2
 derive_interval_from_road_spacing = true
+road_spacing = 0.005417
+max_active_elements = 192
+prewarm_count = 192
+prewarm_spacing = 0.005417
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftRoadsideSmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("18_small_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-5)
+lane_offset = -0.5
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.666667
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
 road_spacing = 0.01625
 max_active_elements = 64
 prewarm_count = 64
 prewarm_spacing = 0.01625
 randomizer_factor = 0.3
 spawn_immediately = false
+
+[node name="RightRoadsideSmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("19_small_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(9)
+lane_offset = 0.5
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.666667
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.01625
+max_active_elements = 64
+prewarm_count = 64
+prewarm_spacing = 0.01625
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftRoadsideOuterSmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("18_small_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-6)
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.5
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.013
+max_active_elements = 80
+prewarm_count = 80
+prewarm_spacing = 0.013
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightRoadsideOuterSmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("19_small_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(10)
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.5
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.013
+max_active_elements = 80
+prewarm_count = 80
+prewarm_spacing = 0.013
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftRoadsideOuter2SmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("18_small_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-7)
+lane_offset = 0.5
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.4
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.010833
+max_active_elements = 96
+prewarm_count = 96
+prewarm_spacing = 0.010833
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightRoadsideOuter2SmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("19_small_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(11)
+lane_offset = -0.5
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.4
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.010833
+max_active_elements = 96
+prewarm_count = 96
+prewarm_spacing = 0.010833
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftRoadsideOuter3SmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("18_small_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-7)
+lane_offset = 0.1
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.3
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.008125
+max_active_elements = 128
+prewarm_count = 128
+prewarm_spacing = 0.008125
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightRoadsideOuter3SmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("19_small_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(11)
+lane_offset = -0.1
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.3
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.008125
+max_active_elements = 128
+prewarm_count = 128
+prewarm_spacing = 0.008125
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftRoadsideOuter4SmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("18_small_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-8)
+lane_offset = 0.7
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.2
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.0065
+max_active_elements = 160
+prewarm_count = 160
+prewarm_spacing = 0.0065
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightRoadsideOuter4SmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("19_small_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(12)
+lane_offset = -0.7
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.2
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.0065
+max_active_elements = 160
+prewarm_count = 160
+prewarm_spacing = 0.0065
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="LeftRoadsideOuter5SmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("18_small_grass_left")
+projection_mode = 1
+slot_choices = PackedInt32Array(-8)
+lane_offset = 0.4
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.1
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.005417
+max_active_elements = 192
+prewarm_count = 192
+prewarm_spacing = 0.005417
+randomizer_factor = 0.3
+spawn_immediately = false
+
+[node name="RightRoadsideOuter5SmallGrass" type="Node2D" parent="ScrollableElements"]
+script = ExtResource("2_spawner")
+content_scene = ExtResource("19_small_grass_right")
+projection_mode = 1
+slot_choices = PackedInt32Array(12)
+lane_offset = -0.4
+visibility_start_distance = 0.1
+size_multiplier_min = 0.12
+size_multiplier_max = 0.12
+growth_factor = 0.1
+screen_offset_pixels = Vector2(0, 0)
+render_order_offset = -2
+derive_interval_from_road_spacing = true
+road_spacing = 0.005417
+max_active_elements = 192
+prewarm_count = 192
+prewarm_spacing = 0.005417
+randomizer_factor = 0.3
+spawn_immediately = false
+
 
 [node name="LeftRoadsideGrass" type="Node2D" parent="ScrollableElements" unique_id=232343966]
 script = ExtResource("2_spawner")
@@ -544,6 +795,9 @@ spawn_immediately = false
 [node name="RoadsideSpeedMeters" type="Node2D" parent="ScrollableElements" unique_id=426771069]
 script = ExtResource("2_spawner")
 content_scene = ExtResource("4_speed_meter")
+warning_content_scene = ExtResource("20_speed_camera_warning")
+warning_delay_seconds = 4.0
+spawn_chance = 1.0
 projection_mode = 1
 slot_choices = PackedInt32Array(8)
 size_multiplier_min = 0.1475175

@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/source/art/aseprite/znak fotoradar.png" id="1_sign"]
+
+[node name="RoadsideSpeedCameraWarningSign" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-55, -640)
+texture = ExtResource("1_sign")
+centered = false

@@ -4,6 +4,9 @@ extends Node2D
 const ScrollElementScript := preload("res://scripts/driving/scroll_element_2d.gd")
 
 @export var content_scene: PackedScene
+## Optional scene shown before the main scene is spawned.
+@export var warning_content_scene: PackedScene
+@export_range(0.0, 30.0, 0.1) var warning_delay_seconds := 0.0
 @export_enum("Flat", "Vertical", "Expand Right", "Expand Left") var projection_mode := 0
 @export_enum("None", "Stripe", "Tree", "Car") var debug_visual := 0
 @export var slot_choices := PackedInt32Array([0])
@@ -43,6 +46,13 @@ const ScrollElementScript := preload("res://scripts/driving/scroll_element_2d.gd
 @export_range(0.0, 1.0, 0.01) var prewarm_start_distance := 0.0
 @export_range(0.001, 1.0, 0.001) var prewarm_spacing := 0.08
 @export var spawn_immediately := true
+## Independent probability that a scheduled spawn produces an element.
+@export_range(0.0, 1.0, 0.01) var spawn_chance := 0.4
+## Keeps prewarmed elements fixed in place and prevents further spawns.
+@export var freeze_spawned_elements := false
+## Creates one stationary anchor before normal prewarmed and live spawns begin.
+@export var spawn_frozen_first_element := false
+@export_range(0.0, 1.0, 0.01) var frozen_first_spawn_distance := 0.5
 
 @export_group("Signal Spawn")
 ## When enabled, this handler creates elements only in response to the shared
@@ -61,6 +71,10 @@ func _ready() -> void:
 	_manager = _find_manager()
 	assert(_manager != null, "ScrollSpawnHandler must be below a ScrollManager2D node.")
 	_random.randomize()
+	if spawn_frozen_first_element:
+		var frozen_element := _spawn(frozen_first_spawn_distance)
+		if frozen_element != null:
+			frozen_element.motion_frozen = true
 	for index in prewarm_count:
 		_spawn(prewarm_start_distance + float(index) * prewarm_spacing)
 	_time_until_spawn = 0.0 if spawn_immediately else _next_spawn_interval()
@@ -78,6 +92,8 @@ func _find_manager() -> ScrollManager2D:
 
 
 func _process(delta: float) -> void:
+	if freeze_spawned_elements:
+		return
 	_update_active_elements(delta)
 	if spawn_on_speed_camera_trigger:
 		return
@@ -124,10 +140,11 @@ func _update_active_elements(delta: float) -> void:
 		var element := child as ScrollElement2D
 		if element == null:
 			continue
-		element.road_distance += _manager.effective_world_scroll_speed() * maxf(0.0, 1.0 + element.relative_speed) * delta
-		if element.road_distance > 1.0:
-			element.queue_free()
-			continue
+		if not element.motion_frozen:
+			element.road_distance += _manager.effective_world_scroll_speed() * maxf(0.0, 1.0 + element.relative_speed) * delta
+			if element.road_distance > 1.0:
+				element.queue_free()
+				continue
 		_manager.apply_projection(element)
 
 
@@ -137,16 +154,32 @@ func refresh_active_elements() -> void:
 	_update_active_elements(0.0)
 
 
-func _spawn(road_distance: float) -> void:
+func _spawn(road_distance: float) -> ScrollElement2D:
+	if _random.randf() > spawn_chance:
+		return null
+	if warning_content_scene != null:
+		var warning_element := _spawn_element(road_distance, warning_content_scene)
+		if warning_element != null and warning_delay_seconds > 0.0:
+			get_tree().create_timer(warning_delay_seconds).timeout.connect(_spawn_after_warning.bind(road_distance), CONNECT_ONE_SHOT)
+		return warning_element
+	return _spawn_element(road_distance, content_scene)
+
+
+func _spawn_after_warning(road_distance: float) -> void:
+	if is_inside_tree():
+		_spawn_element(road_distance, content_scene)
+
+
+func _spawn_element(road_distance: float, scene_to_spawn: PackedScene) -> ScrollElement2D:
 	var element := ScrollElementScript.new()
 	element.projection_mode = projection_mode
 	element.debug_visual = debug_visual
-	element.content_scene = content_scene
+	element.content_scene = scene_to_spawn
 	element.slot = slot_choices[_random.randi_range(0, slot_choices.size() - 1)] if not slot_choices.is_empty() else 0
 	var lane_jitter := _random.randf_range(-0.5, 0.5) * randomizer_factor
 	element.lane_offset = float(element.slot) + lane_offset + lane_jitter
 	element.visibility_start_distance = visibility_start_distance
-	element.relative_speed = _random.randf_range(relative_speed_min, relative_speed_max)
+	element.relative_speed = _random.randf_range(relative_speed_min, relative_speed_max) + _outward_vegetation_speed_bonus()
 	element.size_multiplier = _random.randf_range(size_multiplier_min, size_multiplier_max)
 	element.growth_factor = growth_factor
 	element.screen_offset_pixels = screen_offset_pixels
@@ -160,6 +193,16 @@ func _spawn(road_distance: float) -> void:
 	element.road_distance = clampf(road_distance + distance_jitter, 0.0, 1.0)
 	add_child(element)
 	_manager.apply_projection(element)
+	return element
+
+
+func _outward_vegetation_speed_bonus() -> float:
+	# The roadside vegetation tiers use growth factors 0.5 down to 0.1.
+	# Each lower tier moves 1.1x slower than the previous tier.
+	if growth_factor > 0.5:
+		return 0.0
+	var tier := roundi((0.5 - growth_factor) * 10.0) + 1
+	return pow(1.0 / 1.1, tier) - 1.0
 
 
 func _spawn_interval() -> float:
