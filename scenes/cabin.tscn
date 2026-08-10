@@ -50,7 +50,8 @@
 [ext_resource type="Script" uid="uid://bctri88fkhnk7" path="res://scripts/cabin/cabin_chill_popups.gd" id="43_popups"]
 [ext_resource type="FontFile" uid="uid://nsi0jovaqs78" path="res://assets/source/fonts/VCR_OSD_MONO_1.001.ttf" id="44_font"]
 [ext_resource type="Script" uid="uid://0c25jjgpxfru" path="res://scripts/cabin/cabin_cooldown_dial.gd" id="45_dial"]
-[ext_resource type="Script" path="res://scripts/cabin/cabin_message.gd" id="46_message"]
+[ext_resource type="Script" uid="uid://c82wbj75qwxv5" path="res://scripts/cabin/cabin_message.gd" id="46_message"]
+[ext_resource type="Script" uid="uid://dawvpfojwxgf" path="res://scripts/cabin/cabin_combo.gd" id="47_combo"]
 [ext_resource type="AudioStream" uid="uid://deo32mk7olydl" path="res://assets/source/audio/sfx/CB_1.wav" id="cb1"]
 [ext_resource type="AudioStream" uid="uid://cu3bkyu5kc32b" path="res://assets/source/audio/sfx/CB_2.wav" id="cb2"]
 [ext_resource type="AudioStream" uid="uid://d0egpeeqg58mk" path="res://assets/source/audio/sfx/CB_3.wav" id="cb3"]
@@ -80,10 +81,10 @@
 [ext_resource type="AudioStream" uid="uid://ccd2wk2gi6xo5" path="res://assets/source/audio/sfx/UKULELE_2.wav" id="uku2"]
 [ext_resource type="AudioStream" uid="uid://c5sambe0xe7on" path="res://assets/source/audio/sfx/UKULELE_odstaw.wav" id="ukuoff"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_b02bo"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cht6i"]
 size = Vector2(120, 80)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_u3q18"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ivxop"]
 size = Vector2(90, 160)
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
@@ -315,9 +316,9 @@ activity_id = &"speedo"
 zoom_target_path = NodePath("../../ZoomTargets/SpeedoFocus")
 click_size = Vector2(300, 300)
 show_placeholder = false
+hold_seconds_on_click = 2.0
 accelerates = false
 hold_chill_per_second = 0
-hold_seconds_on_click = 2.0
 approach_seconds = 0.3
 return_seconds = 0.5
 
@@ -379,7 +380,7 @@ polygon = PackedVector2Array(-60, -40, 60, -40, 60, 40, -60, 40)
 
 [node name="Shape" type="CollisionShape2D" parent="Activities/Papieros/Case/Area" unique_id=1779206425]
 position = Vector2(1.5, 1)
-shape = SubResource("RectangleShape2D_b02bo")
+shape = SubResource("RectangleShape2D_cht6i")
 
 [node name="Cigarette" type="Node2D" parent="Activities/Papieros" unique_id=1779206426]
 position = Vector2(-222, -54)
@@ -402,7 +403,7 @@ polygon = PackedVector2Array(-45, -80, 45, -80, 45, 80, -45, 80)
 [node name="Shape" type="CollisionShape2D" parent="Activities/Papieros/Cigarette/Area" unique_id=1779206430]
 position = Vector2(8, -6)
 rotation = -1.9914206
-shape = SubResource("RectangleShape2D_u3q18")
+shape = SubResource("RectangleShape2D_ivxop")
 
 [node name="Lighter" type="AudioStreamPlayer" parent="Activities/Papieros" unique_id=1779206431]
 volume_db = 24.0
@@ -525,6 +526,25 @@ controller_path = NodePath("../../ActivityController")
 messages = {
 &"speedo": "WATCH OUT FOR SPEED CAMERA!"
 }
+
+[node name="Combo" type="Label" parent="Messages" unique_id=259505106]
+offset_left = 460.0
+offset_top = 425.0
+offset_right = 1460.0
+offset_bottom = 555.0
+pivot_offset = Vector2(500, 65)
+theme_override_colors/font_color = Color(0.55, 0.95, 0.65, 1)
+theme_override_colors/font_outline_color = Color(0.04, 0.14, 0.06, 1)
+theme_override_constants/outline_size = 14
+theme_override_fonts/font = ExtResource("44_font")
+theme_override_font_sizes/font_size = 88
+text = "COMBO!"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("47_combo")
+controller_path = NodePath("../../ActivityController")
+cigarette_path = NodePath("../../Activities/Papieros")
+chill_source_path = NodePath("../../../score/CanvasLayer/KeepScore")
 
 [node name="DebugOverlay" type="CanvasLayer" parent="." unique_id=259505102]
 visible = false
