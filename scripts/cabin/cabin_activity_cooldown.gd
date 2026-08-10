@@ -27,6 +27,7 @@ signal cooldown_finished()
 
 var _activity: CabinActivity
 var _seconds_left := 0.0
+var _total_seconds := 0.0
 
 
 func _ready() -> void:
@@ -55,6 +56,19 @@ func is_locked() -> bool:
 	return _seconds_left > 0.0
 
 
+## Ile blokady zostało, od 1 na starcie do 0 na końcu. Tym karmi się tarcza
+## odliczająca — liczbę trzyma jedno miejsce, więc wskazówka nie ma jak
+## rozjechać się z faktycznym odblokowaniem.
+func progress() -> float:
+	if _total_seconds <= 0.0:
+		return 0.0
+	return clampf(_seconds_left / _total_seconds, 0.0, 1.0)
+
+
+func seconds_left() -> float:
+	return maxf(_seconds_left, 0.0)
+
+
 func _on_activity_ended(ended_id: StringName, _held_seconds: float) -> void:
 	if _activity == null or ended_id != _activity.activity_id:
 		return
@@ -62,6 +76,7 @@ func _on_activity_ended(ended_id: StringName, _held_seconds: float) -> void:
 	var span_min := minf(lock_seconds_min, lock_seconds_max)
 	var span_max := maxf(lock_seconds_min, lock_seconds_max)
 	_seconds_left = randf_range(span_min, span_max)
+	_total_seconds = _seconds_left
 	_activity.set_locked(true, self)
 	cooldown_started.emit(_seconds_left)
 	if debug_log:

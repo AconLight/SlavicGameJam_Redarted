@@ -49,6 +49,7 @@
 [ext_resource type="Texture2D" uid="uid://b7rn7sxqeks7n" path="res://assets/source/art/aseprite/Papierośnica bez obwódki.png" id="42_case_busy"]
 [ext_resource type="Script" uid="uid://bctri88fkhnk7" path="res://scripts/cabin/cabin_chill_popups.gd" id="43_popups"]
 [ext_resource type="FontFile" uid="uid://nsi0jovaqs78" path="res://assets/source/fonts/VCR_OSD_MONO_1.001.ttf" id="44_font"]
+[ext_resource type="Script" path="res://scripts/cabin/cabin_cooldown_dial.gd" id="45_dial"]
 [ext_resource type="AudioStream" uid="uid://deo32mk7olydl" path="res://assets/source/audio/sfx/CB_1.wav" id="cb1"]
 [ext_resource type="AudioStream" uid="uid://cu3bkyu5kc32b" path="res://assets/source/audio/sfx/CB_2.wav" id="cb2"]
 [ext_resource type="AudioStream" uid="uid://d0egpeeqg58mk" path="res://assets/source/audio/sfx/CB_3.wav" id="cb3"]
@@ -126,6 +127,11 @@ position = Vector2(0, 300)
 texture = ExtResource("15_body")
 centered = false
 offset = Vector2(-40, 0)
+
+[node name="CooldownDial" type="Node2D" parent="Interior/CbHandset" unique_id=827007461]
+position = Vector2(120, 60)
+script = ExtResource("45_dial")
+cooldown_path = NodePath("../../../CbCooldown")
 
 [node name="LockedArt" type="Sprite2D" parent="Interior/CbHandset/Body" unique_id=827007460]
 visible = false
