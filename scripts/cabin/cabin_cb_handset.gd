@@ -111,6 +111,7 @@ var _held := false
 
 var _activity: CabinActivity
 var _locked_art: Sprite2D
+var _base_texture: Texture2D
 var _pulse_time := 0.0
 
 ## 0 = kabel wciągnięty do zera, 1 = pełna długość. Rozwijanie i zwijanie mają
@@ -127,6 +128,7 @@ func _ready() -> void:
 		return
 
 	_camera = get_node_or_null(camera_path) as Node2D
+	_base_texture = _body.texture if _body != null else null
 	_locked_art = get_node_or_null(^"Body/LockedArt") as Sprite2D
 	if _locked_art != null:
 		_locked_art.visible = false
@@ -195,24 +197,25 @@ func _refresh_body_texture(delta: float) -> void:
 	if _locked_art == null:
 		return
 
-	if locked_texture == null:
+	if locked_texture == null or _body == null:
 		_locked_art.visible = false
 		return
 
 	_locked_art.texture = locked_texture
 
 	# Mruga gruszka gotowa do złapania, i tylko dopóki gracz jej nie tknął.
-	# Po pierwszym użyciu warstwa pokazuje się już tylko przy blokadzie i stoi
-	# nieruchomo, czyli wracamy do zwykłego rozróżnienia.
 	var locked := _activity != null and _activity.locked
 	var invites := _activity == null or (_activity.available and not locked and not _activity.used)
-	_locked_art.visible = locked or invites
+	_locked_art.visible = invites
 
 	if not invites:
+		# Poza mruganiem podmieniamy samą grafikę gruszki. Wersja bez obwódki
+		# położona na wierzchu przepuszczałaby ramkę spod spodu.
 		_pulse_time = 0.0
-		_locked_art.modulate.a = 1.0
+		_body.texture = locked_texture if locked else _base_texture
 		return
 
+	_body.texture = _base_texture
 	_pulse_time += delta
 	var wave := 0.5 + 0.5 * cos(_pulse_time * TAU * locked_pulse_frequency)
 	_locked_art.modulate.a = lerpf(locked_pulse_floor, 1.0, wave)

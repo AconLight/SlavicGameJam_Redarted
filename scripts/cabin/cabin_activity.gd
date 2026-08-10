@@ -277,13 +277,6 @@ func _apply_size() -> void:
 func _refresh_art() -> void:
 	if _art == null or _visual == null:
 		return
-	_art.texture = texture
-	_art.visible = texture != null
-	_visual.visible = show_placeholder and texture == null
-
-	if _locked_art == null:
-		return
-	_locked_art.texture = locked_texture
 
 	var has_both := locked_texture != null and texture != null
 
@@ -291,9 +284,20 @@ func _refresh_art() -> void:
 	# mruganie ma przyciągać rękę do nowego przedmiotu, a nie świecić bez końca.
 	var wants_pulse := has_both and available and not locked and not used
 
-	# Po pierwszym użyciu wracamy do zwykłego rozróżnienia: warstwa bez obwódki
-	# leży na przedmiocie tylko wtedy, gdy jest zamknięty, i stoi nieruchomo.
-	_locked_art.visible = has_both and (locked or wants_pulse)
+	# Zamknięcie podmienia samą grafikę, a nie dokłada drugiej na wierzch.
+	# Wersja bez obwódki nie zakrywa ramki tej z obwódką, więc położona na niej
+	# przepuszczała ramkę spod spodu i przedmiot wyglądał na wolny przez cały czas.
+	var shown := locked_texture if (has_both and locked and not wants_pulse) else texture
+	_art.texture = shown
+	_art.visible = shown != null
+	_visual.visible = show_placeholder and shown == null
+
+	if _locked_art == null:
+		return
+	# Warstwa na wierzchu służy już tylko mruganiu: tam prześwitująca ramka jest
+	# w porządku, bo o to właśnie chodzi — dwa wyglądy przechodzą jeden w drugi.
+	_locked_art.texture = locked_texture
+	_locked_art.visible = wants_pulse
 	if _pulsing == wants_pulse:
 		return
 

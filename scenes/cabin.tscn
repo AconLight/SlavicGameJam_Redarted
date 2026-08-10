@@ -49,7 +49,7 @@
 [ext_resource type="Texture2D" uid="uid://b7rn7sxqeks7n" path="res://assets/source/art/aseprite/Papierośnica bez obwódki.png" id="42_case_busy"]
 [ext_resource type="Script" uid="uid://bctri88fkhnk7" path="res://scripts/cabin/cabin_chill_popups.gd" id="43_popups"]
 [ext_resource type="FontFile" uid="uid://nsi0jovaqs78" path="res://assets/source/fonts/VCR_OSD_MONO_1.001.ttf" id="44_font"]
-[ext_resource type="Script" path="res://scripts/cabin/cabin_cooldown_dial.gd" id="45_dial"]
+[ext_resource type="Script" uid="uid://0c25jjgpxfru" path="res://scripts/cabin/cabin_cooldown_dial.gd" id="45_dial"]
 [ext_resource type="AudioStream" uid="uid://deo32mk7olydl" path="res://assets/source/audio/sfx/CB_1.wav" id="cb1"]
 [ext_resource type="AudioStream" uid="uid://cu3bkyu5kc32b" path="res://assets/source/audio/sfx/CB_2.wav" id="cb2"]
 [ext_resource type="AudioStream" uid="uid://d0egpeeqg58mk" path="res://assets/source/audio/sfx/CB_3.wav" id="cb3"]
@@ -79,10 +79,10 @@
 [ext_resource type="AudioStream" uid="uid://ccd2wk2gi6xo5" path="res://assets/source/audio/sfx/UKULELE_2.wav" id="uku2"]
 [ext_resource type="AudioStream" uid="uid://c5sambe0xe7on" path="res://assets/source/audio/sfx/UKULELE_odstaw.wav" id="ukuoff"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wkk3s"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_b02bo"]
 size = Vector2(120, 80)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_b02bo"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u3q18"]
 size = Vector2(90, 160)
 
 [node name="Cabin" type="Node2D" unique_id=489044161]
@@ -128,17 +128,18 @@ texture = ExtResource("15_body")
 centered = false
 offset = Vector2(-40, 0)
 
-[node name="CooldownDial" type="Node2D" parent="Interior/CbHandset" unique_id=827007461]
-position = Vector2(120, 60)
-script = ExtResource("45_dial")
-cooldown_path = NodePath("../../../CbCooldown")
-
 [node name="LockedArt" type="Sprite2D" parent="Interior/CbHandset/Body" unique_id=827007460]
 visible = false
 texture_filter = 1
 texture = ExtResource("31_cb_locked")
 centered = false
 offset = Vector2(-40, 0)
+
+[node name="CooldownDial" type="Node2D" parent="Interior/CbHandset" unique_id=827007461]
+position = Vector2(0, 53)
+script = ExtResource("45_dial")
+cooldown_path = NodePath("../../../CbCooldown")
+color = Color(0.96862745, 0.5294118, 0.57254905, 0.4745098)
 
 [node name="CbActivity" parent="Interior/CbHandset" unique_id=174301410 instance=ExtResource("2_activity")]
 position = Vector2(0, 380)
@@ -303,6 +304,13 @@ source_path = NodePath("../../RadioPassive")
 texture = ExtResource("33_nutka")
 note_scale = 0.4
 
+[node name="UkuleleCooldownDial" type="Node2D" parent="Activities" unique_id=819683889]
+z_index = 30
+position = Vector2(1745, 1004)
+script = ExtResource("45_dial")
+cooldown_path = NodePath("../../UkuleleCooldown")
+color = Color(0.96862745, 0.5294118, 0.57254905, 0.4745098)
+
 [node name="ukulele-schowane" type="Node2D" parent="Activities" unique_id=1779206417]
 position = Vector2(1735, 1500)
 
@@ -354,7 +362,7 @@ polygon = PackedVector2Array(-60, -40, 60, -40, 60, 40, -60, 40)
 
 [node name="Shape" type="CollisionShape2D" parent="Activities/Papieros/Case/Area" unique_id=1779206425]
 position = Vector2(1.5, 1)
-shape = SubResource("RectangleShape2D_wkk3s")
+shape = SubResource("RectangleShape2D_b02bo")
 
 [node name="Cigarette" type="Node2D" parent="Activities/Papieros" unique_id=1779206426]
 position = Vector2(-222, -54)
@@ -377,7 +385,7 @@ polygon = PackedVector2Array(-45, -80, 45, -80, 45, 80, -45, 80)
 [node name="Shape" type="CollisionShape2D" parent="Activities/Papieros/Cigarette/Area" unique_id=1779206430]
 position = Vector2(8, -6)
 rotation = -1.9914206
-shape = SubResource("RectangleShape2D_b02bo")
+shape = SubResource("RectangleShape2D_u3q18")
 
 [node name="Lighter" type="AudioStreamPlayer" parent="Activities/Papieros" unique_id=1779206431]
 volume_db = 24.0
@@ -469,7 +477,6 @@ controller_path = NodePath("../ActivityController")
 bumped_paths = Array[NodePath]([NodePath("../Interior"), NodePath("../Activities")])
 drift_source_path = NodePath("../../Drift")
 drift_tilt_degrees = 20.0
-drift_zoom_boost = 0.45
 
 [node name="ChillPopups" type="Node2D" parent="." unique_id=259505103]
 z_index = 40

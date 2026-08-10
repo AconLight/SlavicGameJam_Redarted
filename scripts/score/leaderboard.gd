@@ -56,15 +56,18 @@ static func add_score(score: int) -> void:
 		return
 
 	var scores := load_scores()
-	# Ten sam wynik jest zgłaszany co sekundę, dopóki chill leży na zerze.
-	# Bez tego lista zapełniłaby się kopiami jednego przejazdu.
-	if scores.has(score):
+
+	# Pełna lista przyjmuje wynik tylko wtedy, gdy jest lepszy od najgorszego na
+	# niej — i wtedy ten najgorszy z niej wypada, robiąc miejsce.
+	if scores.size() >= MAX_ENTRIES and score <= scores[scores.size() - 1]:
 		return
 
 	scores.append(score)
 	scores.sort()
 	scores.reverse()
 	if scores.size() > MAX_ENTRIES:
+		# Obcięcie od końca, bo lista jest posortowana malejąco — odpada
+		# dokładnie najsłabszy wynik.
 		scores.resize(MAX_ENTRIES)
 	_save(scores)
 
