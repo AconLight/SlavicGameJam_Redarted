@@ -25,6 +25,13 @@ signal return_finished()
 ## Tir przyspiesza, dopóki trwa czynność, i hamuje po jej puszczeniu.
 @export_node_path("Node") var speed_source_path: NodePath
 
+## Czy kara przerywa trwającą czynność. Kierowca dostaje po kieszeni, więc
+## odruchowo puszcza to, czym się zajmował.
+##
+## Dotyczy obu kar: błysku fotoradaru i brake checku. Obie zdejmują chill, więc
+## nie ma powodu, żeby jedna przerywała, a druga nie.
+@export var interrupt_on_penalty := true
+
 ## Czy wypisywać zdarzenia do konsoli.
 @export var debug_log := true
 
@@ -51,6 +58,7 @@ func _ready() -> void:
 	_chill_source = get_node_or_null(chill_source_path)
 	_speed_source = get_node_or_null(speed_source_path)
 	_connect_activities.call_deferred()
+	_connect_signalist.call_deferred()
 
 
 func _process(delta: float) -> void:
@@ -146,6 +154,34 @@ func current_chill_level() -> int:
 func _notify(source: Node, method: StringName) -> void:
 	if source != null and source.has_method(method):
 		source.call(method)
+
+
+## Sygnalista dołącza do swojej grupy dopiero po ułożeniu drzewa, stąd odroczenie.
+## Bez niego kabina działa dalej, tylko bez przerywania karami.
+func _connect_signalist() -> void:
+	if not interrupt_on_penalty:
+		return
+	var signalist := get_tree().get_first_node_in_group(&"game_state_signalist")
+	if signalist == null:
+		return
+	if signalist.has_signal(&"speed_camera_photo_taken"):
+		signalist.speed_camera_photo_taken.connect(_on_speed_camera_penalty)
+	if signalist.has_signal(&"car_break_checked"):
+		signalist.car_break_checked.connect(_on_penalty)
+
+
+func _on_speed_camera_penalty(_camera_id: StringName, _speed_kmh: float, _speed_limit_kmh: float) -> void:
+	_on_penalty()
+
+
+## Kara przerywa czynność zwykłą drogą, przez _end() — czyli kamera wraca,
+## blokady startują, a naliczanie chillu i gaz gasną tak samo jak po puszczeniu.
+func _on_penalty() -> void:
+	if _active == null:
+		return
+	if debug_log:
+		print("[cabin] kara — przerywam: ", _active.activity_id)
+	_end()
 
 
 func _connect_activities() -> void:
