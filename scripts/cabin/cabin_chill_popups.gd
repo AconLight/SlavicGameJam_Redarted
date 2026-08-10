@@ -159,6 +159,11 @@ func _on_activity_started(activity_id: StringName) -> void:
 	if activity != null:
 		gain = activity.hold_chill_per_second
 
+	# Czynności, które nic nie dają, nie dostają liczby. Zerknięcie na
+	# prędkościomierz wypisywałoby „+0 chill" co sekundę.
+	if gain <= 0:
+		return
+
 	_hold = {"value": 0, "anchor": anchor, "pulse": 0.0, "gain": gain}
 	# Pierwsze tyknięcie od razu, żeby liczba pojawiła się razem z czynnością,
 	# a nie po sekundzie patrzenia w nic.

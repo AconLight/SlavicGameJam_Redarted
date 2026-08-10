@@ -107,6 +107,13 @@ const GROUP := &"cabin_activity"
 ## kiedy klikanie myszką ma już nie działać.
 @export var mouse_enabled := true
 
+## Ile sekund czynność trwa po jednym kliknięciu, bez trzymania. 0 = trzymanie
+## jak dotąd, czyli do puszczenia przycisku.
+##
+## Do zerknięć: kliknięcie w prędkościomierz ma przybliżyć kadr na moment i
+## wrócić samo, a nie wymagać przytrzymania myszy.
+@export_range(0.0, 20.0, 0.1) var hold_seconds_on_click := 0.0
+
 ## Akcja z Mapy wejścia (Projekt → Ustawienia → Mapa wejścia), która chwyta tę
 ## czynność zamiast myszki. Puste = tylko myszka.
 ##

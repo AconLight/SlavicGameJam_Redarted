@@ -50,6 +50,7 @@
 [ext_resource type="Script" uid="uid://bctri88fkhnk7" path="res://scripts/cabin/cabin_chill_popups.gd" id="43_popups"]
 [ext_resource type="FontFile" uid="uid://nsi0jovaqs78" path="res://assets/source/fonts/VCR_OSD_MONO_1.001.ttf" id="44_font"]
 [ext_resource type="Script" uid="uid://0c25jjgpxfru" path="res://scripts/cabin/cabin_cooldown_dial.gd" id="45_dial"]
+[ext_resource type="Script" path="res://scripts/cabin/cabin_message.gd" id="46_message"]
 [ext_resource type="AudioStream" uid="uid://deo32mk7olydl" path="res://assets/source/audio/sfx/CB_1.wav" id="cb1"]
 [ext_resource type="AudioStream" uid="uid://cu3bkyu5kc32b" path="res://assets/source/audio/sfx/CB_2.wav" id="cb2"]
 [ext_resource type="AudioStream" uid="uid://d0egpeeqg58mk" path="res://assets/source/audio/sfx/CB_3.wav" id="cb3"]
@@ -257,6 +258,10 @@ zoom = 1.5
 position = Vector2(925, 796.99994)
 zoom = 1.5
 
+[node name="SpeedoFocus" parent="ZoomTargets" unique_id=215320031 instance=ExtResource("1_zoom_target")]
+position = Vector2(918, 934)
+zoom = 2.5
+
 [node name="Activities" type="Node2D" parent="." unique_id=819683887]
 
 [node name="PuffPopupSpot" type="Marker2D" parent="Activities" unique_id=819683888]
@@ -303,6 +308,18 @@ script = ExtResource("28_notes")
 source_path = NodePath("../../RadioPassive")
 texture = ExtResource("33_nutka")
 note_scale = 0.4
+
+[node name="Speedometer" parent="Activities" unique_id=819683890 instance=ExtResource("2_activity")]
+position = Vector2(918, 934)
+activity_id = &"speedo"
+zoom_target_path = NodePath("../../ZoomTargets/SpeedoFocus")
+click_size = Vector2(300, 300)
+show_placeholder = false
+accelerates = false
+hold_chill_per_second = 0
+hold_seconds_on_click = 2.0
+approach_seconds = 0.3
+return_seconds = 0.5
 
 [node name="UkuleleCooldownDial" type="Node2D" parent="Activities" unique_id=819683889]
 z_index = 30
@@ -487,6 +504,27 @@ anchors = {
 &"ukulele": NodePath("../ZoomTargets/UkuleleFocus")
 }
 font = ExtResource("44_font")
+
+[node name="Messages" type="CanvasLayer" parent="." unique_id=259505104]
+layer = 50
+
+[node name="Message" type="Label" parent="Messages" unique_id=259505105]
+offset_left = 260.0
+offset_top = 690.0
+offset_right = 1660.0
+offset_bottom = 800.0
+theme_override_colors/font_color = Color(1, 0.83, 0.42, 1)
+theme_override_colors/font_outline_color = Color(0.08, 0.02, 0.01, 1)
+theme_override_constants/outline_size = 12
+theme_override_fonts/font = ExtResource("44_font")
+theme_override_font_sizes/font_size = 64
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("46_message")
+controller_path = NodePath("../../ActivityController")
+messages = {
+&"speedo": "WATCH OUT FOR SPEED CAMERA!"
+}
 
 [node name="DebugOverlay" type="CanvasLayer" parent="." unique_id=259505102]
 visible = false

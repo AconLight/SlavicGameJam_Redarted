@@ -38,6 +38,9 @@ var _active: CabinActivity = null
 
 ## Akcja, którą trzymana jest bieżąca czynność. Puste = trzyma ją myszka.
 var _hold_action: StringName = &""
+
+## Ile trwa bieżąca czynność na czas. 0 = trzymana przyciskiem.
+var _timed_hold := 0.0
 var _held := 0.0
 var _return_left := 0.0
 var _return_total := 0.0
@@ -55,7 +58,12 @@ func _process(delta: float) -> void:
 
 	if _active != null:
 		_held += delta
-		if _hold_released():
+		# Czynność na czas nie patrzy na przycisk: kończy się sama po swoim
+		# czasie, żeby jedno kliknięcie wystarczyło.
+		if _timed_hold > 0.0:
+			if _held >= _timed_hold:
+				_end()
+		elif _hold_released():
 			_end()
 		return
 
@@ -180,6 +188,7 @@ func _on_press_requested(activity: CabinActivity, held_by_action: bool) -> void:
 		return
 	_active = activity
 	_hold_action = activity.activation_action if held_by_action else &""
+	_timed_hold = activity.hold_seconds_on_click
 	_held = 0.0
 	activity.set_active(true)
 	# Stawka za sekundę zależy od czynności, więc podajemy ją licznikowi przed
@@ -203,6 +212,7 @@ func _end() -> void:
 	_active.set_active(false)
 	_active = null
 	_hold_action = &""
+	_timed_hold = 0.0
 	_held = 0.0
 	_return_total = seconds
 	_return_left = seconds
